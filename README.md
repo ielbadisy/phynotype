@@ -1,0 +1,74 @@
+phynotype
+================
+
+`phynotype` is an R package for unified clustering workflows, consensus
+meta-clustering, validation, exploration, prediction, and plotting.
+
+`phynotype` is a clustering workflow package. It is not a phenotypic
+data processing package.
+
+## Installation
+
+``` r
+# install.packages("pak")
+# pak::pkg_install("path/to/phynotype")
+```
+
+## Quick start
+
+``` r
+library(phynotype)
+
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+fit
+summary(fit)
+```
+
+## Meta-clustering
+
+``` r
+mfit <- metacluster(
+  iris[, 1:4],
+  methods = c("kmeans", "pam", "hclust"),
+  k = 2:5,
+  consensus = "coassoc",
+  seed = 1
+)
+
+mfit
+summary(mfit)
+```
+
+## Validation
+
+``` r
+validate(fit)
+validate(mfit)
+validate(iris[, 1:4], method = "kmeans", k = 2:6, seed = 1)
+```
+
+## Exploration
+
+``` r
+exp <- explore(fit)
+head(exp$feature_summary)
+```
+
+## Plotting
+
+``` r
+plot_clusters(fit)
+plot_silhouette(fit)
+plot_validation(validate(fit))
+plot_consensus(mfit)
+plot_coassoc(mfit)
+plot_feature_profiles(explore(fit))
+plot_cluster_sizes(fit)
+```
+
+## Prediction
+
+``` r
+pred <- predict(fit, iris[1:10, 1:4])
+pred
+```
