@@ -37,6 +37,9 @@ predict_pam <- function(object, new_data, ...) {
     numeric(nrow(new_data))
   )
   dmat <- as.matrix(dmat)
+  if (ncol(dmat) != nrow(medoids) && nrow(dmat) == nrow(medoids)) {
+    dmat <- t(dmat)
+  }
   cls <- max.col(-dmat)
   medoid_names <- rownames(medoids)
   if (is.null(medoid_names) || length(medoid_names) != nrow(medoids)) {
