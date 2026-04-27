@@ -1,0 +1,40 @@
+get_cluster_registry <- function() {
+  list(
+    kmeans = list(
+      fit = fit_kmeans,
+      predict = predict_kmeans,
+      validate = validate_kmeans_params,
+      supports_predict = TRUE
+    ),
+    pam = list(
+      fit = fit_pam,
+      predict = predict_pam,
+      validate = validate_pam_params,
+      supports_predict = TRUE
+    ),
+    hclust = list(
+      fit = fit_hclust,
+      predict = predict_hclust,
+      validate = validate_hclust_params,
+      supports_predict = FALSE
+    ),
+    agnes = list(
+      fit = fit_agnes,
+      predict = predict_agnes,
+      validate = validate_agnes_params,
+      supports_predict = FALSE
+    ),
+    dbscan = list(
+      fit = fit_dbscan,
+      predict = predict_dbscan,
+      validate = validate_dbscan_params,
+      supports_predict = TRUE
+    ),
+    gmm = list(
+      fit = fit_gmm,
+      predict = predict_gmm,
+      validate = validate_gmm_params,
+      supports_predict = TRUE
+    )
+  )
+}
