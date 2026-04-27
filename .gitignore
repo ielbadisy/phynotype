@@ -1,0 +1,6 @@
+.Rproj.user/
+*.Rcheck/
+..Rcheck/
+*.tar.gz
+*.html
+vignettes/.Rhistory

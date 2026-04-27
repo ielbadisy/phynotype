@@ -1,0 +1,11 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.git$
+^\.gitignore$
+^cran-comments\.md$
+^README\.html$
+^report-demo\.html$
+^phynotype_.*\.tar\.gz$
+^vignettes/\.Rhistory$
+^\.\.Rcheck$
+^.*\.Rcheck$

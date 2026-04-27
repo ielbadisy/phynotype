@@ -91,3 +91,29 @@ print.cluster_prediction <- function(x, ...) {
   cat("  Predictions: ", length(x$clusters), "\n", sep = "")
   invisible(x)
 }
+
+#' @export
+print.feature_importance <- function(x, ...) {
+  cat("<feature_importance>\n")
+  cat("  Metric: ", x$settings$metric, "\n", sep = "")
+  cat("  Features: ", nrow(x$summary), "\n", sep = "")
+  cat("  Repeats: ", x$settings$n_repeats, "\n", sep = "")
+  invisible(x)
+}
+
+#' @export
+print.ceteris_paribus <- function(x, ...) {
+  cat("<ceteris_paribus>\n")
+  cat("  Target: ", x$settings$target, "\n", sep = "")
+  cat("  Profiles: ", nrow(x$profiles), "\n", sep = "")
+  invisible(x)
+}
+
+#' @export
+print.lime_explanation <- function(x, ...) {
+  cat("<lime_explanation>\n")
+  cat("  Target: ", x$settings$target, "\n", sep = "")
+  cat("  Observations: ", length(unique(x$explanations$observation)), "\n", sep = "")
+  cat("  Effects: ", nrow(x$explanations), "\n", sep = "")
+  invisible(x)
+}
