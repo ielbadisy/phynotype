@@ -38,7 +38,11 @@ predict_kmeans <- function(object, new_data, ...) {
   )
   dmat <- as.matrix(dmat)
   cls <- max.col(-dmat)
-  colnames(dmat) <- rownames(centers_mat)
+  center_names <- rownames(centers_mat)
+  if (is.null(center_names) || length(center_names) != nrow(centers_mat)) {
+    center_names <- as.character(seq_len(nrow(centers_mat)))
+  }
+  colnames(dmat) <- center_names
   new_cluster_prediction(
     clusters = cls,
     membership = NULL,
