@@ -1,3 +1,7 @@
 utils::globalVariables(
-  c("cluster", "feature", "mean", "metric", "observation", "row", "col", "size", "value", "width", "x", "y")
+  c(
+    "absolute_effect", "cluster", "col", "direction", "feature",
+    "feature_value", "importance", "mean", "metric", "observation",
+    "rank", "repeat_id", "row", "size", "value", "width", "x", "y"
+  )
 )
