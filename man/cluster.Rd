@@ -17,8 +17,8 @@ cluster(
 \arguments{
 \item{x}{Numeric matrix or numeric data frame.}
 
-\item{method}{Clustering method. Supported values are \code{"kmeans"},
-\code{"pam"}, and \code{"hclust"}.}
+\item{method}{Clustering method. Supported values are \code{"kmeans"}, \code{"pam"},
+\code{"hclust"}, \code{"agnes"}, \code{"dbscan"}, and \code{"gmm"}.}
 
 \item{...}{Additional method-specific arguments.}
 

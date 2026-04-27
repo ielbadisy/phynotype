@@ -37,8 +37,15 @@ predict_pam <- function(object, new_data, ...) {
     numeric(nrow(new_data))
   )
   dmat <- as.matrix(dmat)
+  if (ncol(dmat) != nrow(medoids) && nrow(dmat) == nrow(medoids)) {
+    dmat <- t(dmat)
+  }
   cls <- max.col(-dmat)
-  colnames(dmat) <- rownames(medoids)
+  medoid_names <- rownames(medoids)
+  if (is.null(medoid_names) || length(medoid_names) != nrow(medoids)) {
+    medoid_names <- as.character(seq_len(nrow(medoids)))
+  }
+  colnames(dmat) <- medoid_names
   new_cluster_prediction(
     clusters = cls,
     membership = NULL,
