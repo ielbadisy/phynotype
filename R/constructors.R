@@ -117,3 +117,24 @@ new_cluster_prediction <- function(clusters,
     class = "cluster_prediction"
   )
 }
+
+new_feature_importance <- function(results, summary, settings) {
+  structure(
+    list(results = results, summary = summary, settings = settings),
+    class = "feature_importance"
+  )
+}
+
+new_ceteris_paribus <- function(profiles, settings) {
+  structure(
+    list(profiles = profiles, settings = settings),
+    class = "ceteris_paribus"
+  )
+}
+
+new_lime_explanation <- function(explanations, neighborhoods, settings) {
+  structure(
+    list(explanations = explanations, neighborhoods = neighborhoods, settings = settings),
+    class = "lime_explanation"
+  )
+}
