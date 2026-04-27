@@ -1,0 +1,277 @@
+---
+title: "phynotype API Demonstration"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    theme: flatly
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 8,
+  fig.height = 5
+)
+devtools::load_all(".")
+set.seed(1)
+iris_x <- iris[, 1:4]
+iris_truth <- as.integer(iris$Species)
+```
+
+# Overview
+
+This report demonstrates the main `phynotype` API:
+
+- `cluster()`
+- `metacluster()`
+- `validate()`
+- `explore()`
+- `predict()`
+- plotting helpers
+
+# Single clustering
+
+## K-means
+
+```{r}
+fit_kmeans <- cluster(
+  iris_x,
+  method = "kmeans",
+  k = 3,
+  scale = TRUE,
+  seed = 1
+)
+
+fit_kmeans
+summary(fit_kmeans)
+clusters(fit_kmeans)[1:10]
+sizes(fit_kmeans)
+method_used(fit_kmeans)
+```
+
+## PAM
+
+```{r}
+fit_pam <- cluster(
+  iris_x,
+  method = "pam",
+  k = 3,
+  scale = TRUE,
+  seed = 1
+)
+
+fit_pam
+summary(fit_pam)
+prototypes(fit_pam)
+```
+
+## Hierarchical clustering
+
+```{r}
+fit_hclust <- cluster(
+  iris_x,
+  method = "hclust",
+  k = 3,
+  scale = TRUE,
+  seed = 1
+)
+
+fit_hclust
+summary(fit_hclust)
+```
+
+## AGNES
+
+```{r}
+fit_agnes <- cluster(
+  iris_x,
+  method = "agnes",
+  k = 3,
+  scale = TRUE,
+  seed = 1
+)
+
+fit_agnes
+summary(fit_agnes)
+```
+
+## Gaussian mixture model
+
+```{r}
+if (requireNamespace("mclust", quietly = TRUE)) {
+  fit_gmm <- cluster(
+    iris_x,
+    method = "gmm",
+    k = 3,
+    scale = TRUE,
+    seed = 1
+  )
+
+  fit_gmm
+  summary(fit_gmm)
+  dim(membership(fit_gmm))
+} else {
+  "Package `mclust` is not installed, so the GMM example is skipped."
+}
+```
+
+## DBSCAN
+
+```{r}
+if (requireNamespace("dbscan", quietly = TRUE)) {
+  sim <- phynotype:::synthetic_clusters(n_per_cluster = 30, seed = 1)
+  fit_dbscan <- cluster(
+    sim$x,
+    method = "dbscan",
+    eps = 0.9,
+    minPts = 5,
+    scale = TRUE
+  )
+
+  fit_dbscan
+  summary(fit_dbscan)
+  table(clusters(fit_dbscan))
+} else {
+  "Package `dbscan` is not installed, so the DBSCAN example is skipped."
+}
+```
+
+# Validation
+
+## Validation for a fitted object
+
+```{r}
+val_kmeans <- validate(fit_kmeans, truth = iris_truth)
+val_kmeans
+val_kmeans$metrics_table
+val_kmeans$per_cluster_table
+```
+
+## Validation over a grid of k
+
+```{r}
+val_grid <- validate(
+  iris_x,
+  method = "kmeans",
+  k = 2:6,
+  scale = TRUE,
+  seed = 1
+)
+
+head(val_grid$metrics_table)
+```
+
+# Exploration
+
+```{r}
+exp_kmeans <- explore(fit_kmeans)
+exp_kmeans
+head(exp_kmeans$size_table)
+head(exp_kmeans$feature_summary)
+head(exp_kmeans$separation_table)
+head(exp_kmeans$embedding)
+```
+
+# Prediction
+
+## K-means prediction
+
+```{r}
+pred_kmeans <- predict(fit_kmeans, iris_x[1:10, ])
+pred_kmeans
+pred_kmeans$clusters
+head(pred_kmeans$distances)
+```
+
+## PAM prediction
+
+```{r}
+pred_pam <- predict(fit_pam, iris_x[1:10, ])
+pred_pam
+pred_pam$clusters
+```
+
+## GMM prediction
+
+```{r}
+if (exists("fit_gmm")) {
+  pred_gmm <- predict(fit_gmm, iris_x[1:10, ])
+  pred_gmm
+  pred_gmm$clusters
+  head(pred_gmm$membership)
+}
+```
+
+## Unsupported hierarchical prediction
+
+```{r}
+try(predict(fit_hclust, iris_x[1:5, ]))
+```
+
+# Meta-clustering
+
+```{r}
+mfit <- metacluster(
+  iris_x,
+  methods = c("kmeans", "pam", "hclust"),
+  k = 2:5,
+  consensus = "coassoc",
+  scale = TRUE,
+  seed = 1
+)
+
+mfit
+summary(mfit)
+head(mfit$candidate_table)
+dim(mfit$coassoc_matrix)
+head(mfit$selection_summary)
+```
+
+## Meta-cluster validation and exploration
+
+```{r}
+mval <- validate(mfit, truth = iris_truth)
+mval$metrics_table
+
+mexp <- explore(mfit)
+head(mexp$feature_summary)
+```
+
+# Plots
+
+## Cluster plots
+
+```{r}
+plot_clusters(fit_kmeans)
+plot_cluster_sizes(fit_kmeans)
+plot_feature_profiles(exp_kmeans)
+plot_silhouette(fit_kmeans)
+plot_validation(val_kmeans)
+```
+
+## Hierarchical plot
+
+```{r}
+plot_dendrogram(fit_hclust)
+```
+
+## Meta-cluster plots
+
+```{r}
+plot_consensus(mfit)
+plot_coassoc(mfit)
+plot_clusters(mfit)
+plot_cluster_sizes(mfit)
+plot_validation(mval)
+plot_dendrogram(mfit)
+```
+
+# Session info
+
+```{r}
+sessionInfo()
+```

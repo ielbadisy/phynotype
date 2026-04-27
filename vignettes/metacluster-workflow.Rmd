@@ -1,0 +1,60 @@
+---
+title: "Meta-clustering Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meta-clustering Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(phynotype)
+```
+
+`metacluster()` treats consensus clustering as a first-class workflow.
+
+## Fit candidate solutions
+
+```{r}
+mfit <- metacluster(
+  iris[, 1:4],
+  methods = c("kmeans", "pam", "hclust"),
+  k = 2:5,
+  consensus = "coassoc",
+  seed = 1
+)
+
+mfit
+summary(mfit)
+head(mfit$candidate_table)
+```
+
+## Inspect consensus structure
+
+```{r}
+dim(mfit$coassoc_matrix)
+head(mfit$selection_summary)
+```
+
+## Validate the consensus solution
+
+```{r}
+mval <- validate(mfit)
+mval$metrics_table
+```
+
+## Interpret the consensus solution
+
+```{r}
+mexp <- explore(mfit)
+head(mexp$feature_summary)
+```
+
+## Plot consensus results
+
+```{r}
+plot_consensus(mfit)
+plot_coassoc(mfit)
+plot_validation(mval)
+```
