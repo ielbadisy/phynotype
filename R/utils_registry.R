@@ -41,12 +41,6 @@ get_cluster_registry <- function() {
       predict = predict_kproto,
       validate = validate_kproto_params,
       supports_predict = TRUE
-    ),
-    protomix = list(
-      fit = fit_protomix,
-      predict = predict_protomix,
-      validate = validate_protomix_params,
-      supports_predict = TRUE
     )
   )
 }

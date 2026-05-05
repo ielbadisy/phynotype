@@ -75,16 +75,3 @@ test_that("kproto clusters mixed data natively", {
   pred <- predict(fit, mixed)
   expect_s3_class(pred, "cluster_prediction")
 })
-
-test_that("protomix clusters mixed data natively", {
-  mixed <- data.frame(
-    x = c(1, 2, 8, 9, 1.5, 8.5),
-    group = factor(c("a", "a", "b", "b", "a", "b"))
-  )
-  fit <- cluster(mixed, method = "protomix", k = 2, seed = 1, nstart = 1, tuner_steps = 2)
-  expect_s3_class(fit, "cluster_fit")
-  expect_equal(length(clusters(fit)), nrow(mixed))
-  expect_true(n_clusters(fit) >= 1)
-  pred <- predict(fit, mixed)
-  expect_s3_class(pred, "cluster_prediction")
-})
