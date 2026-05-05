@@ -232,6 +232,74 @@ algorithm directly. A positive coefficient means that, within the generated
 local neighborhood and after standardization, larger values of the feature are
 associated with a higher local target value.
 
+## Case study: interpreting an iris clustering solution
+
+This case study combines the three diagnostics into one reporting workflow. The
+goal is not to recover the species labels as a supervised target. Species are
+used only after fitting to help audit whether the unsupervised partition has a
+recognizable structure.
+
+```{r case-study-fit}
+case_x <- iris[, 1:4]
+case_fit <- cluster(case_x, method = "kmeans", k = 3, scale = TRUE, seed = 11)
+
+table(cluster = clusters(case_fit), species = iris$Species)
+validate(case_fit, truth = iris$Species, n_boot = 3)$metrics_table
+```
+
+Global permutation importance identifies the measurements that the fitted rule
+uses most strongly.
+
+```{r case-study-importance}
+case_importance <- feature_importance(
+  case_fit,
+  n_repeats = 10,
+  seed = 11
+)
+
+case_importance$summary
+plot(case_importance)
+```
+
+The strongest features can then be inspected locally. The following profiles
+explain one representative row from each fitted cluster and show how the
+cluster score changes when petal measurements are varied one at a time.
+
+```{r case-study-cp}
+representatives <- tapply(seq_len(nrow(case_x)), clusters(case_fit), function(idx) idx[1])
+case_profiles <- ceteris_paribus(
+  case_fit,
+  new_data = case_x[unlist(representatives), ],
+  features = c("Petal.Length", "Petal.Width"),
+  grid_size = 25,
+  target = "score"
+)
+
+plot(case_profiles)
+```
+
+Finally, local surrogate explanations are useful for concrete profiles. Here
+the first row from each fitted cluster is explained for its predicted cluster.
+
+```{r case-study-lime}
+case_lime <- lime_explain(
+  case_fit,
+  new_data = case_x[unlist(representatives), ],
+  n_features = 3,
+  n_permutations = 200,
+  seed = 12
+)
+
+case_lime$explanations
+plot(case_lime)
+```
+
+Taken together, the case study gives three complementary checks: the global
+importance ranking shows which features drive the partition, ceteris paribus
+profiles show whether cluster scores change smoothly around representative
+observations, and LIME-style surrogates summarize the local direction of
+effects for individual rows.
+
 ## Parallel execution with functionals
 
 Permutation repeats, ceteris paribus profiles, and LIME neighborhoods are
