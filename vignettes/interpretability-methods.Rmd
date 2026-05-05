@@ -239,6 +239,10 @@ goal is not to recover the species labels as a supervised target. Species are
 used only after fitting to help audit whether the unsupervised partition has a
 recognizable structure.
 
+The same workflow is available as an executable example at
+`inst/examples/interpretability_case_study.R`; running it writes the validation,
+feature-importance, ceteris paribus, and LIME result tables plus PNG plots.
+
 ```{r case-study-fit}
 case_x <- iris[, 1:4]
 case_fit <- cluster(case_x, method = "kmeans", k = 3, scale = TRUE, seed = 11)
