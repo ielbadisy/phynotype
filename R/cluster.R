@@ -4,10 +4,9 @@
 #'
 #' @param x Numeric matrix/data frame for numeric methods, a `dist` object for
 #'   hierarchical methods, or a mixed-type data frame for `"kproto"` and
-#'   `"protomix"`.
+#'   other mixed-data methods.
 #' @param method Clustering method. Supported values are `"kmeans"`, `"pam"`,
-#'   `"hclust"`, `"agnes"`, `"dbscan"`, `"gmm"`, `"kproto"`, and
-#'   `"protomix"`.
+#'   `"hclust"`, `"agnes"`, `"dbscan"`, `"gmm"`, and `"kproto"`.
 #' @param ... Additional method-specific arguments.
 #' @param k Number of clusters for methods that require it.
 #' @param scale Logical; if `TRUE`, scale columns before fitting.
