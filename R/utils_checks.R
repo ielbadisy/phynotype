@@ -50,6 +50,28 @@ check_numeric_input <- function(x) {
   list(data = x, kind = "matrix")
 }
 
+check_mixed_input <- function(x) {
+  if (inherits(x, "dist")) {
+    stop("Mixed-data methods require row-by-feature data, not a distance object.", call. = FALSE)
+  }
+  x <- as.data.frame(x, stringsAsFactors = FALSE)
+  if (nrow(x) < 1L) {
+    stop("`x` must contain at least one row.", call. = FALSE)
+  }
+  if (ncol(x) < 1L) {
+    stop("`x` must contain at least one column.", call. = FALSE)
+  }
+  if (any(vapply(seq_len(ncol(x)), function(i) all(is.na(x[[i]])), logical(1)))) {
+    stop("`x` cannot contain all-missing columns.", call. = FALSE)
+  }
+  for (nm in names(x)) {
+    if (is.character(x[[nm]]) || is.logical(x[[nm]])) {
+      x[[nm]] <- as.factor(x[[nm]])
+    }
+  }
+  list(data = x, kind = "mixed")
+}
+
 check_required_k <- function(k) {
   if (is.null(k)) {
     stop("`k` is required for this method.", call. = FALSE)
@@ -68,7 +90,7 @@ check_k_grid <- function(k) {
 }
 
 prepare_cluster_input <- function(x, method, scale, center, k) {
-  checked <- check_numeric_input(x)
+  checked <- if (method %in% c("kproto", "protomix")) check_mixed_input(x) else check_numeric_input(x)
   if (checked$kind == "dist" && !method %in% c("hclust", "agnes")) {
     stop(
       "Distance inputs are only supported by `hclust` and `agnes`.\n",
@@ -82,7 +104,7 @@ prepare_cluster_input <- function(x, method, scale, center, k) {
   processed <- raw
   preprocess <- list(center = FALSE, scale = FALSE)
 
-  if (checked$kind != "dist") {
+  if (checked$kind == "matrix") {
     if (scale && !center) {
       center <- TRUE
     }
@@ -97,7 +119,7 @@ prepare_cluster_input <- function(x, method, scale, center, k) {
     }
   }
 
-  if (method %in% c("kmeans", "pam", "hclust", "agnes")) {
+  if (method %in% c("kmeans", "pam", "hclust", "agnes", "kproto")) {
     check_required_k(k)
   }
 

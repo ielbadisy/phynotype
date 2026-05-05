@@ -15,10 +15,13 @@ cluster(
 )
 }
 \arguments{
-\item{x}{Numeric matrix or numeric data frame.}
+\item{x}{Numeric matrix/data frame for numeric methods, a \code{dist} object for
+hierarchical methods, or a mixed-type data frame for \code{"kproto"} and
+\code{"protomix"}.}
 
 \item{method}{Clustering method. Supported values are \code{"kmeans"}, \code{"pam"},
-\code{"hclust"}, \code{"agnes"}, \code{"dbscan"}, and \code{"gmm"}.}
+\code{"hclust"}, \code{"agnes"}, \code{"dbscan"}, \code{"gmm"}, \code{"kproto"}, and
+\code{"protomix"}.}
 
 \item{...}{Additional method-specific arguments.}
 
