@@ -34,16 +34,43 @@ fit_dbscan <- function(data, params) {
 
 predict_dbscan <- function(object, new_data, ...) {
   new_data <- restore_preprocessed_matrix(new_data, object$data_info)
+  training <- restore_preprocessed_matrix(object$data_info$original_data, object$data_info)
   fitted <- object$fitted_object
-  if (!"predict" %in% utils::methods(class = class(fitted))) {
-    stop("Prediction for `dbscan` is not available from the installed package version.", call. = FALSE)
+  pred <- tryCatch(
+    stats::predict(fitted, newdata = new_data, data = training),
+    error = function(e) NULL
+  )
+  prediction_type <- "native"
+  if (is.null(pred)) {
+    pred <- predict_dbscan_nearest(object, new_data, training = training)
+    prediction_type <- "nearest_non_noise"
   }
-  pred <- stats::predict(fitted, newdata = new_data, data = object$data_info$original_data)
   new_cluster_prediction(
     clusters = pred,
     membership = NULL,
     distances = NULL,
     method = object$method,
-    prediction_type = "native"
+    prediction_type = prediction_type
   )
+}
+
+predict_dbscan_nearest <- function(object, new_data, training) {
+  labels <- object$clusters
+  keep <- labels != object$extras$noise_label
+  if (!any(keep)) {
+    return(rep(object$extras$noise_label, nrow(new_data)))
+  }
+  training <- training[keep, , drop = FALSE]
+  labels <- labels[keep]
+  dmat <- vapply(
+    seq_len(nrow(training)),
+    function(i) rowSums((new_data - matrix(training[i, ], nrow(new_data), ncol(new_data), byrow = TRUE))^2),
+    numeric(nrow(new_data))
+  )
+  dmat <- sqrt(as.matrix(dmat))
+  nearest <- max.col(-dmat)
+  nearest_dist <- dmat[cbind(seq_len(nrow(dmat)), nearest)]
+  out <- labels[nearest]
+  out[nearest_dist > object$fitted_object$eps] <- object$extras$noise_label
+  out
 }

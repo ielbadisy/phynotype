@@ -14,11 +14,12 @@ fit_agnes <- function(data, params) {
   hc <- stats::as.hclust(fitted)
   k <- as.integer(params$k)
   cls <- stats::cutree(hc, k = k)
+  centers <- if (!inherits(data, "dist")) cluster_centroids(data, cls) else NULL
   list(
     clusters = cls,
     n_clusters = length(unique(cls)),
     membership = NULL,
-    centers = NULL,
+    centers = centers,
     prototypes = NULL,
     distance_info = list(metric = "euclidean", linkage = method),
     fitted_object = fitted,
@@ -27,5 +28,5 @@ fit_agnes <- function(data, params) {
 }
 
 predict_agnes <- function(object, new_data, ...) {
-  stop("Prediction for hierarchical clustering is not natively supported.", call. = FALSE)
+  predict_nearest_center(object, new_data, prediction_type = "nearest_centroid")
 }

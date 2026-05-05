@@ -13,6 +13,7 @@ ceteris_paribus(
   target = c("cluster", "score"),
   cluster = NULL,
   parallel = FALSE,
+  cores = NULL,
   workers = NULL,
   progress = FALSE,
   ...
@@ -21,15 +22,14 @@ ceteris_paribus(
 \arguments{
 \item{object}{A \code{cluster_fit} object with prediction support.}
 
-\item{new_data}{Numeric matrix or data frame containing observations to
-explain.}
+\item{new_data}{Row-by-feature data containing observations to explain.}
 
 \item{features}{Optional character vector or numeric column index specifying
 features to profile.}
 
-\item{grid}{Optional numeric vector or named list of numeric vectors giving
-profile values. If \code{NULL}, feature-specific quantile grids are built from
-the training data.}
+\item{grid}{Optional vector or named list of vectors giving profile values.
+If \code{NULL}, numeric features use quantile grids and categorical features use
+their observed levels.}
 
 \item{grid_size}{Number of grid values per feature when \code{grid = NULL}.}
 
@@ -43,7 +43,11 @@ baseline predicted cluster.}
 \item{parallel}{Logical; if \code{TRUE}, use \code{functionals::fmap()} when the
 suggested \code{functionals} package is installed.}
 
-\item{workers}{Optional number of workers passed to \code{functionals::fmap()}.}
+\item{cores}{Optional positive integer number of cores passed to
+\code{functionals::fmap()} when \code{parallel = TRUE}.}
+
+\item{workers}{Optional number of workers passed to \code{functionals::fmap()}.
+Deprecated alias for \code{cores}.}
 
 \item{progress}{Logical; if \code{TRUE}, request progress reporting from
 \code{functionals::fmap()}.}

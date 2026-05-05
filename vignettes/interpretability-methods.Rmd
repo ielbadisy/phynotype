@@ -43,7 +43,12 @@ clusters.
 The methods share a model-agnostic design. They call `predict()` on a
 `cluster_fit` object, so they apply to clustering engines with native prediction
 support, such as k-means, PAM, Gaussian mixture models, and DBSCAN when the
-installed backend supports prediction.
+installed backend supports prediction. Hierarchical fits created from
+row-by-feature data are interpreted through nearest-centroid prediction from the
+cut tree. Mixed-data k-prototypes fits are supported for permutation
+importance, ceteris paribus profiles, and local surrogate explanations. Fits
+created only from a precomputed distance object cannot be interpreted for new
+rows because the original feature space is not available.
 
 ## Fit a clustering model
 

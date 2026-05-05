@@ -9,7 +9,9 @@
 \arguments{
 \item{object}{A \code{cluster_fit} object.}
 
-\item{new_data}{Numeric matrix or numeric data frame.}
+\item{new_data}{Row-by-feature data compatible with the fitted method. Numeric
+methods expect a numeric matrix or data frame; \code{kproto} accepts mixed-type
+data frames.}
 
 \item{...}{Additional arguments passed to method-specific predictors.}
 }
