@@ -7,5 +7,6 @@
 ^report-demo\.html$
 ^phynotype_.*\.tar\.gz$
 ^vignettes/\.Rhistory$
+^vignettes/.*\.html$
 ^\.\.Rcheck$
 ^.*\.Rcheck$

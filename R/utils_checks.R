@@ -19,7 +19,16 @@ check_numeric_input <- function(x) {
   if (is.data.frame(x)) {
     numeric_cols <- vapply(x, is.numeric, logical(1))
     if (!all(numeric_cols)) {
-      stop("All columns in `x` must be numeric for v1.", call. = FALSE)
+      bad <- names(x)[!numeric_cols]
+      stop(
+        "`x` contains non-numeric columns: ", paste(bad, collapse = ", "), ".\n",
+        "Use an explicit two-step workflow for mixed data:\n",
+        "1. For numeric algorithms (`kmeans`, `pam`, `dbscan`, `gmm`), call ",
+        "`prepare_mixed_data(x, scale = TRUE)` and pass the returned matrix to `cluster()`.\n",
+        "2. For hierarchical algorithms (`hclust`, `agnes`), call ",
+        "`mixed_distance(x)` and pass the returned distance matrix to `cluster()`.",
+        call. = FALSE
+      )
     }
     x <- as.matrix(x)
   }
@@ -60,8 +69,13 @@ check_k_grid <- function(k) {
 
 prepare_cluster_input <- function(x, method, scale, center, k) {
   checked <- check_numeric_input(x)
-  if (checked$kind == "dist" && !method %in% c("hclust")) {
-    stop("Distance inputs are only supported for hierarchical clustering in v1.", call. = FALSE)
+  if (checked$kind == "dist" && !method %in% c("hclust", "agnes")) {
+    stop(
+      "Distance inputs are only supported by `hclust` and `agnes`.\n",
+      "Use row-by-feature numeric data for `kmeans`, `pam`, `dbscan`, and `gmm`; ",
+      "for mixed data first call `prepare_mixed_data(x, scale = TRUE)`.",
+      call. = FALSE
+    )
   }
 
   raw <- checked$data
@@ -83,10 +97,8 @@ prepare_cluster_input <- function(x, method, scale, center, k) {
     }
   }
 
-  if (method %in% c("kmeans", "pam", "hclust")) {
-    if (method != "hclust" || checked$kind != "dist") {
-      check_required_k(k)
-    }
+  if (method %in% c("kmeans", "pam", "hclust", "agnes")) {
+    check_required_k(k)
   }
 
   list(
