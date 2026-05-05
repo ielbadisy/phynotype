@@ -16,13 +16,13 @@ get_cluster_registry <- function() {
       fit = fit_hclust,
       predict = predict_hclust,
       validate = validate_hclust_params,
-      supports_predict = FALSE
+      supports_predict = TRUE
     ),
     agnes = list(
       fit = fit_agnes,
       predict = predict_agnes,
       validate = validate_agnes_params,
-      supports_predict = FALSE
+      supports_predict = TRUE
     ),
     dbscan = list(
       fit = fit_dbscan,

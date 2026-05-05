@@ -1,7 +1,9 @@
 #' Predict cluster assignments for new observations
 #'
 #' @param object A `cluster_fit` object.
-#' @param new_data Numeric matrix or numeric data frame.
+#' @param new_data Row-by-feature data compatible with the fitted method. Numeric
+#'   methods expect a numeric matrix or data frame; `kproto` accepts mixed-type
+#'   data frames.
 #' @param ... Additional arguments passed to method-specific predictors.
 #'
 #' @return A `cluster_prediction` object.

@@ -13,6 +13,7 @@ feature_importance(
   n_repeats = 10L,
   seed = NULL,
   parallel = FALSE,
+  cores = NULL,
   workers = NULL,
   progress = FALSE,
   ...
@@ -21,8 +22,8 @@ feature_importance(
 \arguments{
 \item{object}{A \code{cluster_fit} object with prediction support.}
 
-\item{data}{Optional numeric matrix or data frame used for evaluation.
-Defaults to the training data stored in \code{object}.}
+\item{data}{Optional row-by-feature data used for evaluation. Defaults to the
+training data stored in \code{object}.}
 
 \item{features}{Optional character vector or numeric column index specifying
 features to evaluate.}
@@ -42,7 +43,11 @@ dispersion.}
 \item{parallel}{Logical; if \code{TRUE}, use \code{functionals::fmap()} when the
 suggested \code{functionals} package is installed.}
 
-\item{workers}{Optional number of workers passed to \code{functionals::fmap()}.}
+\item{cores}{Optional positive integer number of cores passed to
+\code{functionals::fmap()} when \code{parallel = TRUE}.}
+
+\item{workers}{Optional number of workers passed to \code{functionals::fmap()}.
+Deprecated alias for \code{cores}.}
 
 \item{progress}{Logical; if \code{TRUE}, request progress reporting from
 \code{functionals::fmap()}.}

@@ -43,8 +43,8 @@
 #' larger values mean worse fit.
 #'
 #' @param object A `cluster_fit` object with prediction support.
-#' @param data Optional numeric matrix or data frame used for evaluation.
-#'   Defaults to the training data stored in `object`.
+#' @param data Optional row-by-feature data used for evaluation. Defaults to the
+#'   training data stored in `object`.
 #' @param features Optional character vector or numeric column index specifying
 #'   features to evaluate.
 #' @param metric Built-in importance metric. `"instability"` measures the
@@ -57,7 +57,10 @@
 #' @param seed Optional integer random seed.
 #' @param parallel Logical; if `TRUE`, use `functionals::fmap()` when the
 #'   suggested `functionals` package is installed.
+#' @param cores Optional positive integer number of cores passed to
+#'   `functionals::fmap()` when `parallel = TRUE`.
 #' @param workers Optional number of workers passed to `functionals::fmap()`.
+#'   Deprecated alias for `cores`.
 #' @param progress Logical; if `TRUE`, request progress reporting from
 #'   `functionals::fmap()`.
 #' @param ... Reserved for future extensions.
@@ -78,6 +81,7 @@ feature_importance <- function(object,
                                n_repeats = 10L,
                                seed = NULL,
                                parallel = FALSE,
+                               cores = NULL,
                                workers = NULL,
                                progress = FALSE,
                                ...) {
@@ -143,7 +147,7 @@ feature_importance <- function(object,
 
   results <- do.call(
     rbind,
-    phynotype_map(task_rows, worker, parallel = parallel, workers = workers, progress = progress)
+    phynotype_map(task_rows, worker, parallel = parallel, cores = cores, workers = workers, progress = progress)
   )
   rownames(results) <- NULL
   summary <- summarize_importance_results(results)
@@ -155,6 +159,7 @@ feature_importance <- function(object,
       n_repeats = n_repeats,
       seed = seed,
       parallel = parallel,
+      cores = cores,
       workers = workers,
       used_custom_loss = !is.null(loss)
     )

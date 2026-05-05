@@ -14,6 +14,7 @@ lime_explain(
   cluster = NULL,
   seed = NULL,
   parallel = FALSE,
+  cores = NULL,
   workers = NULL,
   progress = FALSE,
   ...
@@ -22,8 +23,7 @@ lime_explain(
 \arguments{
 \item{object}{A \code{cluster_fit} object with prediction support.}
 
-\item{new_data}{Numeric matrix or data frame containing observations to
-explain.}
+\item{new_data}{Row-by-feature data containing observations to explain.}
 
 \item{n_features}{Maximum number of local effects returned per observation.}
 
@@ -45,7 +45,11 @@ explained for its baseline predicted cluster.}
 \item{parallel}{Logical; if \code{TRUE}, use \code{functionals::fmap()} when the
 suggested \code{functionals} package is installed.}
 
-\item{workers}{Optional number of workers passed to \code{functionals::fmap()}.}
+\item{cores}{Optional positive integer number of cores passed to
+\code{functionals::fmap()} when \code{parallel = TRUE}.}
+
+\item{workers}{Optional number of workers passed to \code{functionals::fmap()}.
+Deprecated alias for \code{cores}.}
 
 \item{progress}{Logical; if \code{TRUE}, request progress reporting from
 \code{functionals::fmap()}.}
