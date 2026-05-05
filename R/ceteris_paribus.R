@@ -26,13 +26,12 @@
 #' causal effects.
 #'
 #' @param object A `cluster_fit` object with prediction support.
-#' @param new_data Numeric matrix or data frame containing observations to
-#'   explain.
+#' @param new_data Row-by-feature data containing observations to explain.
 #' @param features Optional character vector or numeric column index specifying
 #'   features to profile.
-#' @param grid Optional numeric vector or named list of numeric vectors giving
-#'   profile values. If `NULL`, feature-specific quantile grids are built from
-#'   the training data.
+#' @param grid Optional vector or named list of vectors giving profile values.
+#'   If `NULL`, numeric features use quantile grids and categorical features use
+#'   their observed levels.
 #' @param grid_size Number of grid values per feature when `grid = NULL`.
 #' @param target Output target. `"cluster"` records predicted labels;
 #'   `"score"` records a cluster-specific prediction score.
@@ -41,7 +40,10 @@
 #'   baseline predicted cluster.
 #' @param parallel Logical; if `TRUE`, use `functionals::fmap()` when the
 #'   suggested `functionals` package is installed.
+#' @param cores Optional positive integer number of cores passed to
+#'   `functionals::fmap()` when `parallel = TRUE`.
 #' @param workers Optional number of workers passed to `functionals::fmap()`.
+#'   Deprecated alias for `cores`.
 #' @param progress Logical; if `TRUE`, request progress reporting from
 #'   `functionals::fmap()`.
 #' @param ... Reserved for future extensions.
@@ -64,6 +66,7 @@ ceteris_paribus <- function(object,
                             target = c("cluster", "score"),
                             cluster = NULL,
                             parallel = FALSE,
+                            cores = NULL,
                             workers = NULL,
                             progress = FALSE,
                             ...) {
@@ -108,7 +111,7 @@ ceteris_paribus <- function(object,
       target = target,
       cluster = as.character(out_cluster),
       value = as.numeric(out_value),
-      observed_value = as.numeric(new_data[obs_id, feature]),
+      observed_value = as.vector(new_data[obs_id, feature, drop = TRUE]),
       baseline_value = as.numeric(baseline_value),
       baseline_cluster = as.character(baseline_cluster)
     )
@@ -116,7 +119,7 @@ ceteris_paribus <- function(object,
 
   profiles <- do.call(
     rbind,
-    phynotype_map(task_rows, worker, parallel = parallel, workers = workers, progress = progress)
+    phynotype_map(task_rows, worker, parallel = parallel, cores = cores, workers = workers, progress = progress)
   )
   rownames(profiles) <- NULL
   new_ceteris_paribus(
@@ -127,6 +130,7 @@ ceteris_paribus <- function(object,
       grid_size = as.integer(grid_size),
       method = object$method,
       parallel = parallel,
+      cores = cores,
       workers = workers
     )
   )
@@ -137,14 +141,43 @@ plot.ceteris_paribus <- function(x, ...) {
   teal <- "#44B8C1"
   purple <- "#3A22B8"
   profile_data <- x$profiles
+  numeric_x <- suppressWarnings(!anyNA(as.numeric(profile_data$feature_value)))
+  if (numeric_x) {
+    profile_data$feature_value <- as.numeric(profile_data$feature_value)
+  }
   baseline_data <- unique(profile_data[, c(
     "observation", "feature", "observed_value",
     "baseline_value", "baseline_cluster"
   )])
+  if (numeric_x) {
+    baseline_data$observed_value <- as.numeric(baseline_data$observed_value)
+  }
   line_layer <- if (identical(x$settings$target, "cluster")) {
     ggplot2::geom_step(color = teal, linewidth = 0.8, alpha = 0.95)
   } else {
     ggplot2::geom_line(color = teal, linewidth = 0.9, alpha = 0.95)
+  }
+  baseline_layers <- if (numeric_x) {
+    list(
+      ggplot2::geom_vline(
+        data = baseline_data,
+        ggplot2::aes(xintercept = observed_value),
+        color = purple,
+        linetype = "dashed",
+        linewidth = 0.45,
+        alpha = 0.75
+      ),
+      ggplot2::geom_point(
+        data = baseline_data,
+        ggplot2::aes(x = observed_value, y = baseline_value),
+        inherit.aes = FALSE,
+        color = purple,
+        fill = purple,
+        size = 2.6
+      )
+    )
+  } else {
+    list()
   }
 
   ggplot2::ggplot(
@@ -156,22 +189,7 @@ plot.ceteris_paribus <- function(x, ...) {
     )
   ) +
     line_layer +
-    ggplot2::geom_vline(
-      data = baseline_data,
-      ggplot2::aes(xintercept = observed_value),
-      color = purple,
-      linetype = "dashed",
-      linewidth = 0.45,
-      alpha = 0.75
-    ) +
-    ggplot2::geom_point(
-      data = baseline_data,
-      ggplot2::aes(x = observed_value, y = baseline_value),
-      inherit.aes = FALSE,
-      color = purple,
-      fill = purple,
-      size = 2.6
-    ) +
+    baseline_layers +
     ggplot2::facet_wrap(stats::as.formula("~ feature"), scales = "free_x") +
     ggplot2::labs(
       title = "Ceteris Paribus profile",

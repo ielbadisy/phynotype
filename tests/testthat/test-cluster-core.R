@@ -13,10 +13,12 @@ test_that("pam fit stores prototypes when cluster is available", {
   expect_equal(nrow(prototypes(fit)), 3)
 })
 
-test_that("hclust fit stores hierarchical result and blocks prediction", {
+test_that("hclust fit stores hierarchical result and predicts by nearest centroid", {
   fit <- cluster(iris[, 1:4], method = "hclust", k = 3)
   expect_s3_class(fit$fitted_object, "hclust")
-  expect_error(predict(fit, iris[1:5, 1:4]), "not natively supported")
+  pred <- predict(fit, iris[1:5, 1:4])
+  expect_s3_class(pred, "cluster_prediction")
+  expect_equal(length(pred$clusters), 5)
 })
 
 test_that("parameter validation catches invalid k", {

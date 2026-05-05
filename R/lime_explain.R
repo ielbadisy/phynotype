@@ -31,8 +31,7 @@
 #' it is the cluster-specific membership or similarity score.
 #'
 #' @param object A `cluster_fit` object with prediction support.
-#' @param new_data Numeric matrix or data frame containing observations to
-#'   explain.
+#' @param new_data Row-by-feature data containing observations to explain.
 #' @param n_features Maximum number of local effects returned per observation.
 #' @param n_permutations Number of perturbed neighborhood samples per
 #'   observation.
@@ -46,7 +45,10 @@
 #' @param seed Optional integer random seed.
 #' @param parallel Logical; if `TRUE`, use `functionals::fmap()` when the
 #'   suggested `functionals` package is installed.
+#' @param cores Optional positive integer number of cores passed to
+#'   `functionals::fmap()` when `parallel = TRUE`.
 #' @param workers Optional number of workers passed to `functionals::fmap()`.
+#'   Deprecated alias for `cores`.
 #' @param progress Logical; if `TRUE`, request progress reporting from
 #'   `functionals::fmap()`.
 #' @param ... Reserved for future extensions.
@@ -68,6 +70,7 @@ lime_explain <- function(object,
                          cluster = NULL,
                          seed = NULL,
                          parallel = FALSE,
+                         cores = NULL,
                          workers = NULL,
                          progress = FALSE,
                          ...) {
@@ -88,12 +91,22 @@ lime_explain <- function(object,
 
   new_data <- prepare_interpretability_data(object, new_data, arg = "new_data")
   training_data <- prepare_interpretability_data(object, NULL)
-  p <- ncol(training_data)
+  training_frame <- as.data.frame(training_data, stringsAsFactors = FALSE)
+  new_frame <- as.data.frame(new_data, stringsAsFactors = FALSE)
+  encoded_training <- interpretability_numeric_basis(training_data)
+  p <- ncol(encoded_training)
   n_features <- min(as.integer(n_features), p)
   n_permutations <- as.integer(n_permutations)
   kernel_width <- if (is.null(kernel_width)) 0.75 * sqrt(p) else kernel_width
-  feature_names <- colnames(training_data)
-  feature_sds <- safe_column_sds(training_data)
+  feature_names <- colnames(encoded_training)
+  if (is.null(feature_names)) {
+    feature_names <- paste0("feature_", seq_len(p))
+    colnames(encoded_training) <- feature_names
+  }
+  encoded_sds <- safe_column_sds(encoded_training)
+  original_numeric_cols <- vapply(training_frame, is.numeric, logical(1))
+  original_sds <- vapply(training_frame[original_numeric_cols], stats::sd, numeric(1))
+  original_sds[!is.finite(original_sds) | original_sds <= 0] <- 1
 
   baseline <- predict_interpretability(object, new_data)
   baseline_clusters <- baseline$prediction$clusters
@@ -103,18 +116,31 @@ lime_explain <- function(object,
     if (!is.null(seed)) {
       set.seed(as.integer(seed) + obs_id)
     }
-    center <- new_data[obs_id, , drop = FALSE]
-    perturb <- matrix(
-      stats::rnorm(n_permutations * p, mean = 0, sd = rep(feature_sds, each = n_permutations)),
-      nrow = n_permutations,
-      ncol = p
-    )
-    neighborhood <- sweep(perturb, 2, as.numeric(center), FUN = "+")
-    colnames(neighborhood) <- feature_names
+    center <- new_frame[obs_id, , drop = FALSE]
+    neighborhood <- center[rep(1L, n_permutations), , drop = FALSE]
+    if (any(original_numeric_cols)) {
+      num_names <- names(training_frame)[original_numeric_cols]
+      for (nm in num_names) {
+        neighborhood[[nm]] <- stats::rnorm(
+          n_permutations,
+          mean = as.numeric(center[[nm]]),
+          sd = original_sds[[nm]]
+        )
+      }
+    }
+    if (any(!original_numeric_cols)) {
+      cat_names <- names(training_frame)[!original_numeric_cols]
+      for (nm in cat_names) {
+        pool <- training_frame[[nm]]
+        neighborhood[[nm]] <- sample(pool, n_permutations, replace = TRUE)
+      }
+    }
     neighborhood[1, ] <- center
 
-    scaled_delta <- sweep(neighborhood, 2, as.numeric(center), FUN = "-")
-    scaled_delta <- sweep(scaled_delta, 2, feature_sds, FUN = "/")
+    encoded_neighborhood <- encode_interpretability_like(neighborhood, training_frame)
+    encoded_center <- encode_interpretability_like(center, training_frame)
+    scaled_delta <- sweep(encoded_neighborhood, 2, as.numeric(encoded_center[1, ]), FUN = "-")
+    scaled_delta <- sweep(scaled_delta, 2, encoded_sds, FUN = "/")
     distances <- sqrt(rowSums(scaled_delta^2))
     weights <- exp(-(distances^2) / (kernel_width^2))
 
@@ -157,7 +183,7 @@ lime_explain <- function(object,
     list(explanations = explained, neighborhoods = neigh)
   }
 
-  pieces <- phynotype_map(tasks, worker, parallel = parallel, workers = workers, progress = progress)
+  pieces <- phynotype_map(tasks, worker, parallel = parallel, cores = cores, workers = workers, progress = progress)
   explanations <- do.call(rbind, lapply(pieces, `[[`, "explanations"))
   neighborhoods <- do.call(rbind, lapply(pieces, `[[`, "neighborhoods"))
   rownames(explanations) <- NULL
@@ -174,9 +200,16 @@ lime_explain <- function(object,
       cluster = cluster,
       seed = seed,
       parallel = parallel,
+      cores = cores,
       workers = workers
     )
   )
+}
+
+encode_interpretability_like <- function(data, reference) {
+  combined <- rbind(reference, data)
+  encoded <- interpretability_numeric_basis(combined)
+  encoded[(nrow(reference) + 1L):nrow(encoded), , drop = FALSE]
 }
 
 #' @export

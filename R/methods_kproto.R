@@ -144,7 +144,12 @@ mixed_prototype_distance <- function(x, prototypes, gamma = 1) {
     }
     dc <- if (any(!numeric_cols)) {
       cats <- names(x)[!numeric_cols]
-      rowSums(vapply(cats, function(nm) as.character(x[[nm]]) != as.character(prototypes[[nm]][c]), logical(n)))
+      mismatches <- vapply(
+        cats,
+        function(nm) as.character(x[[nm]]) != as.character(prototypes[[nm]][c]),
+        logical(n)
+      )
+      rowSums(matrix(mismatches, nrow = n))
     } else {
       rep(0, n)
     }
