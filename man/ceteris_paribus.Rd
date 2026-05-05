@@ -51,7 +51,10 @@ suggested \code{functionals} package is installed.}
 \item{...}{Reserved for future extensions.}
 }
 \value{
-A \code{ceteris_paribus} object with a tidy \code{profiles} data frame.
+A \code{ceteris_paribus} object with a tidy \code{profiles} data frame. The
+profile table contains the evaluated grid, the profile value, the observed
+feature value, and the baseline value used to mark the explained
+observation in plots.
 }
 \description{
 Compute individual conditional profiles for a fitted clustering rule. A
