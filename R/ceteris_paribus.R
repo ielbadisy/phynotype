@@ -46,7 +46,10 @@
 #'   `functionals::fmap()`.
 #' @param ... Reserved for future extensions.
 #'
-#' @return A `ceteris_paribus` object with a tidy `profiles` data frame.
+#' @return A `ceteris_paribus` object with a tidy `profiles` data frame. The
+#'   profile table contains the evaluated grid, the profile value, the observed
+#'   feature value, and the baseline value used to mark the explained
+#'   observation in plots.
 #' @export
 #'
 #' @examples
@@ -89,10 +92,14 @@ ceteris_paribus <- function(object,
     if (target == "cluster") {
       out_value <- pred$prediction$clusters
       out_cluster <- pred$prediction$clusters
+      baseline_value <- baseline_clusters[[obs_id]]
+      baseline_cluster <- baseline_clusters[[obs_id]]
     } else {
       score_col <- cluster_score_column(pred$scores, cluster, fallback = baseline_clusters[[obs_id]])
       out_value <- pred$scores[, score_col]
       out_cluster <- rep(score_col, length(values))
+      baseline_value <- baseline$scores[obs_id, score_col]
+      baseline_cluster <- score_col
     }
     data.frame(
       observation = obs_id,
@@ -100,7 +107,10 @@ ceteris_paribus <- function(object,
       feature_value = values,
       target = target,
       cluster = as.character(out_cluster),
-      value = as.numeric(out_value)
+      value = as.numeric(out_value),
+      observed_value = as.numeric(new_data[obs_id, feature]),
+      baseline_value = as.numeric(baseline_value),
+      baseline_cluster = as.character(baseline_cluster)
     )
   }
 
@@ -115,6 +125,7 @@ ceteris_paribus <- function(object,
       target = target,
       cluster = cluster,
       grid_size = as.integer(grid_size),
+      method = object$method,
       parallel = parallel,
       workers = workers
     )
@@ -123,9 +134,61 @@ ceteris_paribus <- function(object,
 
 #' @export
 plot.ceteris_paribus <- function(x, ...) {
-  ggplot2::ggplot(x$profiles, ggplot2::aes_string(x = "feature_value", y = "value", color = "cluster", group = "interaction(observation, cluster)")) +
-    ggplot2::geom_line(linewidth = 0.7) +
+  teal <- "#44B8C1"
+  purple <- "#3A22B8"
+  profile_data <- x$profiles
+  baseline_data <- unique(profile_data[, c(
+    "observation", "feature", "observed_value",
+    "baseline_value", "baseline_cluster"
+  )])
+  line_layer <- if (identical(x$settings$target, "cluster")) {
+    ggplot2::geom_step(color = teal, linewidth = 0.8, alpha = 0.95)
+  } else {
+    ggplot2::geom_line(color = teal, linewidth = 0.9, alpha = 0.95)
+  }
+
+  ggplot2::ggplot(
+    profile_data,
+    ggplot2::aes(
+      x = feature_value,
+      y = value,
+      group = interaction(observation, cluster)
+    )
+  ) +
+    line_layer +
+    ggplot2::geom_vline(
+      data = baseline_data,
+      ggplot2::aes(xintercept = observed_value),
+      color = purple,
+      linetype = "dashed",
+      linewidth = 0.45,
+      alpha = 0.75
+    ) +
+    ggplot2::geom_point(
+      data = baseline_data,
+      ggplot2::aes(x = observed_value, y = baseline_value),
+      inherit.aes = FALSE,
+      color = purple,
+      fill = purple,
+      size = 2.6
+    ) +
     ggplot2::facet_wrap(stats::as.formula("~ feature"), scales = "free_x") +
-    ggplot2::labs(title = "Ceteris paribus profiles", x = "Feature value", y = "Profile value", color = "Cluster") +
-    ggplot2::theme_minimal()
+    ggplot2::labs(
+      title = "Ceteris Paribus profile",
+      subtitle = paste("created for the", x$settings$method, "model"),
+      x = NULL,
+      y = "prediction"
+    ) +
+    ggplot2::theme_minimal(base_size = 10) +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(color = purple, size = 14, face = "plain"),
+      plot.subtitle = ggplot2::element_text(color = purple, size = 9),
+      axis.title.y = ggplot2::element_text(color = purple),
+      axis.text = ggplot2::element_text(color = purple),
+      strip.text = ggplot2::element_text(color = purple, face = "plain"),
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major.x = ggplot2::element_line(color = "#E7E7E7", linewidth = 0.3),
+      panel.grid.major.y = ggplot2::element_line(color = "#E7E7E7", linewidth = 0.3),
+      legend.position = "none"
+    )
 }

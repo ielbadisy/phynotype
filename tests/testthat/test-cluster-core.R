@@ -22,3 +22,42 @@ test_that("hclust fit stores hierarchical result and blocks prediction", {
 test_that("parameter validation catches invalid k", {
   expect_error(cluster(iris[, 1:4], method = "kmeans", k = 1), "`k`")
 })
+
+test_that("mixed data requires an explicit two-step workflow", {
+  mixed <- data.frame(
+    x = c(1, 2, 3, 4),
+    group = factor(c("a", "a", "b", "b"))
+  )
+  expect_error(
+    cluster(mixed, method = "kmeans", k = 2),
+    "explicit two-step workflow",
+    fixed = TRUE
+  )
+})
+
+test_that("prepare_mixed_data encodes mixed inputs for numeric methods", {
+  mixed <- data.frame(
+    x = c(1, 2, 3, 4),
+    group = factor(c("a", "a", "b", "b"))
+  )
+  encoded <- prepare_mixed_data(mixed, scale = TRUE)
+  expect_true(is.matrix(encoded))
+  expect_true(is.numeric(encoded))
+  expect_true(all(c("x", "group_a", "group_b") %in% colnames(encoded)))
+  fit <- cluster(encoded, method = "kmeans", k = 2, seed = 1)
+  expect_s3_class(fit, "cluster_fit")
+})
+
+test_that("mixed_distance enables hierarchical clustering on mixed inputs", {
+  skip_if_not_installed("cluster")
+  mixed <- data.frame(
+    x = c(1, 2, 8, 9),
+    group = factor(c("a", "a", "b", "b"))
+  )
+  d <- mixed_distance(mixed)
+  expect_s3_class(d, "dist")
+  fit_h <- cluster(d, method = "hclust", k = 2)
+  expect_s3_class(fit_h, "cluster_fit")
+  fit_a <- cluster(d, method = "agnes", k = 2)
+  expect_s3_class(fit_a, "cluster_fit")
+})

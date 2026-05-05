@@ -10,7 +10,7 @@ validate_agnes_params <- function(data, params) {
 
 fit_agnes <- function(data, params) {
   method <- if (is.null(params$linkage)) "average" else params$linkage
-  fitted <- cluster::agnes(data, method = method)
+  fitted <- cluster::agnes(data, method = method, diss = inherits(data, "dist"))
   hc <- stats::as.hclust(fitted)
   k <- as.integer(params$k)
   cls <- stats::cutree(hc, k = k)
