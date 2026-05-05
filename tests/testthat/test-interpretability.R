@@ -14,7 +14,10 @@ test_that("ceteris_paribus returns one row per observation-feature-grid point", 
   cp <- ceteris_paribus(fit, iris[1:2, 1:4], features = 1:2, grid_size = 4)
 
   expect_s3_class(cp, "ceteris_paribus")
-  expect_true(all(c("observation", "feature", "feature_value", "target", "cluster", "value") %in% names(cp$profiles)))
+  expect_true(all(c(
+    "observation", "feature", "feature_value", "target", "cluster", "value",
+    "observed_value", "baseline_value", "baseline_cluster"
+  ) %in% names(cp$profiles)))
   expect_equal(nrow(cp$profiles), 2 * 2 * 4)
 })
 
@@ -25,6 +28,16 @@ test_that("ceteris_paribus can profile cluster scores", {
   expect_s3_class(cp, "ceteris_paribus")
   expect_true(all(cp$profiles$value >= 0))
   expect_true(all(cp$profiles$value <= 1))
+})
+
+test_that("ceteris_paribus plot uses the profile display path", {
+  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+  cp <- ceteris_paribus(fit, iris[1, 1:4, drop = FALSE], features = 1:2, grid_size = 4, target = "score")
+  plt <- plot(cp)
+
+  expect_s3_class(plt, "ggplot")
+  expect_equal(plt$labels$title, "Ceteris Paribus profile")
+  expect_equal(plt$labels$y, "prediction")
 })
 
 test_that("lime_explain returns local surrogate effects", {
