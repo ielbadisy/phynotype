@@ -21,6 +21,7 @@ Imports:
     utils
 Suggests:
     cluster,
+    clustMixType,
     dbscan,
     functionals,
     mclust,
