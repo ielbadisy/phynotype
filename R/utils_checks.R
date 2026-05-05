@@ -90,7 +90,7 @@ check_k_grid <- function(k) {
 }
 
 prepare_cluster_input <- function(x, method, scale, center, k) {
-  checked <- if (method %in% c("kproto", "protomix")) check_mixed_input(x) else check_numeric_input(x)
+  checked <- if (method %in% c("kproto")) check_mixed_input(x) else check_numeric_input(x)
   if (checked$kind == "dist" && !method %in% c("hclust", "agnes")) {
     stop(
       "Distance inputs are only supported by `hclust` and `agnes`.\n",

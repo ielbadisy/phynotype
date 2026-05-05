@@ -17,11 +17,10 @@ cluster(
 \arguments{
 \item{x}{Numeric matrix/data frame for numeric methods, a \code{dist} object for
 hierarchical methods, or a mixed-type data frame for \code{"kproto"} and
-\code{"protomix"}.}
+other mixed-data methods.}
 
 \item{method}{Clustering method. Supported values are \code{"kmeans"}, \code{"pam"},
-\code{"hclust"}, \code{"agnes"}, \code{"dbscan"}, \code{"gmm"}, \code{"kproto"}, and
-\code{"protomix"}.}
+\code{"hclust"}, \code{"agnes"}, \code{"dbscan"}, \code{"gmm"}, and \code{"kproto"}.}
 
 \item{...}{Additional method-specific arguments.}
 
