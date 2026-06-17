@@ -1,0 +1,132 @@
+---
+title: "phynotype formulas"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{phynotype formulas}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment = "#>")
+library(phynotype)
+```
+
+# Overview
+
+This vignette collects the formulas implemented by `phynotype` so the
+documentation matches the code path used by `validate()`, `feature_importance()`,
+and the stability helpers.
+
+# Internal validation metrics
+
+## Silhouette width
+
+For observation \eqn{i},
+
+$$
+s(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}},
+$$
+
+where \eqn{a(i)} is the mean distance from \eqn{i} to its own cluster and
+\eqn{b(i)} is the minimum mean distance from \eqn{i} to any other cluster.
+
+The reported metric is the average silhouette width across all observations.
+
+## Calinski-Harabasz index
+
+$$
+\mathrm{CH} = \frac{\mathrm{BSS}/(k - 1)}{\mathrm{WSS}/(n - k)}.
+$$
+
+Here, \eqn{k} is the number of clusters and \eqn{n} is the number of
+observations.
+
+The code computes:
+
+- \eqn{\mathrm{BSS}} as the between-cluster sum of squares,
+- \eqn{\mathrm{WSS}} as the within-cluster sum of squares.
+
+## Davies-Bouldin index
+
+$$
+\mathrm{DB} = \frac{1}{k} \sum_{j=1}^k \max_{l \ne j}
+\frac{s_j + s_l}{d(\mu_j, \mu_l)}.
+$$
+
+The implementation uses the mean Euclidean scatter within each cluster and the
+Euclidean distance between cluster centroids.
+
+## Total within-cluster sum of squares
+
+$$
+\mathrm{WSS} = \sum_{j=1}^k \sum_{i \in C_j} \|x_i - \mu_j\|^2.
+$$
+
+This is the raw k-means objective used as a lower-is-better internal criterion.
+
+# External validation metrics
+
+## Adjusted Rand index
+
+For two partitions \eqn{x} and \eqn{y}, the adjusted Rand index compares the
+observed agreement in pairwise assignments against its chance expectation.
+
+The implementation follows the standard contingency-table formula.
+
+## Normalized mutual information
+
+$$
+\mathrm{NMI}(x, y) = \frac{I(x;y)}{\sqrt{H(x)H(y)}}.
+$$
+
+Here, \eqn{I} is mutual information and \eqn{H} is Shannon entropy.
+
+# Stability metrics
+
+## Bootstrap ARI
+
+For bootstrap repetition \eqn{b}, the package:
+
+1. draws a bootstrap sample from the rows of the input data,
+2. refits the clustering model,
+3. computes the adjusted Rand index on the sampled observations only.
+
+The reported `bootstrap_ari` is the mean across repetitions.
+
+## Pairwise partition agreement
+
+For two candidate partitions \eqn{x} and \eqn{y},
+
+$$
+\mathrm{PPA}(x, y) = \frac{1}{\binom{n}{2}}
+\sum_{i < j} I\{(x_i = x_j) = (y_i = y_j)\}.
+$$
+
+This is the agreement rate over all observation pairs.
+
+# Feature importance
+
+Permutation feature importance in `phynotype` compares the score on the original
+data to the score after a feature is permuted.
+
+For instability,
+
+$$
+FI_j = \frac{1}{M} \sum_{m=1}^{M}
+\frac{1}{n}\sum_{i=1}^{n} I\{\hat c_i \ne f(X^{(m)}_{\pi(j)})_i\}.
+$$
+
+For silhouette loss,
+
+$$
+FI_j = \frac{1}{M}\sum_{m=1}^{M}\left[S(f, X) - S(f, X^{(m)}_{\pi(j)})\right].
+$$
+
+For total within-cluster sum of squares,
+
+$$
+FI_j = \frac{1}{M}\sum_{m=1}^{M}\left[W(f, X^{(m)}_{\pi(j)}) - W(f, X)\right].
+$$
+
+The score definitions above match the implementation in `feature_importance()`.

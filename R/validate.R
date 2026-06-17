@@ -10,6 +10,20 @@
 #' @param metrics Optional character vector of metrics.
 #' @param n_boot Number of bootstrap resamples for stability.
 #'
+#' @details
+#' For fitted objects, `validate()` returns a table with one row per metric.
+#' The table records the metric name, numeric value, nominal scale, and
+#' preferred direction. The core internal metrics are:
+#'
+#' - silhouette width, on \eqn{[-1, 1]}, higher is better;
+#' - Calinski-Harabasz index, positive and unbounded, higher is better;
+#' - Davies-Bouldin index, positive and unbounded, lower is better;
+#' - total within-cluster sum of squares, positive and unbounded, lower is
+#'   better;
+#' - bootstrap ARI, on \eqn{[0, 1]}, higher is better.
+#'
+#' External metrics are ARI and NMI when reference labels are supplied.
+#'
 #' @return A `cluster_validation` object.
 #' @export
 validate <- function(x,
@@ -20,6 +34,11 @@ validate <- function(x,
                      metrics = NULL,
                      n_boot = 10) {
   UseMethod("validate")
+}
+
+append_metric_row <- function(metrics_table, metric, value, scale = NA_character_, direction = NA_character_) {
+  metrics_table[nrow(metrics_table) + 1L, ] <- list(metric, value, scale, direction)
+  metrics_table
 }
 
 #' @export
@@ -38,15 +57,21 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
       compute_calinski_harabasz(data, x$clusters),
       compute_davies_bouldin(data, x$clusters),
       compute_total_within(data, x$clusters)
-    )
+    ),
+    scale = metric_metadata(c("silhouette", "calinski_harabasz", "davies_bouldin", "total_within"))$scale,
+    direction = metric_metadata(c("silhouette", "calinski_harabasz", "davies_bouldin", "total_within"))$direction,
+    stringsAsFactors = FALSE
   )
   if (!is.null(truth)) {
-    metrics_table <- rbind(
+    metrics_table <- append_metric_row(
       metrics_table,
-      data.frame(
-        metric = c("ari", "nmi"),
-        value = c(adjusted_rand_index(truth, x$clusters), normalized_mutual_information(truth, x$clusters))
-      )
+      "ari",
+      adjusted_rand_index(truth, x$clusters)
+    )
+    metrics_table <- append_metric_row(
+      metrics_table,
+      "nmi",
+      normalized_mutual_information(truth, x$clusters)
     )
   }
   stability <- if (x$method %in% c("kmeans", "pam", "gmm") && !is.null(x$params$k)) {
@@ -55,13 +80,15 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
     NULL
   }
   if (!is.null(stability)) {
-    metrics_table <- rbind(
-      metrics_table,
-      data.frame(metric = "bootstrap_ari", value = stability$mean)
-    )
+    metrics_table <- append_metric_row(metrics_table, "bootstrap_ari", stability$mean)
   }
   if (!is.null(metrics)) {
     metrics_table <- metrics_table[metrics_table$metric %in% metrics, , drop = FALSE]
+  }
+  if (!all(c("scale", "direction") %in% names(metrics_table))) {
+    extra_meta <- metric_metadata(metrics_table$metric[is.na(metrics_table$scale)])
+    metrics_table$scale[is.na(metrics_table$scale)] <- extra_meta$scale
+    metrics_table$direction[is.na(metrics_table$direction)] <- extra_meta$direction
   }
   new_cluster_validation(
     metrics_table = metrics_table,
@@ -81,25 +108,33 @@ validate.metacluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boo
       if (requireNamespace("cluster", quietly = TRUE)) compute_silhouette_metric(data, x$final_clusters) else NA_real_,
       compute_calinski_harabasz(data, x$final_clusters),
       compute_davies_bouldin(data, x$final_clusters)
-    )
+    ),
+    scale = metric_metadata(c("silhouette", "calinski_harabasz", "davies_bouldin"))$scale,
+    direction = metric_metadata(c("silhouette", "calinski_harabasz", "davies_bouldin"))$direction,
+    stringsAsFactors = FALSE
   )
   if (!is.null(truth)) {
-    metrics_table <- rbind(
+    metrics_table <- append_metric_row(
       metrics_table,
-      data.frame(
-        metric = c("ari", "nmi"),
-        value = c(adjusted_rand_index(truth, x$final_clusters), normalized_mutual_information(truth, x$final_clusters))
-      )
+      "ari",
+      adjusted_rand_index(truth, x$final_clusters)
+    )
+    metrics_table <- append_metric_row(
+      metrics_table,
+      "nmi",
+      normalized_mutual_information(truth, x$final_clusters)
     )
   }
   if (!is.null(x$stability_summary)) {
-    metrics_table <- rbind(
-      metrics_table,
-      data.frame(metric = "pairwise_partition_agreement", value = x$stability_summary$mean_agreement)
-    )
+    metrics_table <- append_metric_row(metrics_table, "pairwise_partition_agreement", x$stability_summary$mean_agreement)
   }
   if (!is.null(metrics)) {
     metrics_table <- metrics_table[metrics_table$metric %in% metrics, , drop = FALSE]
+  }
+  if (!all(c("scale", "direction") %in% names(metrics_table))) {
+    extra_meta <- metric_metadata(metrics_table$metric[is.na(metrics_table$scale)])
+    metrics_table$scale[is.na(metrics_table$scale)] <- extra_meta$scale
+    metrics_table$direction[is.na(metrics_table$direction)] <- extra_meta$direction
   }
   new_cluster_validation(
     metrics_table = metrics_table,

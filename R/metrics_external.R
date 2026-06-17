@@ -1,3 +1,8 @@
+#' External clustering agreement metrics
+#'
+#' These helpers implement the reference-label metrics used by `validate()`.
+#'
+#' @noRd
 adjusted_rand_index <- function(x, y) {
   tab <- table(x, y)
   n <- sum(tab)
@@ -12,6 +17,15 @@ adjusted_rand_index <- function(x, y) {
   (sum_comb - expected) / (max_index - expected)
 }
 
+#' Normalized mutual information
+#'
+#' \deqn{
+#' \mathrm{NMI}(x, y) = \frac{I(x;y)}{\sqrt{H(x)H(y)}},
+#' }
+#'
+#' where \eqn{I} is mutual information and \eqn{H} is Shannon entropy.
+#'
+#' @noRd
 normalized_mutual_information <- function(x, y) {
   tab <- table(x, y)
   pxy <- tab / sum(tab)
