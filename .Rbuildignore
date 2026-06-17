@@ -4,7 +4,9 @@
 ^\.gitignore$
 ^cran-comments\.md$
 ^README\.html$
+^README\.Rmd$
 ^report-demo\.html$
+^report-demo\.Rmd$
 ^phynotype_.*\.tar\.gz$
 ^vignettes/\.Rhistory$
 ^vignettes/.*\.html$
