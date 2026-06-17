@@ -17,7 +17,7 @@ test_that("metacluster returns a consensus fit with symmetric coassociation", {
 test_that("validate works on a direct k grid", {
   val <- validate(iris[, 1:4], method = "kmeans", k = 2:4, seed = 1)
   expect_s3_class(val, "cluster_validation")
-  expect_true(all(c("metric", "value", "k") %in% names(val$metrics_table)))
+  expect_true(all(c("metric", "value", "scale", "direction", "k") %in% names(val$metrics_table)))
   expect_equal(sort(unique(val$metrics_table$k)), 2:4)
 })
 
