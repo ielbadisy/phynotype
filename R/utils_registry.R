@@ -41,6 +41,12 @@ get_cluster_registry <- function() {
       predict = predict_kproto,
       validate = validate_kproto_params,
       supports_predict = TRUE
+    ),
+    kmm = list(
+      fit = fit_kmm,
+      predict = predict_kmm,
+      validate = validate_kmm_params,
+      supports_predict = TRUE
     )
   )
 }
