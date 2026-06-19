@@ -2,7 +2,8 @@
 #'
 #' These helpers implement the reference-label metrics used by `validate()`.
 #'
-#' @noRd
+#' @name external-metrics
+#' @keywords internal
 adjusted_rand_index <- function(x, y) {
   tab <- table(x, y)
   n <- sum(tab)
@@ -25,7 +26,6 @@ adjusted_rand_index <- function(x, y) {
 #'
 #' where \eqn{I} is mutual information and \eqn{H} is Shannon entropy.
 #'
-#' @noRd
 normalized_mutual_information <- function(x, y) {
   tab <- table(x, y)
   pxy <- tab / sum(tab)
