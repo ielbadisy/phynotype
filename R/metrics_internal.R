@@ -1,9 +1,10 @@
- #' Internal clustering metric metadata and formulas
- #'
- #' These helpers implement the internal validation criteria used by
- #' `validate()` and `feature_importance()`.
- #'
- #' @noRd
+#' Internal clustering metric metadata and formulas
+#'
+#' These helpers implement the internal validation criteria used by
+#' `validate()` and `feature_importance()`.
+#'
+#' @name internal-metrics
+#' @keywords internal
 metric_metadata <- function(metric) {
   metadata <- data.frame(
     metric = c("silhouette", "bootstrap_ari", "davies_bouldin", "total_within", "calinski_harabasz"),
@@ -29,7 +30,6 @@ metric_metadata <- function(metric) {
 #' from \eqn{i} to the observations in any other cluster. The returned value is
 #' the mean over all observations.
 #'
-#' @noRd
 compute_silhouette_metric <- function(data, clusters) {
   if (length(unique(clusters)) < 2L) {
     return(NA_real_)
@@ -50,7 +50,6 @@ compute_silhouette_metric <- function(data, clusters) {
 #' observations, \eqn{\mathrm{BSS}} is the between-cluster sum of squares, and
 #' \eqn{\mathrm{WSS}} is the within-cluster sum of squares.
 #'
-#' @noRd
 compute_calinski_harabasz <- function(data, clusters) {
   n <- nrow(data)
   k <- length(unique(clusters))
@@ -79,7 +78,6 @@ compute_calinski_harabasz <- function(data, clusters) {
 #' \eqn{\mu_j} is its centroid, and \eqn{d(\mu_j, \mu_l)} is the distance
 #' between cluster centroids.
 #'
-#' @noRd
 compute_davies_bouldin <- function(data, clusters) {
   cls <- sort(unique(clusters))
   centers <- do.call(rbind, lapply(cls, function(cl) colMeans(data[clusters == cl, , drop = FALSE])))
@@ -103,7 +101,6 @@ compute_davies_bouldin <- function(data, clusters) {
 #' \mathrm{WSS} = \sum_{j=1}^k \sum_{i \in C_j} \|x_i - \mu_j\|^2.
 #' }
 #'
-#' @noRd
 compute_total_within <- function(data, clusters) {
   total <- 0
   for (cl in sort(unique(clusters))) {
@@ -118,7 +115,6 @@ compute_total_within <- function(data, clusters) {
 #'
 #' This returns the average silhouette width within each cluster.
 #'
-#' @noRd
 compute_per_cluster_silhouette <- function(data, clusters) {
   if (!requireNamespace("cluster", quietly = TRUE) || length(unique(clusters)) < 2L) {
     return(NULL)

@@ -17,3 +17,9 @@ A ggplot object.
 \description{
 Plot validation metrics
 }
+\details{
+The validation plot shows one panel per metric so incompatible scales are
+never combined on a shared axis. Each panel displays a lollipop-style mark
+with the numeric value and a strip label that includes the nominal scale and
+preferred direction when available.
+}

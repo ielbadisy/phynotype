@@ -1,0 +1,141 @@
+---
+title: "phynotype: complete workflow"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+  rmarkdown::pdf_document:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{phynotype: complete workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(phynotype)
+```
+
+`phynotype` provides one workflow for clustering, validation, exploration,
+prediction, and interpretation. This vignette is the canonical package
+walkthrough and replaces the older split articles.
+
+## Algorithms
+
+### K-means
+
+Minimize
+\[
+\min_{\mathcal C} \sum_{j=1}^k \sum_{x_i \in C_j} \lVert x_i - \mu_j \rVert^2.
+\]
+
+```{r}
+fit_kmeans <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+fit_kmeans
+```
+
+### PAM
+
+Minimize the dissimilarity to medoids:
+\[
+\min_{m_1,\ldots,m_k} \sum_{i=1}^n \min_j d(x_i, m_j).
+\]
+
+```{r}
+fit_pam <- cluster(iris[, 1:4], method = "pam", k = 3, seed = 1)
+fit_pam
+```
+
+### Hierarchical clustering
+
+`hclust` and `agnes` work on numeric matrices or on `dist` objects created by
+`mixed_distance()`.
+
+```{r}
+d <- mixed_distance(iris[, 1:4])
+fit_hclust <- cluster(d, method = "hclust", k = 3)
+fit_hclust
+```
+
+### DBSCAN
+
+```{r}
+fit_dbscan <- cluster(iris[, 1:4], method = "dbscan", eps = 0.5, minPts = 5)
+fit_dbscan
+```
+
+### Gaussian mixture models
+
+```{r}
+fit_gmm <- cluster(iris[, 1:4], method = "gmm", k = 3, seed = 1)
+fit_gmm
+```
+
+### K-prototypes
+
+For mixed data, `kproto` combines numeric centers and categorical modes.
+
+```{r}
+fit_kproto <- cluster(iris, method = "kproto", k = 3, seed = 1)
+fit_kproto
+```
+
+### KMM
+
+KMM minimizes a weighted mixed-distance criterion:
+\[
+D(x_i, p_g) = \sum_{j \in \mathcal N} (x_{ij} - \mu_{gj})^2 +
+\lambda \sum_{j \in \mathcal C} I(x_{ij} \neq \nu_{gj}),
+\]
+with \(\lambda \ge 0\) controlling the categorical contribution.
+
+```{r}
+iris_mixed <- iris
+iris_mixed$Species <- as.character(iris_mixed$Species)
+fit_kmm <- cluster(iris_mixed, method = "kmm", k = 3, seed = 1)
+fit_kmm
+summary(fit_kmm)
+```
+
+## Validation metrics
+
+The package reports silhouette width, Calinski-Harabasz, Davies-Bouldin, total
+within-cluster sum of squares, bootstrap ARI, ARI, and NMI.
+
+\[
+s(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}},
+\qquad
+\mathrm{CH} = \frac{\mathrm{BSS}/(k - 1)}{\mathrm{WSS}/(n - k)},
+\]
+
+\[
+\mathrm{DB} = \frac{1}{k} \sum_{j=1}^k \max_{l \ne j} \frac{s_j + s_l}{d(\mu_j,\mu_l)},
+\qquad
+\mathrm{NMI}(x,y) = \frac{I(x;y)}{\sqrt{H(x)H(y)}}.
+\]
+
+```{r}
+validate(fit_kmeans)$metrics_table
+```
+
+## Exploration and prediction
+
+```{r}
+exp <- explore(fit_kmeans)
+head(exp$feature_summary)
+pred <- predict(fit_kmeans, iris[1:5, 1:4])
+pred
+```
+
+## Interpretability
+
+`feature_importance()`, `ceteris_paribus()`, and `lime_explain()` all operate
+on the fitted clustering rule through `predict()`.
+
+```{r}
+feature_importance(fit_kmeans, n_repeats = 3, seed = 1)$summary
+```
+

@@ -20,7 +20,7 @@ hierarchical methods, or a mixed-type data frame for \code{"kproto"} and
 other mixed-data methods.}
 
 \item{method}{Clustering method. Supported values are \code{"kmeans"}, \code{"pam"},
-\code{"hclust"}, \code{"agnes"}, \code{"dbscan"}, \code{"gmm"}, and \code{"kproto"}.}
+\code{"hclust"}, \code{"agnes"}, \code{"dbscan"}, \code{"gmm"}, \code{"kproto"}, and \code{"kmm"}.}
 
 \item{...}{Additional method-specific arguments.}
 

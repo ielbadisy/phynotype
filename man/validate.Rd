@@ -35,3 +35,18 @@ A \code{cluster_validation} object.
 \description{
 Compute internal validation metrics for a fitted clustering object.
 }
+\details{
+For fitted objects, \code{validate()} returns a table with one row per metric.
+The table records the metric name, numeric value, nominal scale, and
+preferred direction. The core internal metrics are:
+\itemize{
+\item silhouette width, on \eqn{[-1, 1]}, higher is better;
+\item Calinski-Harabasz index, positive and unbounded, higher is better;
+\item Davies-Bouldin index, positive and unbounded, lower is better;
+\item total within-cluster sum of squares, positive and unbounded, lower is
+better;
+\item bootstrap ARI, on \eqn{[0, 1]}, higher is better.
+}
+
+External metrics are ARI and NMI when reference labels are supplied.
+}

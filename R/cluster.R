@@ -6,7 +6,7 @@
 #'   hierarchical methods, or a mixed-type data frame for `"kproto"` and
 #'   other mixed-data methods.
 #' @param method Clustering method. Supported values are `"kmeans"`, `"pam"`,
-#'   `"hclust"`, `"agnes"`, `"dbscan"`, `"gmm"`, and `"kproto"`.
+#'   `"hclust"`, `"agnes"`, `"dbscan"`, `"gmm"`, `"kproto"`, and `"kmm"`.
 #' @param ... Additional method-specific arguments.
 #' @param k Number of clusters for methods that require it.
 #' @param scale Logical; if `TRUE`, scale columns before fitting.
