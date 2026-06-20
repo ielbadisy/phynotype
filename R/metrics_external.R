@@ -6,35 +6,27 @@
 #' @keywords internal
 NULL
 
-#' Adjusted Rand index
+#' Adjusted Rand Index
 #'
-#' The Adjusted Rand index corrects the Rand index for chance agreement
-#' (Hubert and Arabie, 1985):
+#' Computes the Adjusted Rand Index (ARI) between two partitions, correcting
+#' the Rand Index for chance agreement (Hubert and Arabie, 1985). ARI equals 1
+#' for identical partitions and has expectation 0 under independent random
+#' labelings.
 #'
-#' \deqn{
-#'   \mathrm{ARI}(U, V) =
-#'   \frac{
-#'     \displaystyle\sum_{ij}\binom{n_{ij}}{2}
-#'     - \frac{\displaystyle\sum_i\binom{a_i}{2}
-#'             \displaystyle\sum_j\binom{b_j}{2}}{\binom{n}{2}}
-#'   }{
-#'     \frac{1}{2}\!\left[\displaystyle\sum_i\binom{a_i}{2}
-#'     + \displaystyle\sum_j\binom{b_j}{2}\right]
-#'     - \frac{\displaystyle\sum_i\binom{a_i}{2}
-#'             \displaystyle\sum_j\binom{b_j}{2}}{\binom{n}{2}}
-#'   },
-#' }
+#' @param x Integer or factor vector of cluster labels (first partition).
+#' @param y Integer or factor vector of cluster labels (second partition).
+#'   Must have the same length as `x`.
 #'
-#' where \eqn{n_{ij}} are the entries of the contingency table between \eqn{U}
-#' and \eqn{V}, and \eqn{a_i}, \eqn{b_j} are the corresponding row and column
-#' sums. The ARI equals 1 for identical partitions and has expectation 0 under
-#' independent random labelings.
+#' @return A single numeric value in \eqn{(-\infty, 1]}.
 #'
 #' @references
 #' Hubert, L. and Arabie, P. (1985). Comparing partitions. *Journal of
 #' Classification*, **2**(1), 193–218.
 #'
-#' @noRd
+#' @examples
+#' adjusted_rand_index(c(1, 1, 2, 2), c(1, 1, 2, 3))
+#'
+#' @export
 adjusted_rand_index <- function(x, y) {
   tab <- table(x, y)
   n <- sum(tab)
