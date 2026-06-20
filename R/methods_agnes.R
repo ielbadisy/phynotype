@@ -1,3 +1,24 @@
+#' AGNES agglomerative nesting backend
+#'
+#' AGNES (AGglomerative NESting) is an agglomerative hierarchical clustering
+#' method implemented in the \pkg{cluster} package (Kaufman and Rousseeuw,
+#' 1990). It proceeds identically to `hclust` — successively merging the two
+#' clusters \eqn{A} and \eqn{B} with the smallest inter-cluster distance:
+#'
+#' \deqn{
+#'   d(A, B) = f\!\left(\{d(a, b) : a \in A,\, b \in B\}\right),
+#' }
+#'
+#' where \eqn{f} is the linkage function (default `"average"` for AGNES,
+#' giving UPGMA). AGNES additionally reports the agglomerative coefficient,
+#' which measures the strength of the clustering structure (values near 1
+#' indicate well-defined clusters).
+#'
+#' @references
+#' Kaufman, L. and Rousseeuw, P.J. (1990). *Finding Groups in Data: An
+#' Introduction to Cluster Analysis*. John Wiley & Sons, New York.
+#'
+#' @noRd
 validate_agnes_params <- function(data, params) {
   if (!requireNamespace("cluster", quietly = TRUE)) {
     stop("Package `cluster` is required for method `agnes`.", call. = FALSE)

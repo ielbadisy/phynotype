@@ -1,3 +1,35 @@
+#' Hierarchical clustering backend (hclust)
+#'
+#' Agglomerative hierarchical clustering builds a dendrogram by successively
+#' merging the two clusters with the smallest inter-cluster distance. The
+#' distance between clusters \eqn{A} and \eqn{B} depends on the chosen linkage:
+#'
+#' \describe{
+#'   \item{Complete}{
+#'     \eqn{d(A,B) = \max_{a \in A,\, b \in B} d(a,b).}
+#'     Tends to produce compact, roughly equal-sized clusters.}
+#'   \item{Single}{
+#'     \eqn{d(A,B) = \min_{a \in A,\, b \in B} d(a,b).}
+#'     Susceptible to chaining.}
+#'   \item{Average (UPGMA)}{
+#'     \eqn{d(A,B) = \frac{1}{|A||B|}\sum_{a \in A}\sum_{b \in B} d(a,b).}}
+#'   \item{Ward}{
+#'     Merge the pair that minimizes the increase in total within-cluster
+#'     variance (Ward, 1963; Murtagh and Legendre, 2014).}
+#' }
+#'
+#' The final partition is obtained by cutting the dendrogram at height
+#' corresponding to \eqn{k} clusters.
+#'
+#' @references
+#' Ward, J.H. (1963). Hierarchical grouping to optimize an objective function.
+#' *Journal of the American Statistical Association*, **58**(301), 236--244.
+#'
+#' Murtagh, F. and Legendre, P. (2014). Ward's hierarchical agglomerative
+#' clustering method: Which algorithms implement Ward's criterion? *Journal of
+#' Classification*, **31**(3), 274--295.
+#'
+#' @noRd
 validate_hclust_params <- function(data, params) {
   check_required_k(params$k)
   method <- if (is.null(params$linkage)) "complete" else params$linkage

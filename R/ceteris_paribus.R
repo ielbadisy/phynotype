@@ -48,16 +48,32 @@
 #'   `functionals::fmap()`.
 #' @param ... Reserved for future extensions.
 #'
-#' @return A `ceteris_paribus` object with a tidy `profiles` data frame. The
-#'   profile table contains the evaluated grid, the profile value, the observed
-#'   feature value, and the baseline value used to mark the explained
-#'   observation in plots.
+#' @return A `ceteris_paribus` object with a tidy `profiles` data frame. Each
+#'   row records: the observation index, the feature being varied, the grid
+#'   value at that step, the predicted target (cluster label or score), the
+#'   observed feature value, and the baseline prediction.
+#'
+#' @seealso [lime_explain()] for local linear surrogate explanations,
+#'   [feature_importance()] for global permutation importance,
+#'   [predict.cluster_fit()] which is used internally.
+#'
+#' @references
+#' Biecek, P. and Burzykowski, T. (2021). *Explanatory Model Analysis*.
+#' Chapman and Hall/CRC, Boca Raton. \url{https://ema.drwhy.ai/}
+#'
+#' Gosiewska, A. and Biecek, P. (2019). iBreakDown: Uncertainty of model
+#' explanations for non-additive predictive models. *arXiv:1903.11420*.
+#'
+#' Apley, D.W. and Zhu, J. (2020). Visualizing the effects of predictor
+#' variables in black box supervised learning models. *Journal of the Royal
+#' Statistical Society: Series B*, **82**(4), 1059--1086.
+#'
 #' @export
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' cp <- ceteris_paribus(fit, iris[1:2, 1:4], features = 1:2, grid_size = 5)
-#' cp
+#' cp <- ceteris_paribus(fit, iris[1:3, 1:4], features = 1:2, grid_size = 10)
+#' head(cp$profiles)
 ceteris_paribus <- function(object,
                             new_data,
                             features = NULL,

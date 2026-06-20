@@ -18,7 +18,35 @@ mixed_distance(x, metric = "gower", ...)
 A \code{dist} object.
 }
 \description{
-Build a Gower distance matrix for mixed-type data. This is the recommended
-first step before hierarchical clustering when the input includes categorical
+Build a Gower dissimilarity matrix for mixed-type data using
+\code{cluster::daisy()}. This is the recommended first step before hierarchical
+clustering (\code{"hclust"} or \code{"agnes"}) when the input contains categorical
 variables.
+}
+\details{
+For two observations \eqn{x_i} and \eqn{x_j}, the Gower coefficient
+(Gower, 1971) is
+
+\deqn{
+  d_G(i, j) = \frac{\sum_{f=1}^{p} w_{ijf}\, \delta_{ijf}\, s_{ijf}}
+                   {\sum_{f=1}^{p} w_{ijf}\, \delta_{ijf}},
+}
+
+where \eqn{\delta_{ijf}} indicates whether feature \eqn{f} is comparable
+(not missing), \eqn{w_{ijf}} is an optional weight, and \eqn{s_{ijf}} is the
+partial similarity: the scaled absolute difference for numeric features and 0
+(match) or 1 (mismatch) for categorical features.
+}
+\examples{
+d <- mixed_distance(iris)
+fit <- cluster(d, method = "hclust", k = 3)
+fit
+}
+\references{
+Gower, J.C. (1971). A general coefficient of similarity and some of its
+properties. \emph{Biometrics}, \strong{27}(4), 857--874.
+}
+\seealso{
+\code{\link[=prepare_mixed_data]{prepare_mixed_data()}} for converting mixed data to a numeric
+matrix, \code{\link[=cluster]{cluster()}} for fitting with the resulting distance object.
 }

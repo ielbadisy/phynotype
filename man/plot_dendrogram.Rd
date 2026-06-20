@@ -7,13 +7,28 @@
 plot_dendrogram(x, ...)
 }
 \arguments{
-\item{x}{A hierarchical \code{cluster_fit} or \code{metacluster_fit} object.}
+\item{x}{A hierarchical \code{cluster_fit} or a \code{metacluster_fit} object.}
 
-\item{...}{Unused.}
+\item{...}{Additional arguments passed to the base \code{plot()} method for
+\code{hclust} objects.}
 }
 \value{
-The underlying fitted dendrogram object, invisibly.
+The underlying \code{hclust} object, invisibly.
 }
 \description{
-Plot a clustering dendrogram
+Draw the dendrogram from a hierarchical \code{cluster_fit} (fitted via
+\code{"hclust"} or \code{"agnes"}) or the consensus hierarchical tree from a
+\code{metacluster_fit}.
+}
+\examples{
+d <- mixed_distance(iris[, 1:4])
+fit <- cluster(d, method = "hclust", k = 3)
+plot_dendrogram(fit)
+
+mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),
+                    k = 2:3, seed = 1)
+plot_dendrogram(mfit)
+}
+\seealso{
+\code{\link[=cluster]{cluster()}}, \code{\link[=metacluster]{metacluster()}}, \code{\link[=plot_consensus]{plot_consensus()}}
 }

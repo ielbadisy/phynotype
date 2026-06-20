@@ -1,13 +1,48 @@
 #' Explore clustering structure
 #'
-#' Summarize cluster sizes, feature profiles, separation, and a PCA embedding.
+#' Summarize cluster sizes, feature profiles, feature separation, and a PCA
+#' embedding for a fitted clustering solution.
 #'
-#' @param x A `cluster_fit` object.
-#' @param data Optional numeric matrix or data frame. Defaults to training data.
+#' @param x A `cluster_fit` or `metacluster_fit` object.
+#' @param data Optional numeric matrix or data frame. Defaults to the training
+#'   data stored in `x`.
 #' @param ... Unused.
 #'
-#' @return A `cluster_explore` object.
+#' @details
+#' `explore()` computes four summaries:
+#' \describe{
+#'   \item{Size table}{Number of observations per cluster.}
+#'   \item{Feature summary}{Per-cluster mean, standard deviation, median, min,
+#'     and max for each feature.}
+#'   \item{Separation table}{The eta-squared statistic for each feature,
+#'     \eqn{\eta^2_j = \mathrm{SS}_{B,j} / \mathrm{SS}_{T,j}}, measuring
+#'     how much between-cluster variance each feature explains.}
+#'   \item{PCA embedding}{Two-dimensional PCA projection for visualization
+#'     (see [plot_clusters()]).}
+#' }
+#'
+#' @return A `cluster_explore` object with components:
+#' \describe{
+#'   \item{`size_table`}{Data frame with cluster sizes.}
+#'   \item{`feature_summary`}{Data frame with per-cluster descriptive
+#'     statistics for each feature.}
+#'   \item{`separation_table`}{Data frame with per-feature eta-squared
+#'     values.}
+#'   \item{`embedding`}{Data frame with two PCA coordinates and cluster
+#'     labels.}
+#' }
+#'
+#' @seealso [cluster()] to fit, [plot_clusters()] to plot the embedding,
+#'   [plot_feature_profiles()] to plot feature profiles.
+#'
 #' @export
+#'
+#' @examples
+#' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+#' exp <- explore(fit)
+#' exp$size_table
+#' head(exp$feature_summary)
+#' exp$separation_table
 explore <- function(x, data = NULL, ...) {
   UseMethod("explore")
 }

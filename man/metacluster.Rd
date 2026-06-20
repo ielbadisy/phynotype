@@ -18,23 +18,37 @@ metacluster(
 \arguments{
 \item{x}{Numeric matrix or numeric data frame.}
 
-\item{methods}{Character vector of candidate clustering methods.}
+\item{methods}{Character vector of candidate clustering methods. Any method
+supported by \code{\link[=cluster]{cluster()}} may be used (e.g. \code{c("kmeans", "pam", "hclust")}).}
 
-\item{k}{Integer vector of candidate cluster counts.}
+\item{k}{Integer vector of candidate cluster counts. All combinations of
+\code{methods} and \code{k} are fitted and pooled.}
 
-\item{consensus}{Consensus strategy. Currently only \code{"coassoc"} is
-implemented.}
+\item{consensus}{Consensus strategy. Currently only \code{"coassoc"} (Evidence
+Accumulation Clustering) is implemented.}
 
 \item{scale}{Logical; if \code{TRUE}, scale columns before fitting candidates.}
 
 \item{center}{Logical; if \code{TRUE}, center columns before fitting candidates.}
 
-\item{seed}{Optional integer random seed.}
+\item{seed}{Optional integer random seed. Each candidate is given a
+deterministic offset seed so results are jointly reproducible.}
 
-\item{...}{Additional arguments passed to \code{cluster()}.}
+\item{...}{Additional arguments passed through to \code{\link[=cluster]{cluster()}}.}
 }
 \value{
-A \code{metacluster_fit} object.
+A \code{metacluster_fit} object with components:
+\describe{
+\item{\code{final_clusters}}{Integer vector of final consensus assignments.}
+\item{\code{final_k}}{Integer; the selected number of clusters.}
+\item{\code{coassoc_matrix}}{The \eqn{n \times n} co-association matrix.}
+\item{\code{candidate_table}}{Data frame listing all fitted candidate
+solutions.}
+\item{\code{stability_summary}}{Mean, min, and max pairwise partition
+agreement.}
+\item{\code{selection_summary}}{Per-\eqn{k} silhouette scores used for
+selection.}
+}
 }
 \description{
 Fit several candidate clustering solutions and summarize their agreement
@@ -43,7 +57,49 @@ obtained by hierarchical clustering of the dissimilarity matrix
 \eqn{D = 1 - C}, where \eqn{C_{ij}} is the proportion of candidate
 partitions that place observations \eqn{i} and \eqn{j} in the same cluster.
 }
+\details{
+\subsection{Co-association consensus}{
+
+For \eqn{B} candidate partitions, the co-association matrix is
+\deqn{
+  C_{ij} = \frac{1}{B} \sum_{b=1}^{B} I\{i \text{ and } j \text{ are in
+  the same cluster in partition } b\}.
+}
+This estimator is related to the Evidence Accumulation Clustering framework
+(Fred and Jain, 2002). The consensus dissimilarity \eqn{D = 1 - C} is then
+hierarchically clustered (average linkage), and the optimal number of
+clusters is chosen by maximizing the mean silhouette width.
+
+Stability of the ensemble is summarized by the mean pairwise partition
+agreement (PPA) across all candidate pairs:
+\deqn{
+  \mathrm{PPA}(U, V) = \frac{1}{\binom{n}{2}}
+  \sum_{i < j} I\{(u_i = u_j) = (v_i = v_j)\}.
+}
+}
+}
 \examples{
-mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"), k = 2:3, seed = 1)
+mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"), k = 2:4,
+                    seed = 1)
 mfit
+
+# Inspect the co-association matrix
+mfit$coassoc_matrix[1:4, 1:4]
+
+# Score the consensus partition
+validate(mfit)$metrics_table
+}
+\references{
+Fred, A.L.N. and Jain, A.K. (2002). Data clustering using evidence
+accumulation. \emph{Proceedings of the 16th International Conference on Pattern
+Recognition (ICPR'02)}, Vol. 4, pp. 276–280.
+
+Strehl, A. and Ghosh, J. (2002). Cluster ensembles: A knowledge reuse
+framework for combining multiple partitions. \emph{Journal of Machine Learning
+Research}, \strong{3}, 583–617.
+}
+\seealso{
+\code{\link[=cluster]{cluster()}} for single solutions, \code{\link[=validate]{validate()}} to score the
+consensus partition, \code{\link[=plot_coassoc]{plot_coassoc()}} to visualize the agreement matrix,
+\code{\link[=plot_consensus]{plot_consensus()}} for a 2-D embedding of the final clusters.
 }

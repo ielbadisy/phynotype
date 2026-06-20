@@ -55,8 +55,14 @@ Deprecated alias for \code{cores}.}
 \item{...}{Reserved for future extensions.}
 }
 \value{
-A \code{feature_importance} object with repetition-level \code{results} and
-feature-level \code{summary} data frames.
+A \code{feature_importance} object with components:
+\describe{
+\item{\code{results}}{Data frame with one row per (feature, repeat) combination
+recording the baseline loss, the permuted loss, and the computed
+importance.}
+\item{\code{summary}}{Data frame with one row per feature, containing the mean
+importance, standard error, and number of repeats.}
+}
 }
 \description{
 Estimate global feature importance by measuring how much a fitted clustering
@@ -105,5 +111,19 @@ larger values mean worse fit.
 \examples{
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 imp <- feature_importance(fit, n_repeats = 3, seed = 1)
-imp
+imp$summary
+}
+\references{
+Breiman, L. (2001). Random forests. \emph{Machine Learning}, \strong{45}(1), 5--32.
+(Permutation importance concept introduced in the context of random forests.)
+
+Fisher, A., Rudin, C. and Dominici, F. (2019). All models are wrong, but
+many are useful: Learning a variable's importance by studying an entire class
+of prediction models simultaneously. \emph{Journal of Machine Learning Research},
+\strong{20}(177), 1--81.
+}
+\seealso{
+\code{\link[=lime_explain]{lime_explain()}} for local explanations, \code{\link[=ceteris_paribus]{ceteris_paribus()}} for
+individual conditional profiles, \code{\link[=predict.cluster_fit]{predict.cluster_fit()}} which is used
+internally.
 }

@@ -7,15 +7,25 @@
 plot_feature_profiles(x, features = NULL, ...)
 }
 \arguments{
-\item{x}{A \code{cluster_explore} object.}
+\item{x}{A \code{cluster_explore} object (produced by \code{\link[=explore]{explore()}}).}
 
-\item{features}{Optional character vector of features to plot.}
+\item{features}{Optional character vector of feature names to include.
+Defaults to all features.}
 
 \item{...}{Unused.}
 }
 \value{
-A ggplot object.
+A \code{ggplot} object.
 }
 \description{
-Plot feature profiles by cluster
+Display per-cluster mean values for each feature as a grouped bar chart.
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+exp <- explore(fit)
+plot_feature_profiles(exp)
+plot_feature_profiles(exp, features = c("Sepal.Length", "Petal.Length"))
+}
+\seealso{
+\code{\link[=explore]{explore()}}, \code{\link[=plot_clusters]{plot_clusters()}}, \code{\link[=plot_cluster_sizes]{plot_cluster_sizes()}}
 }

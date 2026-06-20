@@ -22,23 +22,114 @@ other mixed-data methods.}
 \item{method}{Clustering method. Supported values are \code{"kmeans"}, \code{"pam"},
 \code{"hclust"}, \code{"agnes"}, \code{"dbscan"}, \code{"gmm"}, \code{"kproto"}, and \code{"kmm"}.}
 
-\item{...}{Additional method-specific arguments.}
+\item{...}{Additional method-specific arguments passed to the underlying
+engine (e.g. \code{nstart}, \code{iter.max}, \code{linkage}, \code{eps}, \code{minPts}, \code{lambda}).}
 
-\item{k}{Number of clusters for methods that require it.}
+\item{k}{Number of clusters for methods that require it (\code{"kmeans"},
+\code{"pam"}, \code{"hclust"}, \code{"agnes"}, \code{"gmm"}, \code{"kproto"}, \code{"kmm"}).}
 
 \item{scale}{Logical; if \code{TRUE}, scale columns before fitting.}
 
 \item{center}{Logical; if \code{TRUE}, center columns before fitting.}
 
-\item{seed}{Optional integer random seed.}
+\item{seed}{Optional integer random seed for reproducible results.}
 }
 \value{
-A \code{cluster_fit} object.
+A \code{cluster_fit} object with components:
+\describe{
+\item{\code{method}}{Character; the method used.}
+\item{\code{clusters}}{Integer vector of cluster assignments.}
+\item{\code{n_clusters}}{Integer; number of clusters found.}
+\item{\code{centers}}{Cluster centers (numeric methods) or \code{NULL}.}
+\item{\code{prototypes}}{Cluster prototypes (mixed methods) or \code{NULL}.}
+\item{\code{membership}}{Soft membership matrix (GMM) or \code{NULL}.}
+\item{\code{data_info}}{List of input metadata for downstream use.}
+}
 }
 \description{
 Fit a single clustering solution using a supported method.
 }
+\details{
+\code{cluster()} is the single entry point for all supported methods. It
+dispatches to a method-specific backend registered via the internal
+\code{cluster_registry}, validates inputs, applies any requested preprocessing,
+and returns a \code{cluster_fit} object with a uniform interface regardless of
+the underlying engine.
+
+Method-specific notes:
+\describe{
+\item{\code{"kmeans"}}{Minimizes total within-cluster sum of squares
+\eqn{\sum_j \sum_{x_i \in C_j} \|x_i - \mu_j\|^2} (Lloyd, 1982).
+Requires numeric \code{x} and \code{k}.}
+\item{\code{"pam"}}{Partitioning Around Medoids: minimizes
+\eqn{\sum_i \min_g d(x_i, m_g)} over actual observations (Kaufman and
+Rousseeuw, 1990). Requires the \code{cluster} package.}
+\item{\code{"hclust"} / \code{"agnes"}}{Hierarchical agglomerative methods. Accept
+a precomputed \code{dist} object or raw numeric data. Specify \code{linkage} to
+choose the merging criterion (default \code{"complete"} for \code{hclust},
+\code{"average"} for \code{agnes}). \code{"agnes"} requires the \code{cluster} package.}
+\item{\code{"dbscan"}}{Density-Based Spatial Clustering of Applications with
+Noise (Ester et al., 1996). Requires \code{eps} (neighborhood radius) and
+\code{minPts}. Observations in sparse regions are labeled noise (cluster 0).
+Requires the \code{dbscan} package.}
+\item{\code{"gmm"}}{Gaussian Mixture Model fitted via the EM algorithm (Fraley
+and Raftery, 2002). Returns soft membership probabilities. Requires the
+\code{mclust} package.}
+\item{\code{"kproto"}}{K-prototypes for mixed numeric/categorical data (Huang,
+1998). Use \code{lambda} to control the numeric-vs-categorical trade-off.
+Requires the \code{clustMixType} package.}
+\item{\code{"kmm"}}{K-Mixed-Modes: a native mixed-data algorithm that
+minimizes a weighted prototype distance combining squared Euclidean and
+Hamming contributions controlled by \code{lambda}.}
+}
+}
 \examples{
+# Numeric data — k-means
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 fit
+clusters(fit)
+centers(fit)
+
+# PAM (requires the cluster package)
+if (requireNamespace("cluster", quietly = TRUE)) {
+  fit_pam <- cluster(iris[, 1:4], method = "pam", k = 3)
+  fit_pam
+}
+
+# Hierarchical clustering from a distance object
+d <- mixed_distance(iris[, 1:4])
+fit_hc <- cluster(d, method = "hclust", k = 3)
+fit_hc
+
+# Mixed data — k-prototypes
+if (requireNamespace("clustMixType", quietly = TRUE)) {
+  fit_kp <- cluster(iris, method = "kproto", k = 3, seed = 1)
+  fit_kp
+}
+}
+\references{
+Lloyd, S.P. (1982). Least squares quantization in PCM. \emph{IEEE Transactions
+on Information Theory}, \strong{28}(2), 129–137.
+
+Kaufman, L. and Rousseeuw, P.J. (1990). \emph{Finding Groups in Data: An
+Introduction to Cluster Analysis}. John Wiley & Sons, New York.
+
+Ester, M., Kriegel, H.-P., Sander, J. and Xu, X. (1996). A density-based
+algorithm for discovering clusters in large spatial databases with noise.
+\emph{Proceedings of the 2nd ACM SIGKDD}, pp. 226–231.
+
+Fraley, C. and Raftery, A.E. (2002). Model-based clustering, discriminant
+analysis, and density estimation. \emph{Journal of the American Statistical
+Association}, \strong{97}(458), 611–631.
+
+Huang, Z. (1998). Extensions to the k-means algorithm for clustering large
+data sets with categorical values. \emph{Data Mining and Knowledge Discovery},
+\strong{2}(3), 283–304.
+}
+\seealso{
+\code{\link[=validate]{validate()}} to score the fit, \code{\link[=explore]{explore()}} to summarize cluster
+structure, \code{\link[=predict.cluster_fit]{predict.cluster_fit()}} to assign new observations,
+\code{\link[=metacluster]{metacluster()}} for consensus clustering,
+\code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}}, \code{\link[=ceteris_paribus]{ceteris_paribus()}} for
+interpretability.
 }

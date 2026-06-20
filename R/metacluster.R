@@ -7,21 +7,77 @@
 #' partitions that place observations \eqn{i} and \eqn{j} in the same cluster.
 #'
 #' @param x Numeric matrix or numeric data frame.
-#' @param methods Character vector of candidate clustering methods.
-#' @param k Integer vector of candidate cluster counts.
-#' @param consensus Consensus strategy. Currently only `"coassoc"` is
-#'   implemented.
+#' @param methods Character vector of candidate clustering methods. Any method
+#'   supported by [cluster()] may be used (e.g. `c("kmeans", "pam",
+#'   "hclust")`).
+#' @param k Integer vector of candidate cluster counts. All combinations of
+#'   `methods` and `k` are fitted and pooled.
+#' @param consensus Consensus strategy. Currently only `"coassoc"` (Evidence
+#'   Accumulation Clustering) is implemented.
 #' @param scale Logical; if `TRUE`, scale columns before fitting candidates.
 #' @param center Logical; if `TRUE`, center columns before fitting candidates.
-#' @param seed Optional integer random seed.
-#' @param ... Additional arguments passed to `cluster()`.
+#' @param seed Optional integer random seed. Each candidate is given a
+#'   deterministic offset seed so results are jointly reproducible.
+#' @param ... Additional arguments passed through to [cluster()].
 #'
-#' @return A `metacluster_fit` object.
+#' @details
+#' ## Co-association consensus
+#'
+#' For \eqn{B} candidate partitions, the co-association matrix is
+#' \deqn{
+#'   C_{ij} = \frac{1}{B} \sum_{b=1}^{B} I\{i \text{ and } j \text{ are in
+#'   the same cluster in partition } b\}.
+#' }
+#' This estimator is related to the Evidence Accumulation Clustering framework
+#' (Fred and Jain, 2002). The consensus dissimilarity \eqn{D = 1 - C} is then
+#' hierarchically clustered (average linkage), and the optimal number of
+#' clusters is chosen by maximizing the mean silhouette width.
+#'
+#' Stability of the ensemble is summarized by the mean pairwise partition
+#' agreement (PPA) across all candidate pairs:
+#' \deqn{
+#'   \mathrm{PPA}(U, V) = \frac{1}{\binom{n}{2}}
+#'   \sum_{i < j} I\{(u_i = u_j) = (v_i = v_j)\}.
+#' }
+#'
+#' @return A `metacluster_fit` object with components:
+#' \describe{
+#'   \item{`final_clusters`}{Integer vector of final consensus assignments.}
+#'   \item{`final_k`}{Integer; the selected number of clusters.}
+#'   \item{`coassoc_matrix`}{The \eqn{n \times n} co-association matrix.}
+#'   \item{`candidate_table`}{Data frame listing all fitted candidate
+#'     solutions.}
+#'   \item{`stability_summary`}{Mean, min, and max pairwise partition
+#'     agreement.}
+#'   \item{`selection_summary`}{Per-\eqn{k} silhouette scores used for
+#'     selection.}
+#' }
+#'
+#' @seealso [cluster()] for single solutions, [validate()] to score the
+#'   consensus partition, [plot_coassoc()] to visualize the agreement matrix,
+#'   [plot_consensus()] for a 2-D embedding of the final clusters.
+#'
+#' @references
+#' Fred, A.L.N. and Jain, A.K. (2002). Data clustering using evidence
+#' accumulation. *Proceedings of the 16th International Conference on Pattern
+#' Recognition (ICPR'02)*, Vol. 4, pp. 276–280.
+#'
+#' Strehl, A. and Ghosh, J. (2002). Cluster ensembles: A knowledge reuse
+#' framework for combining multiple partitions. *Journal of Machine Learning
+#' Research*, **3**, 583–617.
+#'
 #' @export
 #'
 #' @examples
-#' mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"), k = 2:3, seed = 1)
+#' mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"), k = 2:4,
+#'                     seed = 1)
 #' mfit
+#'
+#' # Inspect the co-association matrix
+#' mfit$coassoc_matrix[1:4, 1:4]
+#'
+#' # Score the consensus partition
+#' validate(mfit)$metrics_table
 metacluster <- function(x,
                         methods = c("kmeans", "pam", "hclust"),
                         k = 2:6,

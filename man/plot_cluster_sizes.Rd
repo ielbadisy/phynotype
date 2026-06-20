@@ -7,13 +7,20 @@
 plot_cluster_sizes(x, ...)
 }
 \arguments{
-\item{x}{A \code{cluster_fit} or \code{cluster_explore} object.}
+\item{x}{A \code{cluster_fit}, \code{metacluster_fit}, or \code{cluster_explore} object.}
 
 \item{...}{Unused.}
 }
 \value{
-A ggplot object.
+A \code{ggplot} object.
 }
 \description{
-Plot cluster sizes
+Display a bar chart of the number of observations per cluster.
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+plot_cluster_sizes(fit)
+}
+\seealso{
+\code{\link[=sizes]{sizes()}}, \code{\link[=plot_clusters]{plot_clusters()}}, \code{\link[=plot_feature_profiles]{plot_feature_profiles()}}
 }

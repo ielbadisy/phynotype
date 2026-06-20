@@ -6,6 +6,14 @@
 \usage{
 compute_per_cluster_silhouette(data, clusters)
 }
-\description{
-This returns the average silhouette width within each cluster.
+\arguments{
+\item{data}{Numeric matrix of observations (rows) by features (columns).}
+
+\item{clusters}{Integer vector of cluster assignments, length
+\code{nrow(data)}.}
 }
+\description{
+Returns the average silhouette width within each cluster. Used internally by
+\code{validate()} to populate the \code{per_cluster_table} slot.
+}
+\keyword{internal}

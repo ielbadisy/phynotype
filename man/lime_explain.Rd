@@ -57,8 +57,15 @@ Deprecated alias for \code{cores}.}
 \item{...}{Reserved for future extensions.}
 }
 \value{
-A \code{lime_explanation} object with tidy \code{explanations} and
-\code{neighborhoods} data frames.
+A \code{lime_explanation} object with components:
+\describe{
+\item{\code{explanations}}{Tidy data frame with one row per (observation,
+feature) pair, containing the local surrogate coefficient, absolute
+effect size, direction, and rank.}
+\item{\code{neighborhoods}}{Data frame with all perturbed samples, their
+predicted responses, kernel weights, and distances to the explained
+observation.}
+}
 }
 \description{
 Explain individual cluster assignments or cluster scores with a locally
@@ -95,5 +102,16 @@ it is the cluster-specific membership or similarity score.
 \examples{
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 lx <- lime_explain(fit, iris[1:2, 1:4], n_permutations = 50, seed = 1)
-lx
+lx$explanations
+}
+\references{
+Ribeiro, M.T., Singh, S. and Guestrin, C. (2016). "Why should I trust you?":
+Explaining the predictions of any classifier. \emph{Proceedings of the 22nd ACM
+SIGKDD International Conference on Knowledge Discovery and Data Mining},
+pp. 1135--1144.
+}
+\seealso{
+\code{\link[=ceteris_paribus]{ceteris_paribus()}} for individual conditional profiles,
+\code{\link[=feature_importance]{feature_importance()}} for global importance, \code{\link[=predict.cluster_fit]{predict.cluster_fit()}}
+which is used internally.
 }

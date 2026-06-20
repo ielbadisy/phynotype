@@ -15,38 +15,128 @@ validate(
 )
 }
 \arguments{
-\item{x}{A \code{cluster_fit}, \code{metacluster_fit}, or numeric matrix/data frame.}
+\item{x}{A \code{cluster_fit}, \code{metacluster_fit}, or numeric matrix/data frame.
+When a raw data matrix is supplied, \code{validate()} fits and scores solutions
+for each value in \code{k} using \code{method}.}
 
 \item{...}{Additional arguments passed to methods.}
 
-\item{method}{Clustering method for direct grid validation.}
+\item{method}{Clustering method used when \code{x} is raw data.}
 
-\item{k}{Candidate values of \code{k} for direct validation.}
+\item{k}{Candidate values of \code{k} for direct grid validation.}
 
-\item{truth}{Optional reference labels for external metrics.}
+\item{truth}{Optional integer or factor vector of reference labels. When
+supplied, the adjusted Rand index and normalized mutual information are
+appended to the metric table.}
 
-\item{metrics}{Optional character vector of metrics.}
+\item{metrics}{Optional character vector selecting a subset of metrics to
+return (e.g. \code{c("silhouette", "calinski_harabasz")}).}
 
-\item{n_boot}{Number of bootstrap resamples for stability.}
+\item{n_boot}{Number of bootstrap resamples for bootstrap ARI stability
+(only for \code{"kmeans"}, \code{"pam"}, and \code{"gmm"} fits with a fixed \code{k}).}
 }
 \value{
-A \code{cluster_validation} object.
+A \code{cluster_validation} object with components:
+\describe{
+\item{\code{metrics_table}}{Data frame with columns \code{metric}, \code{value},
+\code{scale}, \code{direction}.}
+\item{\code{per_cluster_table}}{Per-cluster mean silhouette widths, or
+\code{NULL}.}
+}
 }
 \description{
-Compute internal validation metrics for a fitted clustering object.
+Compute internal and external validation metrics for a fitted clustering
+object or over a grid of candidate cluster counts.
 }
 \details{
-For fitted objects, \code{validate()} returns a table with one row per metric.
-The table records the metric name, numeric value, nominal scale, and
-preferred direction. The core internal metrics are:
-\itemize{
-\item silhouette width, on \eqn{[-1, 1]}, higher is better;
-\item Calinski-Harabasz index, positive and unbounded, higher is better;
-\item Davies-Bouldin index, positive and unbounded, lower is better;
-\item total within-cluster sum of squares, positive and unbounded, lower is
-better;
-\item bootstrap ARI, on \eqn{[0, 1]}, higher is better.
+\subsection{Internal metrics}{
+
+\strong{Silhouette width} (Rousseeuw, 1987):
+\deqn{
+  s(i) = \frac{b(i) - a(i)}{\max\{a(i),\, b(i)\}},
+}
+where \eqn{a(i)} is the mean intra-cluster distance and \eqn{b(i)} is the
+minimum mean distance to any other cluster. Values near 1 indicate dense,
+well-separated clusters.
+
+\strong{Calinski-Harabasz index} (Calinski and Harabasz, 1974):
+\deqn{
+  \mathrm{CH} = \frac{\mathrm{BSS} / (k-1)}{\mathrm{WSS} / (n-k)},
+}
+where BSS is the between-cluster sum of squares and WSS is the
+within-cluster sum of squares. Higher values indicate better separation.
+
+\strong{Davies-Bouldin index} (Davies and Bouldin, 1979):
+\deqn{
+  \mathrm{DB} = \frac{1}{k} \sum_{j=1}^{k}
+  \max_{l \ne j} \frac{s_j + s_l}{d(\mu_j, \mu_l)},
+}
+where \eqn{s_j} is the mean intra-cluster scatter. Lower values are better.
+
+\strong{Total within-cluster sum of squares}:
+\deqn{
+  \mathrm{WSS} = \sum_{j=1}^{k} \sum_{i \in C_j} \|x_i - \mu_j\|^2.
 }
 
-External metrics are ARI and NMI when reference labels are supplied.
+\strong{Bootstrap ARI} (Fang and Wang, 2012): mean adjusted Rand index between
+the reference partition and partitions fitted on bootstrap resamples.
+}
+
+\subsection{External metrics}{
+
+\strong{Adjusted Rand index} (Hubert and Arabie, 1985):
+\deqn{
+  \mathrm{ARI} = \frac{\sum_{ij}\binom{n_{ij}}{2} - E}{\frac{1}{2}
+  \!\left[\sum_i\binom{a_i}{2}+\sum_j\binom{b_j}{2}\right] - E},
+}
+where \eqn{E} is the expected index under random partitions. Values near 1
+indicate agreement close to the reference.
+
+\strong{Normalized mutual information} (Strehl and Ghosh, 2002):
+\deqn{
+  \mathrm{NMI}(U, V) = \frac{I(U; V)}{\sqrt{H(U)\, H(V)}}.
+}
+}
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+
+# Internal metrics
+val <- validate(fit)
+val$metrics_table
+
+# External metrics with known labels
+val_ext <- validate(fit, truth = iris$Species)
+val_ext$metrics_table
+
+# Grid search over k values
+grid_val <- validate(iris[, 1:4], method = "kmeans", k = 2:5)
+grid_val$metrics_table
+}
+\references{
+Rousseeuw, P.J. (1987). Silhouettes: A graphical aid to the interpretation
+and validation of cluster analysis. \emph{Journal of Computational and Applied
+Mathematics}, \strong{20}, 53–65.
+
+Calinski, T. and Harabasz, J. (1974). A dendrite method for cluster
+analysis. \emph{Communications in Statistics}, \strong{3}(1), 1–27.
+
+Davies, D.L. and Bouldin, D.W. (1979). A cluster separation measure. \emph{IEEE
+Transactions on Pattern Analysis and Machine Intelligence}, \strong{1}(2),
+224–227.
+
+Hubert, L. and Arabie, P. (1985). Comparing partitions. \emph{Journal of
+Classification}, \strong{2}(1), 193–218.
+
+Strehl, A. and Ghosh, J. (2002). Cluster ensembles: A knowledge reuse
+framework for combining multiple partitions. \emph{Journal of Machine Learning
+Research}, \strong{3}, 583–617.
+
+Fang, Y. and Wang, J. (2012). Selection of the number of clusters via the
+bootstrap method. \emph{Computational Statistics and Data Analysis}, \strong{56}(3),
+468–477.
+}
+\seealso{
+\code{\link[=cluster]{cluster()}} to fit a solution, \code{\link[=plot_silhouette]{plot_silhouette()}} to visualize
+per-observation silhouette widths, \code{\link[=explore]{explore()}} for structural summaries.
 }

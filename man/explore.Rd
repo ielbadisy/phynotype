@@ -7,15 +7,50 @@
 explore(x, data = NULL, ...)
 }
 \arguments{
-\item{x}{A \code{cluster_fit} object.}
+\item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
-\item{data}{Optional numeric matrix or data frame. Defaults to training data.}
+\item{data}{Optional numeric matrix or data frame. Defaults to the training
+data stored in \code{x}.}
 
 \item{...}{Unused.}
 }
 \value{
-A \code{cluster_explore} object.
+A \code{cluster_explore} object with components:
+\describe{
+\item{\code{size_table}}{Data frame with cluster sizes.}
+\item{\code{feature_summary}}{Data frame with per-cluster descriptive
+statistics for each feature.}
+\item{\code{separation_table}}{Data frame with per-feature eta-squared
+values.}
+\item{\code{embedding}}{Data frame with two PCA coordinates and cluster
+labels.}
+}
 }
 \description{
-Summarize cluster sizes, feature profiles, separation, and a PCA embedding.
+Summarize cluster sizes, feature profiles, feature separation, and a PCA
+embedding for a fitted clustering solution.
+}
+\details{
+\code{explore()} computes four summaries:
+\describe{
+\item{Size table}{Number of observations per cluster.}
+\item{Feature summary}{Per-cluster mean, standard deviation, median, min,
+and max for each feature.}
+\item{Separation table}{The eta-squared statistic for each feature,
+\eqn{\eta^2_j = \mathrm{SS}_{B,j} / \mathrm{SS}_{T,j}}, measuring
+how much between-cluster variance each feature explains.}
+\item{PCA embedding}{Two-dimensional PCA projection for visualization
+(see \code{\link[=plot_clusters]{plot_clusters()}}).}
+}
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+exp <- explore(fit)
+exp$size_table
+head(exp$feature_summary)
+exp$separation_table
+}
+\seealso{
+\code{\link[=cluster]{cluster()}} to fit, \code{\link[=plot_clusters]{plot_clusters()}} to plot the embedding,
+\code{\link[=plot_feature_profiles]{plot_feature_profiles()}} to plot feature profiles.
 }

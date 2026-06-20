@@ -53,14 +53,32 @@
 #'   `functionals::fmap()`.
 #' @param ... Reserved for future extensions.
 #'
-#' @return A `lime_explanation` object with tidy `explanations` and
-#'   `neighborhoods` data frames.
+#' @return A `lime_explanation` object with components:
+#' \describe{
+#'   \item{`explanations`}{Tidy data frame with one row per (observation,
+#'     feature) pair, containing the local surrogate coefficient, absolute
+#'     effect size, direction, and rank.}
+#'   \item{`neighborhoods`}{Data frame with all perturbed samples, their
+#'     predicted responses, kernel weights, and distances to the explained
+#'     observation.}
+#' }
+#'
+#' @seealso [ceteris_paribus()] for individual conditional profiles,
+#'   [feature_importance()] for global importance, [predict.cluster_fit()]
+#'   which is used internally.
+#'
+#' @references
+#' Ribeiro, M.T., Singh, S. and Guestrin, C. (2016). "Why should I trust you?":
+#' Explaining the predictions of any classifier. *Proceedings of the 22nd ACM
+#' SIGKDD International Conference on Knowledge Discovery and Data Mining*,
+#' pp. 1135--1144.
+#'
 #' @export
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 #' lx <- lime_explain(fit, iris[1:2, 1:4], n_permutations = 50, seed = 1)
-#' lx
+#' lx$explanations
 lime_explain <- function(object,
                          new_data,
                          n_features = 5L,

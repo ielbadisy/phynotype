@@ -7,13 +7,20 @@
 sizes(x, ...)
 }
 \arguments{
-\item{x}{A clustering object.}
+\item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
 \item{...}{Unused.}
 }
 \value{
-Named integer vector.
+Named integer vector, where names are the cluster labels.
 }
 \description{
-Cluster sizes
+Return the number of observations assigned to each cluster.
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+sizes(fit)
+}
+\seealso{
+\code{\link[=clusters]{clusters()}}, \code{\link[=n_clusters]{n_clusters()}}
 }

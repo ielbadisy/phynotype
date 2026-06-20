@@ -6,16 +6,28 @@
 \usage{
 compute_silhouette_metric(data, clusters)
 }
+\arguments{
+\item{data}{Numeric matrix of observations (rows) by features (columns).}
+
+\item{clusters}{Integer vector of cluster assignments, length
+\code{nrow(data)}.}
+}
 \description{
 The silhouette width of an observation is
 }
 \details{
 \deqn{
-s(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}},
+  s(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}},
 }
 
 where \eqn{a(i)} is the mean distance from observation \eqn{i} to the other
 observations in its own cluster and \eqn{b(i)} is the minimum mean distance
 from \eqn{i} to the observations in any other cluster. The returned value is
-the mean over all observations.
+the mean over all observations (Rousseeuw, 1987).
 }
+\references{
+Rousseeuw, P.J. (1987). Silhouettes: A graphical aid to the interpretation
+and validation of cluster analysis. \emph{Journal of Computational and
+Applied Mathematics}, \strong{20}, 53--65.
+}
+\keyword{internal}

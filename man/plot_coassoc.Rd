@@ -12,8 +12,18 @@ plot_coassoc(x, ...)
 \item{...}{Unused.}
 }
 \value{
-A ggplot object.
+A \code{ggplot} object.
 }
 \description{
-Plot the co-association matrix
+Display the \eqn{n \times n} co-association matrix as a heatmap. High values
+(near 1) indicate pairs of observations that were consistently co-clustered
+across candidate partitions.
+}
+\examples{
+mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),
+                    k = 2:3, seed = 1)
+plot_coassoc(mfit)
+}
+\seealso{
+\code{\link[=metacluster]{metacluster()}}, \code{\link[=plot_consensus]{plot_consensus()}}
 }

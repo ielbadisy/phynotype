@@ -1,3 +1,29 @@
+#' K-prototypes clustering backend
+#'
+#' K-prototypes extends k-means to mixed numeric/categorical data by combining
+#' the squared Euclidean distance on numeric features with the Hamming
+#' mismatch count on categorical features (Huang, 1998):
+#'
+#' \deqn{
+#'   D(x_i, p_g) =
+#'   \underbrace{\sum_{j \in \mathcal{N}} (x_{ij} - \mu_{gj})^2}_{\text{numeric}}
+#'   + \lambda
+#'   \underbrace{\sum_{j \in \mathcal{C}} I(x_{ij} \neq \nu_{gj})}_{\text{categorical}},
+#' }
+#'
+#' where \eqn{\mu_{gj}} is the numeric centroid and \eqn{\nu_{gj}} is the
+#' categorical mode of cluster \eqn{g} for feature \eqn{j}, and \eqn{\lambda}
+#' is a non-negative weight balancing the two components. When
+#' `lambda = NULL`, `clustMixType::kproto()` estimates \eqn{\lambda}
+#' automatically as the mean numeric variance divided by the number of
+#' categorical features.
+#'
+#' @references
+#' Huang, Z. (1998). Extensions to the k-means algorithm for clustering large
+#' data sets with categorical values. *Data Mining and Knowledge Discovery*,
+#' **2**(3), 283--304.
+#'
+#' @noRd
 validate_kproto_params <- function(data, params) {
   if (!requireNamespace("clustMixType", quietly = TRUE)) {
     stop("Package `clustMixType` is required for method `kproto`.", call. = FALSE)

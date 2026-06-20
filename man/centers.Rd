@@ -7,13 +7,23 @@
 centers(x, ...)
 }
 \arguments{
-\item{x}{A clustering object.}
+\item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
 \item{...}{Unused.}
 }
 \value{
-A matrix or \code{NULL}.
+A numeric matrix with one row per cluster and one column per
+feature, or \code{NULL}.
 }
 \description{
-Cluster centers
+Extract the numeric cluster center matrix. Available for k-means and
+hierarchical methods trained on numeric data; returns \code{NULL} for PAM,
+k-prototypes, and GMM (use \code{\link[=prototypes]{prototypes()}} or \code{\link[=membership]{membership()}} instead).
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+centers(fit)
+}
+\seealso{
+\code{\link[=prototypes]{prototypes()}}, \code{\link[=clusters]{clusters()}}, \code{\link[=membership]{membership()}}
 }

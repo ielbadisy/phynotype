@@ -7,13 +7,25 @@
 membership(x, ...)
 }
 \arguments{
-\item{x}{A clustering object.}
+\item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
 \item{...}{Unused.}
 }
 \value{
-A matrix or \code{NULL}.
+A numeric matrix with one row per observation and one column per
+cluster, or \code{NULL}.
 }
 \description{
-Membership matrix
+Extract the soft membership (posterior probability) matrix. Only methods
+that return probabilistic assignments (e.g. GMM) populate this slot; all
+other methods return \code{NULL}.
+}
+\examples{
+if (requireNamespace("mclust", quietly = TRUE)) {
+  fit <- cluster(iris[, 1:4], method = "gmm", k = 3, seed = 1)
+  head(membership(fit))
+}
+}
+\seealso{
+\code{\link[=clusters]{clusters()}}, \code{\link[=centers]{centers()}}, \code{\link[=prototypes]{prototypes()}}
 }

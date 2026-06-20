@@ -1,3 +1,27 @@
+#' K-means clustering backend
+#'
+#' Lloyd's algorithm minimizes the total within-cluster sum of squares
+#'
+#' \deqn{
+#'   \min_{\mathcal{C}} \sum_{j=1}^{k} \sum_{x_i \in C_j}
+#'   \|x_i - \mu_j\|^2,
+#' }
+#'
+#' where \eqn{\mu_j = |C_j|^{-1} \sum_{x_i \in C_j} x_i} is the centroid of
+#' cluster \eqn{j}. The algorithm alternates between assigning each observation
+#' to its nearest centroid and recomputing centroids until convergence (Lloyd,
+#' 1982). Multiple random restarts (`nstart`) are used to reduce sensitivity
+#' to initialization.
+#'
+#' @references
+#' Lloyd, S.P. (1982). Least squares quantization in PCM. *IEEE Transactions
+#' on Information Theory*, **28**(2), 129--137.
+#'
+#' MacQueen, J. (1967). Some methods for classification and analysis of
+#' multivariate observations. *Proceedings of the 5th Berkeley Symposium on
+#' Mathematical Statistics and Probability*, Vol. 1, pp. 281--297.
+#'
+#' @noRd
 validate_kmeans_params <- function(data, params) {
   k <- check_required_k(params$k)
   if (!is.matrix(data)) {

@@ -7,7 +7,7 @@
 n_clusters(x, ...)
 }
 \arguments{
-\item{x}{A clustering object.}
+\item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
 \item{...}{Unused.}
 }
@@ -15,5 +15,13 @@ n_clusters(x, ...)
 Integer scalar.
 }
 \description{
-Number of clusters
+Return the number of clusters in a fitted clustering object. For DBSCAN,
+this excludes the noise cluster (label 0).
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+n_clusters(fit)
+}
+\seealso{
+\code{\link[=sizes]{sizes()}}, \code{\link[=clusters]{clusters()}}
 }

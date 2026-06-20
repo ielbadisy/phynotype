@@ -6,15 +6,27 @@
 \usage{
 compute_calinski_harabasz(data, clusters)
 }
+\arguments{
+\item{data}{Numeric matrix of observations (rows) by features (columns).}
+
+\item{clusters}{Integer vector of cluster assignments, length
+\code{nrow(data)}.}
+}
 \description{
 The Calinski-Harabasz index is
 }
 \details{
 \deqn{
-\mathrm{CH} = \frac{\mathrm{BSS}/(k - 1)}{\mathrm{WSS}/(n - k)},
+  \mathrm{CH} = \frac{\mathrm{BSS} / (k - 1)}{\mathrm{WSS} / (n - k)},
 }
 
 where \eqn{k} is the number of clusters, \eqn{n} is the number of
 observations, \eqn{\mathrm{BSS}} is the between-cluster sum of squares, and
-\eqn{\mathrm{WSS}} is the within-cluster sum of squares.
+\eqn{\mathrm{WSS}} is the within-cluster sum of squares. Higher values
+indicate better separation (Calinski and Harabasz, 1974).
 }
+\references{
+Calinski, T. and Harabasz, J. (1974). A dendrite method for cluster
+analysis. \emph{Communications in Statistics}, \strong{3}(1), 1--27.
+}
+\keyword{internal}
