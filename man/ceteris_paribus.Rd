@@ -55,10 +55,10 @@ Deprecated alias for \code{cores}.}
 \item{...}{Reserved for future extensions.}
 }
 \value{
-A \code{ceteris_paribus} object with a tidy \code{profiles} data frame. The
-profile table contains the evaluated grid, the profile value, the observed
-feature value, and the baseline value used to mark the explained
-observation in plots.
+A \code{ceteris_paribus} object with a tidy \code{profiles} data frame. Each
+row records: the observation index, the feature being varied, the grid
+value at that step, the predicted target (cluster label or score), the
+observed feature value, and the baseline prediction.
 }
 \description{
 Compute individual conditional profiles for a fitted clustering rule. A
@@ -89,6 +89,22 @@ causal effects.
 }
 \examples{
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-cp <- ceteris_paribus(fit, iris[1:2, 1:4], features = 1:2, grid_size = 5)
-cp
+cp <- ceteris_paribus(fit, iris[1:3, 1:4], features = 1:2, grid_size = 10)
+head(cp$profiles)
+}
+\references{
+Biecek, P. and Burzykowski, T. (2021). \emph{Explanatory Model Analysis}.
+Chapman and Hall/CRC, Boca Raton. \url{https://ema.drwhy.ai/}
+
+Gosiewska, A. and Biecek, P. (2019). iBreakDown: Uncertainty of model
+explanations for non-additive predictive models. \emph{arXiv:1903.11420}.
+
+Apley, D.W. and Zhu, J. (2020). Visualizing the effects of predictor
+variables in black box supervised learning models. \emph{Journal of the Royal
+Statistical Society: Series B}, \strong{82}(4), 1059--1086.
+}
+\seealso{
+\code{\link[=lime_explain]{lime_explain()}} for local linear surrogate explanations,
+\code{\link[=feature_importance]{feature_importance()}} for global permutation importance,
+\code{\link[=predict.cluster_fit]{predict.cluster_fit()}} which is used internally.
 }

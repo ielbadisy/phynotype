@@ -15,28 +15,49 @@ prepare_mixed_data(
 \arguments{
 \item{x}{Data frame, matrix, or vector-like object coercible to a data frame.}
 
-\item{center}{Logical; if \code{TRUE}, center numeric columns after encoding.}
+\item{center}{Logical; if \code{TRUE}, center numeric columns to zero mean after
+encoding.}
 
-\item{scale}{Logical; if \code{TRUE}, scale numeric columns after encoding.}
+\item{scale}{Logical; if \code{TRUE}, scale numeric columns to unit variance after
+encoding.}
 
 \item{drop_first}{Logical; if \code{TRUE}, drop the first dummy column for each
-categorical feature. The default keeps the full one-hot representation,
-which is usually preferable for clustering.}
+categorical feature to avoid the dummy-variable trap. The default (\code{FALSE})
+keeps the full one-hot representation, which is usually preferable for
+distance-based clustering.}
 
-\item{na_action}{Missing-value strategy. \code{"keep"} keeps missingness as an
-explicit categorical level and median-imputes numeric columns; \code{"fail"}
-errors on any missing value.}
+\item{na_action}{Missing-value strategy. \code{"keep"} (default) adds an explicit
+\code{"missing"} level for categoricals and median-imputes numeric columns.
+\code{"fail"} stops with an error on any missing value.}
 }
 \value{
-A numeric matrix with preprocessing metadata stored in attributes.
+A numeric matrix with preprocessing metadata stored in the attribute
+\code{"phynotype_preprocess"}.
 }
 \description{
 Convert a data frame containing numeric, logical, character, or factor
 columns into a numeric design matrix suitable for methods such as
-\code{kmeans}, \code{pam}, \code{dbscan}, and \code{gmm}.
+\code{"kmeans"}, \code{"pam"}, \code{"dbscan"}, and \code{"gmm"}.
 }
 \details{
-This is intentionally a separate first step. Clustering algorithms that use
+Categorical variables are one-hot encoded (full-rank by default), numeric
+variables are optionally centered and scaled, and missingness can be
+preserved as an explicit level or trigger an error.
+
+This is intentionally a manual first step. Clustering algorithms that use
 Euclidean distances or Gaussian models should not silently coerce mixed data.
-For hierarchical methods on mixed data, use \code{mixed_distance()} instead.
+For hierarchical methods on mixed data, use \code{\link[=mixed_distance]{mixed_distance()}} instead.
+}
+\examples{
+# Mixed data frame
+df <- data.frame(
+  x1 = c(1.2, 0.5, 3.1),
+  x2 = factor(c("A", "B", "A"))
+)
+mat <- prepare_mixed_data(df)
+mat
+}
+\seealso{
+\code{\link[=mixed_distance]{mixed_distance()}} for Gower-distance computation before
+hierarchical clustering.
 }

@@ -12,8 +12,19 @@ plot_silhouette(x, ...)
 \item{...}{Unused.}
 }
 \value{
-A ggplot object.
+A \code{ggplot} object.
 }
 \description{
-Plot silhouette widths
+Display observation-level silhouette widths colored by cluster. Observations
+with negative widths lie closer to a neighboring cluster than to their own
+and may be misclassified.
+}
+\examples{
+if (requireNamespace("cluster", quietly = TRUE)) {
+  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+  plot_silhouette(fit)
+}
+}
+\seealso{
+\code{\link[=validate]{validate()}}
 }

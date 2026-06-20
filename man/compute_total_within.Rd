@@ -6,11 +6,20 @@
 \usage{
 compute_total_within(data, clusters)
 }
+\arguments{
+\item{data}{Numeric matrix of observations (rows) by features (columns).}
+
+\item{clusters}{Integer vector of cluster assignments, length
+\code{nrow(data)}.}
+}
 \description{
 The total within-cluster dispersion is
 }
 \details{
 \deqn{
-\mathrm{WSS} = \sum_{j=1}^k \sum_{i \in C_j} \|x_i - \mu_j\|^2.
+  \mathrm{WSS} = \sum_{j=1}^{k} \sum_{i \in C_j} \|x_i - \mu_j\|^2.
 }
+
+Lower values indicate more compact clusters.
 }
+\keyword{internal}

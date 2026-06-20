@@ -7,17 +7,49 @@
 \method{predict}{cluster_fit}(object, new_data, ...)
 }
 \arguments{
-\item{object}{A \code{cluster_fit} object.}
+\item{object}{A \code{cluster_fit} object. Must have been fitted on
+row-by-feature data (not a \code{dist}-only input).}
 
-\item{new_data}{Row-by-feature data compatible with the fitted method. Numeric
-methods expect a numeric matrix or data frame; \code{kproto} accepts mixed-type
-data frames.}
+\item{new_data}{Row-by-feature data compatible with the training data.
+Numeric methods expect a numeric matrix or data frame; \code{"kproto"} and
+\code{"kmm"} accept mixed-type data frames with the same column names used
+during training.}
 
 \item{...}{Additional arguments passed to method-specific predictors.}
 }
 \value{
-A \code{cluster_prediction} object.
+A \code{cluster_prediction} object with components:
+\describe{
+\item{\code{clusters}}{Integer vector of predicted cluster assignments.}
+\item{\code{distances}}{Distance matrix to each cluster center/prototype,
+or \code{NULL} for methods that do not produce distances.}
+\item{\code{membership}}{Soft membership matrix (GMM only), or \code{NULL}.}
+}
 }
 \description{
-Predict cluster assignments for new observations
+Assign new observations to the clusters of a fitted \code{cluster_fit} object.
+The prediction strategy is method-dependent: k-means, PAM, and hierarchical
+methods use nearest-centroid or nearest-prototype rules; GMM uses the
+posterior mode; DBSCAN uses a density-based rule falling back to the nearest
+core point.
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+
+# Predict on the training data
+pred <- predict(fit, iris[1:10, 1:4])
+pred$clusters
+
+# Predict on new data
+new_obs <- data.frame(
+  Sepal.Length = c(5.0, 7.0),
+  Sepal.Width  = c(3.5, 3.0),
+  Petal.Length = c(1.5, 5.0),
+  Petal.Width  = c(0.3, 1.8)
+)
+predict(fit, new_obs)$clusters
+}
+\seealso{
+\code{\link[=cluster]{cluster()}} to fit, \code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}},
+and \code{\link[=ceteris_paribus]{ceteris_paribus()}} which all use \code{predict()} internally.
 }

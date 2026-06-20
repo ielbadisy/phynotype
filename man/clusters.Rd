@@ -7,13 +7,21 @@
 clusters(x, ...)
 }
 \arguments{
-\item{x}{A clustering object.}
+\item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
 \item{...}{Unused.}
 }
 \value{
-An integer vector.
+Integer vector of length equal to the number of training
+observations.
 }
 \description{
-Cluster assignments
+Extract the integer cluster assignment vector from a fitted clustering object.
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+clusters(fit)
+}
+\seealso{
+\code{\link[=sizes]{sizes()}}, \code{\link[=n_clusters]{n_clusters()}}, \code{\link[=centers]{centers()}}, \code{\link[=membership]{membership()}}
 }
