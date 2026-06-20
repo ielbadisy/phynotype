@@ -7,15 +7,26 @@
 plot_clusters(x, data = NULL, ...)
 }
 \arguments{
-\item{x}{A \code{cluster_fit} or \code{cluster_explore} object.}
+\item{x}{A \code{cluster_fit}, \code{metacluster_fit}, or \code{cluster_explore} object.}
 
-\item{data}{Optional numeric data used to compute the embedding.}
+\item{data}{Optional numeric matrix or data frame used to compute the PCA
+embedding. Defaults to the training data stored in \code{x}.}
 
 \item{...}{Unused.}
 }
 \value{
-A ggplot object.
+A \code{ggplot} object.
 }
 \description{
-Plot clustered observations in 2D
+Project observations onto their first two principal components and color
+them by cluster assignment. For \code{metacluster_fit} objects, delegates to
+\code{\link[=plot_consensus]{plot_consensus()}}.
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+plot_clusters(fit)
+}
+\seealso{
+\code{\link[=explore]{explore()}} for the underlying embedding, \code{\link[=plot_cluster_sizes]{plot_cluster_sizes()}},
+\code{\link[=plot_feature_profiles]{plot_feature_profiles()}}
 }

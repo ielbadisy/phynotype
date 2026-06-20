@@ -1,11 +1,24 @@
 #' Plot clustered observations in 2D
 #'
-#' @param x A `cluster_fit` or `cluster_explore` object.
-#' @param data Optional numeric data used to compute the embedding.
+#' Project observations onto their first two principal components and color
+#' them by cluster assignment. For `metacluster_fit` objects, delegates to
+#' [plot_consensus()].
+#'
+#' @param x A `cluster_fit`, `metacluster_fit`, or `cluster_explore` object.
+#' @param data Optional numeric matrix or data frame used to compute the PCA
+#'   embedding. Defaults to the training data stored in `x`.
 #' @param ... Unused.
 #'
-#' @return A ggplot object.
+#' @return A `ggplot` object.
+#'
+#' @seealso [explore()] for the underlying embedding, [plot_cluster_sizes()],
+#'   [plot_feature_profiles()]
+#'
 #' @export
+#'
+#' @examples
+#' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+#' plot_clusters(fit)
 plot_clusters <- function(x, data = NULL, ...) {
   UseMethod("plot_clusters")
 }
@@ -31,11 +44,20 @@ plot_clusters.cluster_explore <- function(x, ...) {
 
 #' Plot cluster sizes
 #'
-#' @param x A `cluster_fit` or `cluster_explore` object.
+#' Display a bar chart of the number of observations per cluster.
+#'
+#' @param x A `cluster_fit`, `metacluster_fit`, or `cluster_explore` object.
 #' @param ... Unused.
 #'
-#' @return A ggplot object.
+#' @return A `ggplot` object.
+#'
+#' @seealso [sizes()], [plot_clusters()], [plot_feature_profiles()]
+#'
 #' @export
+#'
+#' @examples
+#' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+#' plot_cluster_sizes(fit)
 plot_cluster_sizes <- function(x, ...) {
   UseMethod("plot_cluster_sizes")
 }
@@ -64,12 +86,24 @@ plot_cluster_sizes.cluster_explore <- function(x, ...) {
 
 #' Plot feature profiles by cluster
 #'
-#' @param x A `cluster_explore` object.
-#' @param features Optional character vector of features to plot.
+#' Display per-cluster mean values for each feature as a grouped bar chart.
+#'
+#' @param x A `cluster_explore` object (produced by [explore()]).
+#' @param features Optional character vector of feature names to include.
+#'   Defaults to all features.
 #' @param ... Unused.
 #'
-#' @return A ggplot object.
+#' @return A `ggplot` object.
+#'
+#' @seealso [explore()], [plot_clusters()], [plot_cluster_sizes()]
+#'
 #' @export
+#'
+#' @examples
+#' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+#' exp <- explore(fit)
+#' plot_feature_profiles(exp)
+#' plot_feature_profiles(exp, features = c("Sepal.Length", "Petal.Length"))
 plot_feature_profiles <- function(x, features = NULL, ...) {
   UseMethod("plot_feature_profiles")
 }

@@ -1,3 +1,22 @@
+#' Partitioning Around Medoids (PAM) backend
+#'
+#' PAM selects \eqn{k} actual observations (medoids) \eqn{m_1, \ldots, m_k}
+#' that minimize the total dissimilarity to the nearest medoid:
+#'
+#' \deqn{
+#'   \min_{m_1,\ldots,m_k \in \mathcal{X}}
+#'   \sum_{i=1}^{n} \min_{g \in \{1,\ldots,k\}} d(x_i, m_g),
+#' }
+#'
+#' where \eqn{d(\cdot,\cdot)} is typically the Euclidean distance. Unlike
+#' k-means, medoids are constrained to lie on observed data points, making PAM
+#' more robust to outliers (Kaufman and Rousseeuw, 1990).
+#'
+#' @references
+#' Kaufman, L. and Rousseeuw, P.J. (1990). *Finding Groups in Data: An
+#' Introduction to Cluster Analysis*. John Wiley & Sons, New York.
+#'
+#' @noRd
 validate_pam_params <- function(data, params) {
   if (!requireNamespace("cluster", quietly = TRUE)) {
     stop("Package `cluster` is required for method `pam`.", call. = FALSE)

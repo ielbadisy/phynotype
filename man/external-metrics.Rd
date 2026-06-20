@@ -2,11 +2,7 @@
 % Please edit documentation in R/metrics_external.R
 \name{external-metrics}
 \alias{external-metrics}
-\alias{adjusted_rand_index}
 \title{External clustering agreement metrics}
-\usage{
-adjusted_rand_index(x, y)
-}
 \description{
 These helpers implement the reference-label metrics used by \code{validate()}.
 }

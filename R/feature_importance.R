@@ -65,14 +65,34 @@
 #'   `functionals::fmap()`.
 #' @param ... Reserved for future extensions.
 #'
-#' @return A `feature_importance` object with repetition-level `results` and
-#'   feature-level `summary` data frames.
+#' @return A `feature_importance` object with components:
+#' \describe{
+#'   \item{`results`}{Data frame with one row per (feature, repeat) combination
+#'     recording the baseline loss, the permuted loss, and the computed
+#'     importance.}
+#'   \item{`summary`}{Data frame with one row per feature, containing the mean
+#'     importance, standard error, and number of repeats.}
+#' }
+#'
+#' @seealso [lime_explain()] for local explanations, [ceteris_paribus()] for
+#'   individual conditional profiles, [predict.cluster_fit()] which is used
+#'   internally.
+#'
+#' @references
+#' Breiman, L. (2001). Random forests. *Machine Learning*, **45**(1), 5--32.
+#' (Permutation importance concept introduced in the context of random forests.)
+#'
+#' Fisher, A., Rudin, C. and Dominici, F. (2019). All models are wrong, but
+#' many are useful: Learning a variable's importance by studying an entire class
+#' of prediction models simultaneously. *Journal of Machine Learning Research*,
+#' **20**(177), 1--81.
+#'
 #' @export
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 #' imp <- feature_importance(fit, n_repeats = 3, seed = 1)
-#' imp
+#' imp$summary
 feature_importance <- function(object,
                                data = NULL,
                                features = NULL,

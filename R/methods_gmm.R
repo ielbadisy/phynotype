@@ -1,3 +1,36 @@
+#' Gaussian Mixture Model clustering backend
+#'
+#' A Gaussian mixture model (GMM) represents the data density as
+#'
+#' \deqn{
+#'   p(x) = \sum_{g=1}^{k} \pi_g \,\mathcal{N}(x \mid \mu_g, \Sigma_g),
+#' }
+#'
+#' where \eqn{\pi_g > 0} are mixing weights summing to 1, and
+#' \eqn{\mathcal{N}(\cdot \mid \mu_g, \Sigma_g)} is the multivariate Gaussian
+#' density with mean \eqn{\mu_g} and covariance \eqn{\Sigma_g} (Fraley and
+#' Raftery, 2002). Parameters are estimated by the Expectation-Maximization
+#' (EM) algorithm. Hard cluster assignments are obtained by the maximum a
+#' posteriori rule:
+#'
+#' \deqn{
+#'   \hat{y}_i = \operatorname*{arg\,max}_{g}
+#'   \pi_g \,\mathcal{N}(x_i \mid \mu_g, \Sigma_g).
+#' }
+#'
+#' Soft membership probabilities (posterior responsibilities) are stored in the
+#' `membership` slot. Model selection across covariance structures is handled
+#' by `mclust::Mclust()` via BIC.
+#'
+#' @references
+#' Fraley, C. and Raftery, A.E. (2002). Model-based clustering, discriminant
+#' analysis, and density estimation. *Journal of the American Statistical
+#' Association*, **97**(458), 611--631.
+#'
+#' Fraley, C. and Raftery, A.E. (1999). MCLUST: Software for model-based
+#' cluster analysis. *Journal of Classification*, **16**(2), 297--306.
+#'
+#' @noRd
 validate_gmm_params <- function(data, params) {
   if (!requireNamespace("mclust", quietly = TRUE)) {
     stop("Package `mclust` is required for method `gmm`.", call. = FALSE)

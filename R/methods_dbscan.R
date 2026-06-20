@@ -1,3 +1,28 @@
+#' DBSCAN density-based clustering backend
+#'
+#' DBSCAN (Density-Based Spatial Clustering of Applications with Noise) groups
+#' observations that are reachable through chains of dense neighborhoods (Ester
+#' et al., 1996). The two parameters are:
+#'
+#' \describe{
+#'   \item{\eqn{\varepsilon}}{Neighborhood radius. The \eqn{\varepsilon}-neighborhood
+#'     of a point \eqn{p} is \eqn{N_\varepsilon(p) = \{q : d(p,q) \le \varepsilon\}}.}
+#'   \item{\eqn{\mathrm{MinPts}}}{Minimum number of points required to form a
+#'     dense region. A point \eqn{p} is a \emph{core point} if
+#'     \eqn{|N_\varepsilon(p)| \ge \mathrm{MinPts}}.}
+#' }
+#'
+#' Clusters are maximal sets of density-connected core points. Points that are
+#' not reachable from any core point are labeled as \emph{noise} (cluster 0).
+#' DBSCAN does not require specifying \eqn{k} and can discover arbitrarily
+#' shaped clusters.
+#'
+#' @references
+#' Ester, M., Kriegel, H.-P., Sander, J. and Xu, X. (1996). A density-based
+#' algorithm for discovering clusters in large spatial databases with noise.
+#' *Proceedings of the 2nd ACM SIGKDD*, pp. 226--231.
+#'
+#' @noRd
 validate_dbscan_params <- function(data, params) {
   if (!requireNamespace("dbscan", quietly = TRUE)) {
     stop("Package `dbscan` is required for method `dbscan`.", call. = FALSE)

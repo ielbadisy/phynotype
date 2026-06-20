@@ -6,16 +6,29 @@
 \usage{
 compute_davies_bouldin(data, clusters)
 }
+\arguments{
+\item{data}{Numeric matrix of observations (rows) by features (columns).}
+
+\item{clusters}{Integer vector of cluster assignments, length
+\code{nrow(data)}.}
+}
 \description{
 The Davies-Bouldin index is
 }
 \details{
 \deqn{
-\mathrm{DB} = \frac{1}{k} \sum_{j=1}^k \max_{l \ne j}
-\frac{s_j + s_l}{d(\mu_j, \mu_l)},
+  \mathrm{DB} = \frac{1}{k} \sum_{j=1}^{k} \max_{l \ne j}
+  \frac{s_j + s_l}{d(\mu_j, \mu_l)},
 }
 
-where \eqn{s_j} is the average scatter of cluster \eqn{j},
-\eqn{\mu_j} is its centroid, and \eqn{d(\mu_j, \mu_l)} is the distance
-between cluster centroids.
+where \eqn{s_j} is the average intra-cluster scatter of cluster \eqn{j},
+\eqn{\mu_j} is its centroid, and \eqn{d(\mu_j, \mu_l)} is the Euclidean
+distance between centroids. Lower values indicate better separation (Davies
+and Bouldin, 1979).
 }
+\references{
+Davies, D.L. and Bouldin, D.W. (1979). A cluster separation measure.
+\emph{IEEE Transactions on Pattern Analysis and Machine Intelligence},
+\strong{1}(2), 224--227.
+}
+\keyword{internal}

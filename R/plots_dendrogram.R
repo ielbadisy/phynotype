@@ -1,10 +1,27 @@
 #' Plot a clustering dendrogram
 #'
-#' @param x A hierarchical `cluster_fit` or `metacluster_fit` object.
-#' @param ... Unused.
+#' Draw the dendrogram from a hierarchical `cluster_fit` (fitted via
+#' `"hclust"` or `"agnes"`) or the consensus hierarchical tree from a
+#' `metacluster_fit`.
 #'
-#' @return The underlying fitted dendrogram object, invisibly.
+#' @param x A hierarchical `cluster_fit` or a `metacluster_fit` object.
+#' @param ... Additional arguments passed to the base `plot()` method for
+#'   `hclust` objects.
+#'
+#' @return The underlying `hclust` object, invisibly.
+#'
+#' @seealso [cluster()], [metacluster()], [plot_consensus()]
+#'
 #' @export
+#'
+#' @examples
+#' d <- mixed_distance(iris[, 1:4])
+#' fit <- cluster(d, method = "hclust", k = 3)
+#' plot_dendrogram(fit)
+#'
+#' mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),
+#'                     k = 2:3, seed = 1)
+#' plot_dendrogram(mfit)
 plot_dendrogram <- function(x, ...) {
   UseMethod("plot_dendrogram")
 }

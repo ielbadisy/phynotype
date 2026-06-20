@@ -9,13 +9,23 @@ plot_consensus(x, data = NULL, ...)
 \arguments{
 \item{x}{A \code{metacluster_fit} object.}
 
-\item{data}{Optional numeric data used to compute the embedding.}
+\item{data}{Optional numeric matrix or data frame used to compute the
+embedding. Defaults to the training data stored in \code{x}.}
 
 \item{...}{Unused.}
 }
 \value{
-A ggplot object.
+A \code{ggplot} object.
 }
 \description{
-Plot consensus clustering in 2D
+Project the consensus cluster assignments onto a two-dimensional PCA
+embedding.
+}
+\examples{
+mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),
+                    k = 2:3, seed = 1)
+plot_consensus(mfit)
+}
+\seealso{
+\code{\link[=metacluster]{metacluster()}}, \code{\link[=plot_coassoc]{plot_coassoc()}}
 }

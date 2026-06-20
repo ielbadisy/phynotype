@@ -28,11 +28,24 @@ compute_metacluster_stability <- function(candidate_labels) {
 
 #' Bootstrap ARI stability
 #'
-#' For bootstrap repetition \eqn{b}, draw a sample with replacement from the
-#' original data, refit the clustering model, and compute the adjusted Rand
-#' index between the reference partition and the bootstrap partition on the
-#' sampled observations. The reported bootstrap stability is the mean ARI over
-#' repetitions.
+#' For each bootstrap repetition \eqn{b = 1, \ldots, B}, draw a sample
+#' \eqn{X^{(b)}} with replacement from the original data \eqn{X}, refit the
+#' clustering model on \eqn{X^{(b)}}, and compute the adjusted Rand index
+#' between the reference partition \eqn{\hat{y}} and the bootstrap partition
+#' \eqn{\hat{y}^{(b)}} on the sampled observations:
+#'
+#' \deqn{
+#'   \mathrm{BootARI} = \frac{1}{B} \sum_{b=1}^{B}
+#'   \mathrm{ARI}\!\left(\hat{y}_{I^{(b)}},\, \hat{y}^{(b)}\right),
+#' }
+#'
+#' where \eqn{I^{(b)}} are the bootstrap indices. A value near 1 indicates
+#' that the partition is stable under resampling (Fang and Wang, 2012).
+#'
+#' @references
+#' Fang, Y. and Wang, J. (2012). Selection of the number of clusters via the
+#' bootstrap method. *Computational Statistics and Data Analysis*, **56**(3),
+#' 468–477.
 #'
 #' @noRd
 bootstrap_cluster_stability <- function(x, method, k, n_boot = 10, seed = NULL, ...) {

@@ -7,13 +7,24 @@
 prototypes(x, ...)
 }
 \arguments{
-\item{x}{A clustering object.}
+\item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
 \item{...}{Unused.}
 }
 \value{
-A matrix, data frame, or \code{NULL}.
+A matrix or data frame with one row per cluster, or \code{NULL}.
 }
 \description{
-Cluster prototypes
+Extract the cluster prototype table. Prototypes are actual observations
+(PAM medoids) or mixed-type representatives (k-prototypes, KMM); returns
+\code{NULL} for methods that use centroids rather than prototypes.
+}
+\examples{
+if (requireNamespace("cluster", quietly = TRUE)) {
+  fit <- cluster(iris[, 1:4], method = "pam", k = 3)
+  prototypes(fit)
+}
+}
+\seealso{
+\code{\link[=centers]{centers()}}, \code{\link[=clusters]{clusters()}}
 }

@@ -7,13 +7,20 @@
 method_used(x, ...)
 }
 \arguments{
-\item{x}{A clustering object.}
+\item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
 \item{...}{Unused.}
 }
 \value{
-Character scalar.
+Character scalar (e.g. \code{"kmeans"}, \code{"pam"}, \code{"hclust"}).
 }
 \description{
-Method used
+Return the name of the clustering method used to fit the object.
+}
+\examples{
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+method_used(fit)
+}
+\seealso{
+\code{\link[=cluster]{cluster()}}
 }
