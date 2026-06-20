@@ -95,10 +95,14 @@ metacluster <- function(x,
     validate_seed(seed)
   }
 
-  prepared <- prepare_cluster_input(x, method = "kmeans", scale = scale, center = center, k = k_values[[1]])
+  ## Route input validation through the right checker based on requested methods.
+  ## Previously hardcoded to "kmeans" which rejected mixed-type data frames even
+  ## when only kmm/kproto were requested.
+  input_method <- if (any(methods %in% c("kproto", "kmm"))) "kmm" else "kmeans"
+  prepared <- prepare_cluster_input(x, method = input_method, scale = scale, center = center, k = k_values[[1]])
   data <- prepared$data_info$original_data
   if (inherits(data, "dist")) {
-    stop("`metacluster()` requires a numeric matrix or numeric data frame.", call. = FALSE)
+    stop("`metacluster()` requires a numeric matrix or data frame.", call. = FALSE)
   }
 
   candidates <- list()
