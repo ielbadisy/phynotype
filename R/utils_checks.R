@@ -65,8 +65,15 @@ check_mixed_input <- function(x) {
     stop("`x` cannot contain all-missing columns.", call. = FALSE)
   }
   for (nm in names(x)) {
-    if (is.character(x[[nm]]) || is.logical(x[[nm]])) {
-      x[[nm]] <- as.factor(x[[nm]])
+    col <- x[[nm]]
+    ## Convert character and logical columns to factor
+    if (is.character(col) || is.logical(col)) {
+      x[[nm]] <- as.factor(col)
+    ## Auto-promote integer columns with few unique values (≤10) to factor so
+    ## that kproto can treat them as categorical without requiring explicit
+    ## factor encoding from the user.
+    } else if (is.integer(col) && length(unique(col[!is.na(col)])) <= 10L) {
+      x[[nm]] <- as.factor(col)
     }
   }
   list(data = x, kind = "mixed")
