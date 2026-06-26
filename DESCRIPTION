@@ -1,12 +1,12 @@
 Package: phynotype
-Title: Unified Clustering Workflows and Consensus Meta-Clustering
+Title: Clustering Workflows and Consensus Meta-Clustering
 Version: 0.0.0.9000
 Authors@R: person("Imad", "El Badisy", email = "elbadisyimad@gmail.com", role = c("aut", "cre"))
 Author: Imad El Badisy [aut, cre]
 Maintainer: Imad El Badisy <elbadisyimad@gmail.com>
-Description: A unified framework for clustering, consensus meta-clustering,
+Description: Tools for clustering, consensus meta-clustering,
     validation, exploratory interpretation, prediction, and standardized
-    plotting. The package provides a native clustering grammar centered on
+    plotting. The package provides a clustering workflow centered on
     cluster(), metacluster(), validate(), explore(), predict(), and plot
     helpers.
 License: MIT + file LICENSE
