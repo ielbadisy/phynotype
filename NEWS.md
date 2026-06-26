@@ -1,4 +1,4 @@
-# phynotype 0.0.0.9000
+# phynotype 0.0.9
 
 - Validation tables now include metric scale and preferred direction metadata for silhouette, bootstrap ARI, Davies-Bouldin, total within-cluster sum of squares, and Calinski-Harabasz.
 - `plot_validation()` now facets metrics into individual panels instead of combining incompatible scales on one axis.
