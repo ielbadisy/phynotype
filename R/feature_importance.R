@@ -188,7 +188,7 @@ feature_importance <- function(object,
 
 #' @export
 plot.feature_importance <- function(x, ...) {
-  ggplot2::ggplot(x$summary, ggplot2::aes_string(x = "feature", y = "importance")) +
+  ggplot2::ggplot(x$summary, ggplot2::aes(x = .data[["feature"]], y = .data[["importance"]])) +
     ggplot2::geom_col(fill = "#2C7FB8") +
     ggplot2::coord_flip() +
     ggplot2::labs(title = "Permutation feature importance", x = NULL, y = "Importance") +
