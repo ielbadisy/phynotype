@@ -232,7 +232,10 @@ encode_interpretability_like <- function(data, reference) {
 
 #' @export
 plot.lime_explanation <- function(x, ...) {
-  ggplot2::ggplot(x$explanations, ggplot2::aes_string(x = "feature", y = "estimate", fill = "direction")) +
+  ggplot2::ggplot(
+    x$explanations,
+    ggplot2::aes(x = .data[["feature"]], y = .data[["estimate"]], fill = .data[["direction"]])
+  ) +
     ggplot2::geom_col() +
     ggplot2::coord_flip() +
     ggplot2::facet_wrap(stats::as.formula("~ observation"), scales = "free_y") +

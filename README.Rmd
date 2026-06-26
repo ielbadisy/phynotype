@@ -3,20 +3,37 @@ title: "phynotype"
 output: github_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
 `phynotype` is an R package for clustering workflows, consensus meta-clustering, validation, exploration, prediction, and plotting.
 
 `phynotype` is a clustering workflow package. It is not a phenotypic data processing package.
 
 ## Installation
 
-```r
+`phynotype` is not on CRAN yet. Install the development version from GitHub:
+
+```{r install, eval=FALSE}
 # install.packages("pak")
-# pak::pkg_install("path/to/phynotype")
+pak::pkg_install("ielbadisy/phynotype")
+```
+
+Or install from a local source checkout:
+
+```{r install-local, eval=FALSE}
+pak::pkg_install("path/to/phynotype")
 ```
 
 ## Quick start
 
-```r
+```{r quick-start}
 library(phynotype)
 
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
@@ -26,7 +43,7 @@ summary(fit)
 
 ## Meta-clustering
 
-```r
+```{r meta-clustering}
 mfit <- metacluster(
   iris[, 1:4],
   methods = c("kmeans", "pam", "hclust"),
@@ -41,7 +58,7 @@ summary(mfit)
 
 ## Validation
 
-```r
+```{r validation}
 validate(fit)
 validate(mfit)
 validate(iris[, 1:4], method = "kmeans", k = 2:6, seed = 1)
@@ -49,26 +66,45 @@ validate(iris[, 1:4], method = "kmeans", k = 2:6, seed = 1)
 
 ## Exploration
 
-```r
+```{r exploration}
 exp <- explore(fit)
+exp
 head(exp$feature_summary)
 ```
 
 ## Plotting
 
-```r
+```{r plot-clusters}
 plot_clusters(fit)
+```
+
+```{r plot-silhouette}
 plot_silhouette(fit)
-plot_validation(validate(fit))
+```
+
+```{r plot-consensus}
 plot_consensus(mfit)
+```
+
+```{r plot-coassoc}
 plot_coassoc(mfit)
+```
+
+```{r plot-feature-profiles}
 plot_feature_profiles(explore(fit))
+```
+
+```{r plot-cluster-sizes}
 plot_cluster_sizes(fit)
 ```
 
 ## Prediction
 
-```r
+```{r prediction}
 pred <- predict(fit, iris[1:10, 1:4])
 pred
+data.frame(
+  observation = seq_along(pred$clusters),
+  cluster = pred$clusters
+)
 ```
