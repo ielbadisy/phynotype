@@ -4,9 +4,6 @@ phynotype
 `phynotype` is an R package for clustering workflows, consensus
 meta-clustering, validation, exploration, prediction, and plotting.
 
-`phynotype` is a clustering workflow package. It is not a phenotypic
-data processing package.
-
 ## Installation
 
 `phynotype` is not on CRAN yet. Install the development version from
@@ -15,12 +12,6 @@ GitHub:
 ``` r
 # install.packages("pak")
 pak::pkg_install("ielbadisy/phynotype")
-```
-
-Or install from a local source checkout:
-
-``` r
-pak::pkg_install("path/to/phynotype")
 ```
 
 ## Quick start
@@ -133,7 +124,7 @@ validate(fit)
 #>  calinski_harabasz 561.6277566 positive, unbounded higher is better
 #>     davies_bouldin   0.6619715 positive, unbounded  lower is better
 #>       total_within  78.8514414 positive, unbounded  lower is better
-#>      bootstrap_ari   0.9710021                <NA>             <NA>
+#>      bootstrap_ari   0.9628681                <NA>             <NA>
 validate(mfit)
 #> <cluster_validation>
 #>   Object type: metacluster_fit
@@ -152,27 +143,27 @@ validate(iris[, 1:4], method = "kmeans", k = 2:6, seed = 1)
 #>  calinski_harabasz 513.9245460 positive, unbounded higher is better 2
 #>     davies_bouldin   0.4042928 positive, unbounded  lower is better 2
 #>       total_within 152.3479518 positive, unbounded  lower is better 2
-#>      bootstrap_ari   0.9973179                <NA>             <NA> 2
+#>      bootstrap_ari   0.9740322                <NA>             <NA> 2
 #>         silhouette   0.5528190             -1 to 1 higher is better 3
 #>  calinski_harabasz 561.6277566 positive, unbounded higher is better 3
 #>     davies_bouldin   0.6619715 positive, unbounded  lower is better 3
 #>       total_within  78.8514414 positive, unbounded  lower is better 3
-#>      bootstrap_ari   0.9710021                <NA>             <NA> 3
+#>      bootstrap_ari   0.9711789                <NA>             <NA> 3
 #>         silhouette   0.4980505             -1 to 1 higher is better 4
 #>  calinski_harabasz 530.7658082 positive, unbounded higher is better 4
 #>     davies_bouldin   0.7803070 positive, unbounded  lower is better 4
 #>       total_within  57.2284732 positive, unbounded  lower is better 4
-#>      bootstrap_ari   0.9052257                <NA>             <NA> 4
+#>      bootstrap_ari   0.9019320                <NA>             <NA> 4
 #>         silhouette   0.4912400             -1 to 1 higher is better 5
 #>  calinski_harabasz 495.3699060 positive, unbounded higher is better 5
 #>     davies_bouldin   0.8159888 positive, unbounded  lower is better 5
 #>       total_within  46.4611727 positive, unbounded  lower is better 5
-#>      bootstrap_ari   0.9218582                <NA>             <NA> 5
+#>      bootstrap_ari   0.8695192                <NA>             <NA> 5
 #>         silhouette   0.3648340             -1 to 1 higher is better 6
 #>  calinski_harabasz 473.8506068 positive, unbounded higher is better 6
 #>     davies_bouldin   0.9141580 positive, unbounded  lower is better 6
 #>       total_within  39.0399872 positive, unbounded  lower is better 6
-#>      bootstrap_ari   0.8684184                <NA>             <NA> 6
+#>      bootstrap_ari   0.7632477                <NA>             <NA> 6
 ```
 
 ## Exploration
@@ -196,6 +187,14 @@ head(exp$feature_summary)
 
 ``` r
 plot_clusters(fit)
+#> Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+#> ℹ Please use tidy evaluation idioms with `aes()`.
+#> ℹ See also `vignette("ggplot2-in-packages")` for more information.
+#> ℹ The deprecated feature was likely used in the phynotype package.
+#>   Please report the issue to the authors.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 ```
 
 ![](README_files/figure-gfm/plot-clusters-1.png)<!-- -->
