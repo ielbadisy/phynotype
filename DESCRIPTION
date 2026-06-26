@@ -1,5 +1,5 @@
 Package: phynotype
-Title: Clustering Workflows and Consensus Meta-Clustering
+Title: Clustering and Consensus Meta-Clustering
 Version: 0.0.9
 Authors@R: person("Imad", "El Badisy", email = "elbadisyimad@gmail.com", role = c("aut", "cre"))
 Author: Imad El Badisy [aut, cre]
