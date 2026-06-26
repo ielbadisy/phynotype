@@ -8,8 +8,6 @@ Description: Tools for clustering, consensus meta-clustering,
     validation, exploratory interpretation, cluster prediction, and standardized
     plotting. The package provides a clustering workflow with consensus clustering following Strehl and Ghosh (2002)
     <https://www.jmlr.org/papers/v3/strehl02a.html>.
-URL: https://github.com/ielbadisy/phynotype
-BugReports: https://github.com/ielbadisy/phynotype/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
