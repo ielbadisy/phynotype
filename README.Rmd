@@ -14,7 +14,6 @@ knitr::opts_chunk$set(
 
 `phynotype` is an R package for clustering workflows, consensus meta-clustering, validation, exploration, prediction, and plotting.
 
-`phynotype` is a clustering workflow package. It is not a phenotypic data processing package.
 
 ## Installation
 
@@ -23,12 +22,6 @@ knitr::opts_chunk$set(
 ```{r install, eval=FALSE}
 # install.packages("pak")
 pak::pkg_install("ielbadisy/phynotype")
-```
-
-Or install from a local source checkout:
-
-```{r install-local, eval=FALSE}
-pak::pkg_install("path/to/phynotype")
 ```
 
 ## Quick start
