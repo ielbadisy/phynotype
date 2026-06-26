@@ -28,7 +28,7 @@ set.seed(42)
 
 # Introduction
 
-`phynotype` provides a unified grammar for unsupervised phenotyping.
+`phynotype` provides tools for unsupervised phenotyping workflows.
 The full pipeline has six steps, each with a single entry-point function:
 
 | Step | Function | Purpose |

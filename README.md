@@ -1,7 +1,7 @@
 phynotype
 ================
 
-`phynotype` is an R package for unified clustering workflows, consensus
+`phynotype` is an R package for clustering workflows, consensus
 meta-clustering, validation, exploration, prediction, and plotting.
 
 `phynotype` is a clustering workflow package. It is not a phenotypic

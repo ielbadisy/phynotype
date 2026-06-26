@@ -4,10 +4,10 @@
 \name{phynotype-package}
 \alias{phynotype-package}
 \alias{phynotype}
-\title{phynotype: Unified Clustering Workflows and Consensus Meta-Clustering}
+\title{phynotype: Clustering Workflows and Consensus Meta-Clustering}
 \description{
-\code{phynotype} provides a unified grammar for unsupervised phenotyping
-workflows. The six-step pipeline is:
+\code{phynotype} provides tools for unsupervised phenotyping workflows.
+The six-step pipeline is:
 
 \enumerate{
 \item \strong{Cluster} — fit a single clustering solution with \code{\link[=cluster]{cluster()}}.
