@@ -4,4 +4,4 @@
 
 ## Notes
 
-This is a development submission candidate for phynotype.
+This is a new submission.
