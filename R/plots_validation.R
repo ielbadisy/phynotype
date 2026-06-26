@@ -34,7 +34,16 @@ plot_silhouette.cluster_fit <- function(x, ...) {
     cluster = factor(sil[, "cluster"]),
     width = sil[, "sil_width"]
   )
-  ggplot2::ggplot(sil_df, ggplot2::aes_string(x = "observation", xend = "observation", y = 0, yend = "width", color = "cluster")) +
+  ggplot2::ggplot(
+    sil_df,
+    ggplot2::aes(
+      x = .data[["observation"]],
+      xend = .data[["observation"]],
+      y = 0,
+      yend = .data[["width"]],
+      color = .data[["cluster"]]
+    )
+  ) +
     ggplot2::geom_segment(linewidth = 0.7) +
     ggplot2::labs(title = "Silhouette widths", x = "Observation", y = "Silhouette width", color = "Cluster") +
     ggplot2::theme_minimal()
