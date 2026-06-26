@@ -16,21 +16,19 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports:
+    cluster,
+    clustMixType,
+    dbscan,
+    functionals,
     ggplot2,
+    mclust,
     parallel,
     rlang,
     stats,
     utils
 Suggests:
-    cluster,
-    clustMixType,
-    dbscan,
-    functionals,
-    mclust,
-    dplyr,
     testthat (>= 3.0.0),
     knitr,
-    rmarkdown,
-    MASS
+    rmarkdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3
