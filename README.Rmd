@@ -41,6 +41,19 @@ fit
 summary(fit)
 ```
 
+## API accessors
+
+The main objects expose a common accessor API, so downstream code does not need
+to inspect object internals.
+
+```{r api-accessors}
+method_used(fit)
+n_clusters(fit)
+data.frame(cluster = names(sizes(fit)), size = unname(sizes(fit)))
+head(clusters(fit))
+centers(fit)
+```
+
 ## Meta-clustering
 
 ```{r meta-clustering}
@@ -54,6 +67,15 @@ mfit <- metacluster(
 
 mfit
 summary(mfit)
+```
+
+Inspect the candidate solutions, consensus selection, and co-association matrix:
+
+```{r meta-clustering-details}
+head(mfit$candidate_table)
+mfit$selection_summary
+mfit$stability_summary
+round(mfit$coassoc_matrix[1:6, 1:6], 2)
 ```
 
 ## Validation
@@ -107,4 +129,59 @@ data.frame(
   observation = seq_along(pred$clusters),
   cluster = pred$clusters
 )
+```
+
+## Interpretability
+
+Global permutation importance estimates which features the fitted clustering
+rule relies on most.
+
+```{r feature-importance}
+imp <- feature_importance(fit, n_repeats = 3, seed = 1)
+imp
+imp$summary
+```
+
+```{r plot-feature-importance}
+plot(imp)
+```
+
+Ceteris paribus profiles show how local predictions change when one feature is
+varied and the other features are held fixed.
+
+```{r ceteris-paribus}
+cp <- ceteris_paribus(
+  fit,
+  iris[1:2, 1:4],
+  features = c("Petal.Length", "Petal.Width"),
+  grid_size = 6,
+  target = "score"
+)
+
+cp
+head(cp$profiles)
+```
+
+```{r plot-ceteris-paribus}
+plot(cp)
+```
+
+LIME-style explanations fit local surrogate models around selected
+observations.
+
+```{r lime-explain}
+lx <- lime_explain(
+  fit,
+  iris[1:2, 1:4],
+  n_features = 3,
+  n_permutations = 50,
+  seed = 1
+)
+
+lx
+lx$explanations
+```
+
+```{r plot-lime-explain}
+plot(lx)
 ```
