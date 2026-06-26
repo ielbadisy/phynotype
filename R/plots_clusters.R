@@ -36,7 +36,7 @@ plot_clusters.metacluster_fit <- function(x, data = NULL, ...) {
 
 #' @export
 plot_clusters.cluster_explore <- function(x, ...) {
-  ggplot2::ggplot(x$plot_data, ggplot2::aes_string(x = "x", y = "y", color = "cluster")) +
+  ggplot2::ggplot(x$plot_data, ggplot2::aes(x = .data[["x"]], y = .data[["y"]], color = .data[["cluster"]])) +
     ggplot2::geom_point(size = 2) +
     ggplot2::labs(title = "Cluster embedding", x = "PC1", y = "PC2", color = "Cluster") +
     ggplot2::theme_minimal()
@@ -78,7 +78,7 @@ plot_cluster_sizes.metacluster_fit <- function(x, ...) {
 plot_cluster_sizes.cluster_explore <- function(x, ...) {
   dat <- x$size_table
   dat$cluster <- factor(dat$cluster)
-  ggplot2::ggplot(dat, ggplot2::aes_string(x = "cluster", y = "size")) +
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["cluster"]], y = .data[["size"]])) +
     ggplot2::geom_col(fill = "#2C7FB8") +
     ggplot2::labs(title = "Cluster sizes", x = "Cluster", y = "Size") +
     ggplot2::theme_minimal()
@@ -115,7 +115,7 @@ plot_feature_profiles.cluster_explore <- function(x, features = NULL, ...) {
     dat <- dat[dat$feature %in% features, , drop = FALSE]
   }
   dat$cluster <- factor(dat$cluster)
-  ggplot2::ggplot(dat, ggplot2::aes_string(x = "feature", y = "mean", fill = "cluster")) +
+  ggplot2::ggplot(dat, ggplot2::aes(x = .data[["feature"]], y = .data[["mean"]], fill = .data[["cluster"]])) +
     ggplot2::geom_col(position = "dodge") +
     ggplot2::labs(title = "Feature profiles", x = "Feature", y = "Mean", fill = "Cluster") +
     ggplot2::theme_bw()
