@@ -10,16 +10,16 @@
 The six-step pipeline is:
 
 \enumerate{
-\item \strong{Cluster} — fit a single clustering solution with \code{\link[=cluster]{cluster()}}.
-\item \strong{Meta-cluster} — aggregate candidate solutions into a consensus
+\item \strong{Cluster}: fit a single clustering solution with \code{\link[=cluster]{cluster()}}.
+\item \strong{Meta-cluster}: aggregate candidate solutions into a consensus
 partition with \code{\link[=metacluster]{metacluster()}}.
-\item \strong{Validate} — score a solution with internal and external metrics
+\item \strong{Validate}: score a solution with internal and external metrics
 using \code{\link[=validate]{validate()}}.
-\item \strong{Explore} — summarize cluster sizes, feature profiles, and
+\item \strong{Explore}: summarize cluster sizes, feature profiles, and
 two-dimensional embeddings with \code{\link[=explore]{explore()}}.
-\item \strong{Predict} — assign new observations to learned clusters with
+\item \strong{Predict}: assign new observations to learned clusters with
 \code{\link[=predict.cluster_fit]{predict.cluster_fit()}}.
-\item \strong{Interpret} — explain the clustering rule with
+\item \strong{Interpret}: explain the clustering rule with
 \code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}}, and
 \code{\link[=ceteris_paribus]{ceteris_paribus()}}.
 }
