@@ -297,7 +297,7 @@ $$
 This quantity lies in $[-1, 1]$. A value near $+1$ means $i$ is well inside its
 cluster; near $0$ means it sits on a cluster boundary; negative means it is
 closer on average to a neighboring cluster than to its own. `validate()` reports
-the mean over all observations — a global summary of cluster cohesion and
+the mean over all observations, a global summary of cluster cohesion and
 separation simultaneously.
 
 **Calinski-Harabasz index** (Caliński and Harabasz, 1974) treats clustering as
@@ -314,8 +314,8 @@ useful when comparing solutions with different values of $k$.
 
 **Davies-Bouldin index** (Davies and Bouldin, 1979) penalizes clusters that are
 internally diffuse *and* close to their neighbors. For each cluster $j$, it
-finds the worst-case neighbor — the one that is both the most scattered and the
-closest — and averages these worst cases:
+finds the worst-case neighbor (the one that is both the most scattered and the
+closest) and averages these worst cases:
 $$
 \mathrm{DB} = \frac{1}{k} \sum_{j=1}^{k} \max_{l \ne j}
 \frac{s_j + s_l}{d(\mu_j, \mu_l)},
@@ -330,8 +330,8 @@ k-means, and is included as a direct measure of compactness:
 $$
 \mathrm{WSS} = \sum_{j=1}^{k} \sum_{i \in C_j} \|x_i - \mu_j\|^2.
 $$
-It is most interpretable when compared across solutions with the same $k$
-— the "elbow" in a WSS-vs-$k$ plot signals a natural cluster count.
+It is most interpretable when compared across solutions with the same $k$:
+the "elbow" in a WSS-vs-$k$ plot signals a natural cluster count.
 
 **Bootstrap ARI** (Fang and Wang, 2012) addresses stability rather than
 geometric quality. It refits the same clustering model on $B$ bootstrap
@@ -357,8 +357,8 @@ val_ext$metrics_table
 ```
 
 **Adjusted Rand index** (Hubert and Arabie, 1985) counts the proportion of
-observation pairs on which two labelings agree — both in the same cluster, or
-both in different clusters — and corrects that count for the level of agreement
+observation pairs on which two labelings agree (both in the same cluster, or
+both in different clusters) and corrects that count for the level of agreement
 expected by chance alone. Given a contingency table $(n_{ij})$ with row sums
 $a_i$ and column sums $b_j$:
 $$
@@ -553,8 +553,8 @@ plot_dendrogram(mfit)
 
 ## The unsupervised interpretation problem
 
-Classical interpretability methods — permutation importance, LIME, individual
-conditional profiles — were designed for supervised models where a response
+Classical interpretability methods (permutation importance, LIME, individual
+conditional profiles) were designed for supervised models where a response
 variable $y$ is available. Clustering produces no such variable. The challenge
 is that we want to understand the clustering *rule* $f: \mathcal{X} \to C$,
 not the cluster structure in the data.
@@ -564,7 +564,7 @@ predictor. Every supported method with a `predict()` implementation maps new
 observations to cluster labels (and optionally to distance or membership
 scores). This map is well-defined, deterministic, and can be probed exactly
 like any classifier. The three interpretability functions below operate
-exclusively through this map — they never look at the raw training data or the
+exclusively through this map: they never look at the raw training data or the
 clustering criterion directly. As a result, the explanations describe **the
 decision boundary of the fitted model**, not the geometry of the original
 point cloud. This distinction matters: a feature can be highly informative for
@@ -618,7 +618,7 @@ plot(imp)
 ```
 
 The bar chart ranks features by their mean importance. In this k-means fit on
-`iris`, `Petal.Length` and `Petal.Width` dominate — permuting either of them
+`iris`, `Petal.Length` and `Petal.Width` dominate: permuting either of them
 strongly disrupts which cluster each observation is sent to, confirming that
 the fitted boundary is primarily organised along the petal dimensions.
 
@@ -665,7 +665,7 @@ absolute effects from the fitted weighted linear model.
 The output is a signed coefficient for each feature: a positive coefficient
 means that increasing the feature value makes membership in cluster $c$ more
 likely under the local linear approximation; a negative coefficient means the
-opposite. These are *local* effects — they describe the boundary in the
+opposite. These are *local* effects: they describe the boundary in the
 immediate neighborhood of the explained observation and should not be
 extrapolated globally.
 
@@ -705,7 +705,7 @@ a continuous cluster-specific score (`target = "score"`).
 
 CP profiles answer the question: "if this particular patient had a different
 value for `Petal.Length`, would their phenotype assignment change, and at what
-threshold?" They are individual diagnostic curves — useful for understanding
+threshold?" They are individual diagnostic curves, useful for understanding
 borderline cases and for communicating individual-level model behaviour to
 domain experts.
 
@@ -723,7 +723,7 @@ Each panel shows one feature; each line corresponds to one explained
 observation. The dashed vertical line marks the observation's actual feature
 value, and the dot marks its baseline prediction. Step changes in the profile
 (for `target = "cluster"`) reveal the exact feature thresholds at which the
-model switches cluster assignment — directly interpretable as phenotype
+model switches cluster assignment, directly interpretable as phenotype
 decision boundaries.
 
 ---
