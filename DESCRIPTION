@@ -5,10 +5,10 @@ Authors@R: person("Imad", "El Badisy", email = "elbadisyimad@gmail.com", role = 
 Author: Imad El Badisy [aut, cre]
 Maintainer: Imad El Badisy <elbadisyimad@gmail.com>
 Description: Tools for clustering, consensus meta-clustering,
-    validation, exploratory interpretation, cluster prediction, and standardized
+    validation, exploratory interpretation, cluster prediction, and
     plotting. The package provides a clustering workflow with consensus clustering following Strehl and Ghosh (2002)
     <https://www.jmlr.org/papers/v3/strehl02a.html>.
-URL: https://github.com/ielbadisy/phynotype, https://CRAN.R-project.org/package=phynotype
+URL: https://CRAN.R-project.org/package=phynotype
 BugReports: https://github.com/ielbadisy/phynotype/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
