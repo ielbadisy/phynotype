@@ -84,7 +84,7 @@ Hamming contributions controlled by \code{lambda}.}
 }
 }
 \examples{
-# Numeric data — k-means
+# Numeric data: k-means
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 fit
 clusters(fit)
@@ -101,7 +101,7 @@ d <- mixed_distance(iris[, 1:4])
 fit_hc <- cluster(d, method = "hclust", k = 3)
 fit_hc
 
-# Mixed data — k-prototypes
+# Mixed data: k-prototypes
 if (requireNamespace("clustMixType", quietly = TRUE)) {
   fit_kp <- cluster(iris, method = "kproto", k = 3, seed = 1)
   fit_kp
