@@ -2,7 +2,7 @@
 #'
 #' AGNES (AGglomerative NESting) is an agglomerative hierarchical clustering
 #' method implemented in the \pkg{cluster} package (Kaufman and Rousseeuw,
-#' 1990). It proceeds identically to `hclust` — successively merging the two
+#' 1990). It proceeds identically to `hclust`, successively merging the two
 #' clusters \eqn{A} and \eqn{B} with the smallest inter-cluster distance:
 #'
 #' \deqn{
