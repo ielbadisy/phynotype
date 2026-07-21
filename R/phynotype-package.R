@@ -76,4 +76,5 @@
 #' @docType package
 #' @name phynotype-package
 #' @aliases phynotype
+#' @importFrom rlang .data
 "_PACKAGE"
