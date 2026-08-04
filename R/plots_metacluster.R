@@ -5,9 +5,10 @@
 #' @param x A `metacluster_fit` object.
 #' @param data Optional numeric matrix, data frame, or distance object used to
 #'   compute the embedding. Defaults to the training data stored in `x`.
-#' @param embedding Embedding method. `"auto"` selects PCA for row-by-feature
-#'   data and classical MDS for distance inputs. `"pca"` and `"mds"` may be
-#'   selected explicitly.
+#' @param embedding Embedding method. `"auto"` selects PCA for numeric data,
+#'   FAMD for mixed numeric/categorical data, MCA for categorical data, and
+#'   classical MDS for distance inputs. `"pca"`, `"famd"`, `"mca"`, and
+#'   `"mds"` may be selected explicitly.
 #' @param ... Unused.
 #'
 #' @return A `ggplot` object.
@@ -20,12 +21,12 @@
 #' mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),
 #'                     k = 2:3, seed = 1)
 #' plot_consensus(mfit)
-plot_consensus <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+plot_consensus <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
   UseMethod("plot_consensus")
 }
 
 #' @export
-plot_consensus.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+plot_consensus.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
   embedding <- match.arg(embedding)
   exp <- explore(x, data = data, embedding = embedding)
   labels <- exp$embedding_labels

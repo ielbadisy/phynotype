@@ -45,7 +45,10 @@
 #' @section Mixed-type data:
 #' Use [prepare_mixed_data()] to encode mixed-type data frames into a numeric
 #' matrix before distance-based methods. Use [mixed_distance()] to build a
-#' Gower distance matrix (Gower, 1971) before hierarchical methods.
+#' Gower distance matrix (Gower, 1971) before hierarchical methods. The
+#' exploratory embedding layer automatically selects PCA for numeric data,
+#' FAMD for mixed numeric/categorical data, MCA for categorical data, and
+#' classical MDS for distance objects.
 #'
 #' @references
 #' Rousseeuw, P.J. (1987). Silhouettes: A graphical aid to the interpretation
