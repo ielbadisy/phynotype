@@ -438,10 +438,36 @@ Values near 1 indicate features that strongly discriminate clusters.
 exp$separation_table
 ```
 
-**PCA embedding**:
+**Automatic embeddings**:
+
+`explore()` and `plot_clusters()` choose an embedding backend based on the
+input type:
+
+- numeric data -> PCA
+- mixed numeric/categorical data -> FAMD
+- categorical-only data -> MCA
+- distance objects -> classical MDS
 
 ```{r}
 plot_clusters(fit_km)
+
+if (requireNamespace("FactoMineR", quietly = TRUE)) {
+  mixed_embed <- data.frame(
+    x = c(1, 2, 8, 9, 1.5, 8.5),
+    group = factor(c("a", "a", "b", "b", "a", "b"))
+  )
+  fit_famd <- cluster(mixed_embed, method = "kmm", k = 2, seed = 1)
+  plot_clusters(fit_famd)
+
+  cat_embed <- data.frame(
+    a = factor(c("x", "x", "y", "y")),
+    b = factor(c("u", "v", "u", "v"))
+  )
+  fit_mca <- cluster(cat_embed, method = "kmm", k = 2, seed = 1)
+  plot_clusters(fit_mca)
+}
+
+plot_clusters(fit_hc)
 ```
 
 ---

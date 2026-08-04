@@ -4,8 +4,12 @@
 #' two-dimensional embedding for a fitted clustering solution.
 #'
 #' @param x A `cluster_fit` or `metacluster_fit` object.
-#' @param data Optional numeric matrix or data frame. Defaults to the training
-#'   data stored in `x`.
+#' @param data Optional numeric matrix, data frame, or distance object.
+#'   Defaults to the training data stored in `x`.
+#' @param embedding Embedding method. `"auto"` chooses PCA for numeric data,
+#'   FAMD for mixed numeric/categorical data, MCA for categorical data, and
+#'   classical MDS for distance objects. Explicit values `"pca"`, `"famd"`,
+#'   `"mca"`, and `"mds"` are also supported.
 #' @param ... Unused.
 #'
 #' @details
@@ -43,12 +47,12 @@
 #' exp$size_table
 #' head(exp$feature_summary)
 #' exp$separation_table
-explore <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+explore <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
   UseMethod("explore")
 }
 
 #' @export
-explore.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+explore.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
   embedding <- match.arg(embedding)
   if (is.null(data)) {
     data <- x$data_info$original_data
@@ -84,7 +88,7 @@ explore.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "md
 }
 
 #' @export
-explore.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+explore.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
   embedding <- match.arg(embedding)
   if (is.null(data)) {
     data <- x$data_info$original_data

@@ -22,18 +22,36 @@ test_that("compute_pca_embedding matches prcomp on the first two components", {
   expect_equal(embedding$y, unname(pc$x[, 2]))
 })
 
-test_that("compute_pca_embedding can encode mixed data frames", {
+test_that("compute_embedding resolves mixed data to FAMD", {
+  skip_if_not_installed("FactoMineR")
   mixed <- data.frame(
     x = c(1, 2, 3, 4),
     group = factor(c("a", "a", "b", "b"))
   )
   clusters <- c(1, 1, 2, 2)
-  embedding <- phynotype:::compute_pca_embedding(mixed, clusters)
+  embedding <- phynotype:::compute_embedding(mixed, clusters)
 
-  expect_s3_class(embedding, "data.frame")
-  expect_equal(nrow(embedding), nrow(mixed))
-  expect_true(is.numeric(embedding$x))
-  expect_true(is.numeric(embedding$y))
+  expect_equal(embedding$method, "famd")
+  expect_equal(embedding$labels$x, "Dim 1")
+  expect_equal(embedding$labels$y, "Dim 2")
+  expect_equal(nrow(embedding$data), nrow(mixed))
+  expect_named(embedding$data, c("x", "y", "cluster"))
+})
+
+test_that("compute_embedding resolves categorical data to MCA", {
+  skip_if_not_installed("FactoMineR")
+  cat_df <- data.frame(
+    a = factor(c("x", "x", "y", "y")),
+    b = factor(c("u", "v", "u", "v"))
+  )
+  clusters <- c(1, 1, 2, 2)
+  embedding <- phynotype:::compute_embedding(cat_df, clusters)
+
+  expect_equal(embedding$method, "mca")
+  expect_equal(embedding$labels$x, "Dim 1")
+  expect_equal(embedding$labels$y, "Dim 2")
+  expect_equal(nrow(embedding$data), nrow(cat_df))
+  expect_named(embedding$data, c("x", "y", "cluster"))
 })
 
 test_that("compute_embedding resolves distance inputs to MDS", {
