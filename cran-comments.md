@@ -9,9 +9,12 @@
 * checking for future file timestamps ... NOTE
   unable to verify current time
 
-  This note is a side effect of no internet access to the time server in
-  the local check environment and is not expected on CRAN's check machines.
-
 ## Notes
 
-This is a new submission.
+This is a resubmission after addressing the incoming check issues:
+
+* removed the generated `README_files` artifact from the source package by tightening `.Rbuildignore`
+* added `inst/WORDLIST` for the proper nouns `Ghosh` and `Strehl` flagged in `DESCRIPTION`
+* made the complete vignette HTML-only so the source tarball no longer ships a vignette PDF
+
+The local `R CMD check --no-manual --as-cran` run completed with no errors or warnings; the remaining NOTE is the standard new-submission/current-time note.
