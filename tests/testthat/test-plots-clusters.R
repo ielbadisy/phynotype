@@ -30,6 +30,34 @@ test_that("plot_clusters uses MDS labels for distance-based fits", {
   expect_equal(as.character(p$labels$y), "MDS2")
 })
 
+test_that("plot_clusters uses FAMD labels for mixed-data fits", {
+  skip_if_not_installed("FactoMineR")
+  mixed <- data.frame(
+    x = c(1, 2, 8, 9, 1.5, 8.5),
+    group = factor(c("a", "a", "b", "b", "a", "b"))
+  )
+  fit <- cluster(mixed, method = "kproto", k = 2, seed = 1, nstart = 2)
+  p <- plot_clusters(fit)
+
+  expect_s3_class(p, "ggplot")
+  expect_equal(as.character(p$labels$x), "Dim 1")
+  expect_equal(as.character(p$labels$y), "Dim 2")
+})
+
+test_that("plot_clusters uses MCA labels for categorical-only fits", {
+  skip_if_not_installed("FactoMineR")
+  cat_df <- data.frame(
+    a = factor(c("x", "x", "y", "y")),
+    b = factor(c("u", "v", "u", "v"))
+  )
+  fit <- cluster(cat_df, method = "kmm", k = 2, seed = 1)
+  p <- plot_clusters(fit)
+
+  expect_s3_class(p, "ggplot")
+  expect_equal(as.character(p$labels$x), "Dim 1")
+  expect_equal(as.character(p$labels$y), "Dim 2")
+})
+
 test_that("plot_cluster_sizes returns a bar chart ggplot for cluster_fit, cluster_explore, and metacluster_fit", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
   p1 <- plot_cluster_sizes(fit)

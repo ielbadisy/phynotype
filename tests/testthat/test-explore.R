@@ -57,8 +57,8 @@ test_that("explore.cluster_fit falls back to MDS for distance inputs", {
   expect_equal(nrow(exp$embedding), attr(d, "Size"))
 })
 
-test_that("explore.cluster_fit handles mixed-data fits", {
-  skip_if_not_installed("clustMixType")
+test_that("explore.cluster_fit handles mixed-data fits with FAMD", {
+  skip_if_not_installed("FactoMineR")
   mixed <- data.frame(
     x = c(1, 2, 8, 9, 1.5, 8.5),
     group = factor(c("a", "a", "b", "b", "a", "b"))
@@ -67,8 +67,26 @@ test_that("explore.cluster_fit handles mixed-data fits", {
   exp <- explore(fit)
 
   expect_s3_class(exp, "cluster_explore")
-  expect_equal(exp$embedding_method, "pca")
+  expect_equal(exp$embedding_method, "famd")
+  expect_equal(exp$embedding_labels$x, "Dim 1")
+  expect_equal(exp$embedding_labels$y, "Dim 2")
   expect_equal(nrow(exp$embedding), nrow(mixed))
   expect_false(is.null(exp$feature_summary))
   expect_true(all(c("feature", "mean") %in% names(exp$feature_summary)))
+})
+
+test_that("explore.cluster_fit handles categorical-only fits with MCA", {
+  skip_if_not_installed("FactoMineR")
+  cat_df <- data.frame(
+    a = factor(c("x", "x", "y", "y")),
+    b = factor(c("u", "v", "u", "v"))
+  )
+  fit <- cluster(cat_df, method = "kmm", k = 2, seed = 1)
+  exp <- explore(fit)
+
+  expect_s3_class(exp, "cluster_explore")
+  expect_equal(exp$embedding_method, "mca")
+  expect_equal(exp$embedding_labels$x, "Dim 1")
+  expect_equal(exp$embedding_labels$y, "Dim 2")
+  expect_equal(nrow(exp$embedding), nrow(cat_df))
 })

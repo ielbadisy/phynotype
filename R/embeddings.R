@@ -6,28 +6,66 @@ normalize_embedding_method <- function(method) {
     stop("`embedding` must be a single non-missing string.", call. = FALSE)
   }
   method <- tolower(method)
-  if (!method %in% c("auto", "pca", "mds")) {
+  if (!method %in% c("auto", "pca", "famd", "mca", "mds")) {
     stop("Unsupported embedding method `", method, "`.", call. = FALSE)
   }
   method
 }
 
-normalize_embedding_input <- function(data) {
+prepare_embedding_input <- function(data) {
   if (inherits(data, "dist")) {
     return(list(data = data, kind = "dist"))
   }
-  if (is.data.frame(data)) {
-    numeric_cols <- vapply(data, is.numeric, logical(1))
-    if (!all(numeric_cols)) {
-      data <- prepare_mixed_data(data, scale = TRUE)
-      return(list(data = data, kind = "mixed"))
+  if (is.matrix(data)) {
+    if (!is.numeric(data)) {
+      stop("`data` must be numeric when supplied as a matrix.", call. = FALSE)
     }
-    data <- as.matrix(data)
+    return(list(data = data, kind = "numeric"))
   }
-  if (!is.matrix(data) || !is.numeric(data)) {
-    stop("`data` must be a numeric matrix/data frame or a distance object.", call. = FALSE)
+  if (!is.data.frame(data)) {
+    stop("`data` must be a matrix, data frame, or distance object.", call. = FALSE)
   }
-  list(data = data, kind = "numeric")
+  if (nrow(data) < 1L || ncol(data) < 1L) {
+    stop("`data` must contain at least one row and one column.", call. = FALSE)
+  }
+
+  cleaned <- as.data.frame(data, stringsAsFactors = FALSE)
+  has_numeric <- FALSE
+  has_categorical <- FALSE
+
+  for (nm in names(cleaned)) {
+    col <- cleaned[[nm]]
+    if (is.character(col) || is.logical(col) || is.factor(col) || is.ordered(col)) {
+      cleaned[[nm]] <- add_missing_level(as.factor(col))
+      has_categorical <- TRUE
+    } else if (is.integer(col) && length(unique(col[!is.na(col)])) <= 10L) {
+      cleaned[[nm]] <- add_missing_level(as.factor(col))
+      has_categorical <- TRUE
+    } else if (is.numeric(col)) {
+      col <- as.numeric(col)
+      if (anyNA(col)) {
+        med <- stats::median(col, na.rm = TRUE)
+        if (!is.finite(med)) {
+          med <- 0
+        }
+        col[is.na(col)] <- med
+      }
+      cleaned[[nm]] <- col
+      has_numeric <- TRUE
+    } else {
+      stop("`data` contains an unsupported column type in `", nm, "`.", call. = FALSE)
+    }
+  }
+
+  kind <- if (has_numeric && has_categorical) {
+    "mixed"
+  } else if (has_categorical) {
+    "categorical"
+  } else {
+    "numeric"
+  }
+
+  list(data = cleaned, kind = kind)
 }
 
 pad_embedding_coords <- function(coords) {
@@ -40,16 +78,32 @@ pad_embedding_coords <- function(coords) {
   } else if (ncol(coords) < 1L) {
     coords <- matrix(0, nrow = nrow(coords), ncol = 2L)
   }
-  colnames(coords)[1:2] <- c("x", "y")
+  coords <- coords[, 1:2, drop = FALSE]
+  colnames(coords) <- c("x", "y")
   coords
+}
+
+embedding_labels <- function(method) {
+  switch(
+    method,
+    pca = list(x = "PC1", y = "PC2"),
+    famd = list(x = "Dim 1", y = "Dim 2"),
+    mca = list(x = "Dim 1", y = "Dim 2"),
+    mds = list(x = "MDS1", y = "MDS2")
+  )
 }
 
 compute_pca_embedding <- function(data, clusters) {
   if (inherits(data, "dist")) {
     stop("PCA embedding requires row-by-feature data, not a distance object.", call. = FALSE)
   }
-  input <- normalize_embedding_input(data)
-  pc <- stats::prcomp(input$data, center = TRUE, scale. = TRUE)
+  input <- prepare_embedding_input(data)
+  x <- if (input$kind == "numeric") {
+    input$data
+  } else {
+    prepare_mixed_data(input$data, scale = TRUE)
+  }
+  pc <- stats::prcomp(x, center = TRUE, scale. = TRUE)
   coords <- pad_embedding_coords(pc$x)
   data.frame(
     x = coords[, 1],
@@ -58,14 +112,52 @@ compute_pca_embedding <- function(data, clusters) {
   )
 }
 
+compute_famd_embedding <- function(data, clusters) {
+  if (!requireNamespace("FactoMineR", quietly = TRUE)) {
+    stop("Package `FactoMineR` is required for FAMD embeddings.", call. = FALSE)
+  }
+  input <- prepare_embedding_input(data)
+  if (input$kind != "mixed") {
+    stop("FAMD embeddings require mixed numeric and categorical data.", call. = FALSE)
+  }
+  famd <- FactoMineR::FAMD(input$data, graph = FALSE)
+  coords <- pad_embedding_coords(famd$ind$coord)
+  data.frame(
+    x = coords[, 1],
+    y = coords[, 2],
+    cluster = factor(clusters)
+  )
+}
+
+compute_mca_embedding <- function(data, clusters) {
+  if (!requireNamespace("FactoMineR", quietly = TRUE)) {
+    stop("Package `FactoMineR` is required for MCA embeddings.", call. = FALSE)
+  }
+  input <- prepare_embedding_input(data)
+  if (input$kind != "categorical") {
+    stop("MCA embeddings require categorical data only.", call. = FALSE)
+  }
+  mca <- FactoMineR::MCA(input$data, graph = FALSE)
+  coords <- pad_embedding_coords(mca$ind$coord)
+  data.frame(
+    x = coords[, 1],
+    y = coords[, 2],
+    cluster = factor(clusters)
+  )
+}
+
 compute_mds_embedding <- function(data, clusters) {
-  input <- normalize_embedding_input(data)
-  if (inherits(input$data, "dist")) {
+  input <- prepare_embedding_input(data)
+  if (input$kind == "dist") {
     d <- input$data
     n_obs <- attr(d, "Size")
-  } else {
+  } else if (input$kind == "numeric") {
     d <- stats::dist(input$data)
     n_obs <- nrow(input$data)
+  } else {
+    encoded <- prepare_mixed_data(input$data, scale = TRUE)
+    d <- stats::dist(encoded)
+    n_obs <- nrow(encoded)
   }
   coords <- if (n_obs <= 1L) {
     matrix(0, nrow = n_obs, ncol = 2L)
@@ -81,18 +173,15 @@ compute_mds_embedding <- function(data, clusters) {
 
 compute_embedding <- function(data, clusters, method = "auto", data_info = NULL) {
   method <- normalize_embedding_method(method)
-  input_kind <- if (!is.null(data_info) && !is.null(data_info$input_type)) {
-    data_info$input_type
-  } else if (inherits(data, "dist")) {
-    "dist"
-  } else if (is.data.frame(data) && !all(vapply(data, is.numeric, logical(1)))) {
-    "mixed"
-  } else {
-    "numeric"
-  }
-
+  input <- prepare_embedding_input(data)
   resolved <- if (method == "auto") {
-    if (identical(input_kind, "dist")) "mds" else "pca"
+    switch(
+      input$kind,
+      numeric = "pca",
+      mixed = "famd",
+      categorical = "mca",
+      dist = "mds"
+    )
   } else {
     method
   }
@@ -100,16 +189,14 @@ compute_embedding <- function(data, clusters, method = "auto", data_info = NULL)
   embedding <- switch(
     resolved,
     pca = compute_pca_embedding(data, clusters),
+    famd = compute_famd_embedding(data, clusters),
+    mca = compute_mca_embedding(data, clusters),
     mds = compute_mds_embedding(data, clusters)
   )
 
   list(
     data = embedding,
     method = resolved,
-    labels = if (resolved == "mds") {
-      list(x = "MDS1", y = "MDS2")
-    } else {
-      list(x = "PC1", y = "PC2")
-    }
+    labels = embedding_labels(resolved)
   )
 }

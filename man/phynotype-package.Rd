@@ -55,7 +55,10 @@ Ghosh, 2002).
 
 Use \code{\link[=prepare_mixed_data]{prepare_mixed_data()}} to encode mixed-type data frames into a numeric
 matrix before distance-based methods. Use \code{\link[=mixed_distance]{mixed_distance()}} to build a
-Gower distance matrix (Gower, 1971) before hierarchical methods.
+Gower distance matrix (Gower, 1971) before hierarchical methods. The
+exploratory embedding layer automatically selects PCA for numeric data, FAMD
+for mixed numeric/categorical data, MCA for categorical data, and classical
+MDS for distance objects.
 }
 
 \references{
