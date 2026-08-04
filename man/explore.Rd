@@ -4,13 +4,17 @@
 \alias{explore}
 \title{Explore clustering structure}
 \usage{
-explore(x, data = NULL, ...)
+explore(x, data = NULL, embedding = c("auto", "pca", "mds"), ...)
 }
 \arguments{
 \item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
-\item{data}{Optional numeric matrix or data frame. Defaults to the training
-data stored in \code{x}.}
+\item{data}{Optional numeric matrix, data frame, or distance object. Defaults
+to the training data stored in \code{x}.}
+
+\item{embedding}{Embedding method. \code{"auto"} selects PCA for row-by-feature
+data and classical MDS for distance inputs. \code{"pca"} and \code{"mds"} may
+be selected explicitly.}
 
 \item{...}{Unused.}
 }
@@ -19,16 +23,16 @@ A \code{cluster_explore} object with components:
 \describe{
 \item{\code{size_table}}{Data frame with cluster sizes.}
 \item{\code{feature_summary}}{Data frame with per-cluster descriptive
-statistics for each feature.}
+statistics for each feature, or \code{NULL} when the input is distance-based.}
 \item{\code{separation_table}}{Data frame with per-feature eta-squared
-values.}
-\item{\code{embedding}}{Data frame with two PCA coordinates and cluster
+values, or \code{NULL} when the input is distance-based.}
+\item{\code{embedding}}{Data frame with two embedding coordinates and cluster
 labels.}
 }
 }
 \description{
-Summarize cluster sizes, feature profiles, feature separation, and a PCA
-embedding for a fitted clustering solution.
+Summarize cluster sizes, feature profiles, feature separation, and a
+two-dimensional embedding for a fitted clustering solution.
 }
 \details{
 \code{explore()} computes four summaries:
@@ -39,7 +43,7 @@ and max for each feature.}
 \item{Separation table}{The eta-squared statistic for each feature,
 \eqn{\eta^2_j = \mathrm{SS}_{B,j} / \mathrm{SS}_{T,j}}, measuring
 how much between-cluster variance each feature explains.}
-\item{PCA embedding}{Two-dimensional PCA projection for visualization
+\item{Embedding}{Two-dimensional projection for visualization
 (see \code{\link[=plot_clusters]{plot_clusters()}}).}
 }
 }

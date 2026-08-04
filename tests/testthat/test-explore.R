@@ -42,3 +42,33 @@ test_that("explore.metacluster_fit returns a cluster_explore object without a pr
   expect_equal(sum(exp$size_table$size), nrow(iris))
   expect_equal(nrow(exp$embedding), nrow(iris))
 })
+
+test_that("explore.cluster_fit falls back to MDS for distance inputs", {
+  d <- stats::dist(iris[, 1:4])
+  fit <- cluster(d, method = "hclust", k = 3)
+  exp <- explore(fit)
+
+  expect_s3_class(exp, "cluster_explore")
+  expect_equal(exp$embedding_method, "mds")
+  expect_equal(exp$embedding_labels$x, "MDS1")
+  expect_equal(exp$embedding_labels$y, "MDS2")
+  expect_null(exp$feature_summary)
+  expect_null(exp$separation_table)
+  expect_equal(nrow(exp$embedding), attr(d, "Size"))
+})
+
+test_that("explore.cluster_fit handles mixed-data fits", {
+  skip_if_not_installed("clustMixType")
+  mixed <- data.frame(
+    x = c(1, 2, 8, 9, 1.5, 8.5),
+    group = factor(c("a", "a", "b", "b", "a", "b"))
+  )
+  fit <- cluster(mixed, method = "kproto", k = 2, seed = 1, nstart = 2)
+  exp <- explore(fit)
+
+  expect_s3_class(exp, "cluster_explore")
+  expect_equal(exp$embedding_method, "pca")
+  expect_equal(nrow(exp$embedding), nrow(mixed))
+  expect_false(is.null(exp$feature_summary))
+  expect_true(all(c("feature", "mean") %in% names(exp$feature_summary)))
+})
