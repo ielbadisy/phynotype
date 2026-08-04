@@ -87,7 +87,9 @@ new_cluster_explore <- function(size_table,
                                 separation_table,
                                 prototype_table = NULL,
                                 embedding,
-                                plot_data) {
+                                plot_data,
+                                embedding_method = "pca",
+                                embedding_labels = list(x = "PC1", y = "PC2")) {
   structure(
     list(
       size_table = size_table,
@@ -95,7 +97,9 @@ new_cluster_explore <- function(size_table,
       separation_table = separation_table,
       prototype_table = prototype_table,
       embedding = embedding,
-      plot_data = plot_data
+      plot_data = plot_data,
+      embedding_method = embedding_method,
+      embedding_labels = embedding_labels
     ),
     class = "cluster_explore"
   )

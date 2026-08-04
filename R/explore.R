@@ -1,7 +1,7 @@
 #' Explore clustering structure
 #'
-#' Summarize cluster sizes, feature profiles, feature separation, and a PCA
-#' embedding for a fitted clustering solution.
+#' Summarize cluster sizes, feature profiles, feature separation, and a
+#' two-dimensional embedding for a fitted clustering solution.
 #'
 #' @param x A `cluster_fit` or `metacluster_fit` object.
 #' @param data Optional numeric matrix or data frame. Defaults to the training
@@ -17,7 +17,7 @@
 #'   \item{Separation table}{The eta-squared statistic for each feature,
 #'     \eqn{\eta^2_j = \mathrm{SS}_{B,j} / \mathrm{SS}_{T,j}}, measuring
 #'     how much between-cluster variance each feature explains.}
-#'   \item{PCA embedding}{Two-dimensional PCA projection for visualization
+#'   \item{Embedding}{Two-dimensional projection for visualization
 #'     (see [plot_clusters()]).}
 #' }
 #'
@@ -28,7 +28,7 @@
 #'     statistics for each feature.}
 #'   \item{`separation_table`}{Data frame with per-feature eta-squared
 #'     values.}
-#'   \item{`embedding`}{Data frame with two PCA coordinates and cluster
+#'   \item{`embedding`}{Data frame with two embedding coordinates and cluster
 #'     labels.}
 #' }
 #'
@@ -43,54 +43,77 @@
 #' exp$size_table
 #' head(exp$feature_summary)
 #' exp$separation_table
-explore <- function(x, data = NULL, ...) {
+explore <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
   UseMethod("explore")
 }
 
 #' @export
-explore.cluster_fit <- function(x, data = NULL, ...) {
+explore.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+  embedding <- match.arg(embedding)
   if (is.null(data)) {
     data <- x$data_info$original_data
   }
-  if (is.data.frame(data)) {
-    data <- as.matrix(data)
-  }
   cluster_factor <- factor(x$clusters)
   size_table <- data.frame(cluster = levels(cluster_factor), size = as.integer(table(cluster_factor)))
-  feature_summary <- build_feature_summary(data, x$clusters)
-  separation_table <- compute_separation_table(data, x$clusters)
-  embedding <- compute_pca_embedding(data, x$clusters)
-  plot_data <- embedding
+  if (inherits(data, "dist")) {
+    feature_summary <- NULL
+    separation_table <- NULL
+  } else {
+    summary_data <- if (is.data.frame(data) && !all(vapply(data, is.numeric, logical(1)))) {
+      prepare_mixed_data(data, scale = TRUE)
+    } else if (is.data.frame(data)) {
+      as.matrix(data)
+    } else {
+      data
+    }
+    feature_summary <- build_feature_summary(summary_data, x$clusters)
+    separation_table <- compute_separation_table(summary_data, x$clusters)
+  }
+  embedding <- compute_embedding(data, x$clusters, method = embedding, data_info = x$data_info)
   prototype_table <- if (!is.null(x$prototypes)) as.data.frame(x$prototypes) else if (!is.null(x$centers)) as.data.frame(x$centers) else NULL
   new_cluster_explore(
     size_table = size_table,
     feature_summary = feature_summary,
     separation_table = separation_table,
     prototype_table = prototype_table,
-    embedding = embedding,
-    plot_data = plot_data
+    embedding = embedding$data,
+    plot_data = embedding$data,
+    embedding_method = embedding$method,
+    embedding_labels = embedding$labels
   )
 }
 
 #' @export
-explore.metacluster_fit <- function(x, data = NULL, ...) {
+explore.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+  embedding <- match.arg(embedding)
   if (is.null(data)) {
     data <- x$data_info$original_data
   }
-  if (is.data.frame(data)) {
-    data <- as.matrix(data)
-  }
   cluster_factor <- factor(x$final_clusters)
   size_table <- data.frame(cluster = levels(cluster_factor), size = as.integer(table(cluster_factor)))
-  feature_summary <- build_feature_summary(data, x$final_clusters)
-  separation_table <- compute_separation_table(data, x$final_clusters)
-  embedding <- compute_pca_embedding(data, x$final_clusters)
+  if (inherits(data, "dist")) {
+    feature_summary <- NULL
+    separation_table <- NULL
+  } else {
+    summary_data <- if (is.data.frame(data) && !all(vapply(data, is.numeric, logical(1)))) {
+      prepare_mixed_data(data, scale = TRUE)
+    } else if (is.data.frame(data)) {
+      as.matrix(data)
+    } else {
+      data
+    }
+    feature_summary <- build_feature_summary(summary_data, x$final_clusters)
+    separation_table <- compute_separation_table(summary_data, x$final_clusters)
+  }
+  embedding <- compute_embedding(data, x$final_clusters, method = embedding, data_info = x$data_info)
   new_cluster_explore(
     size_table = size_table,
     feature_summary = feature_summary,
     separation_table = separation_table,
     prototype_table = NULL,
-    embedding = embedding,
-    plot_data = embedding
+    embedding = embedding$data,
+    plot_data = embedding$data,
+    embedding_method = embedding$method,
+    embedding_labels = embedding$labels
   )
 }

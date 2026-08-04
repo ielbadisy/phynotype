@@ -83,7 +83,11 @@ summary.cluster_validation <- function(object, ...) {
 #' @export
 print.cluster_explore <- function(x, ...) {
   cat("<cluster_explore>\n")
-  cat("  Rows in feature summary: ", nrow(x$feature_summary), "\n", sep = "")
+  if (is.null(x$feature_summary)) {
+    cat("  Feature summary: unavailable\n")
+  } else {
+    cat("  Rows in feature summary: ", nrow(x$feature_summary), "\n", sep = "")
+  }
   invisible(x)
 }
 
