@@ -4,13 +4,17 @@
 \alias{plot_consensus}
 \title{Plot consensus clustering in 2D}
 \usage{
-plot_consensus(x, data = NULL, ...)
+plot_consensus(x, data = NULL, embedding = c("auto", "pca", "mds"), ...)
 }
 \arguments{
 \item{x}{A \code{metacluster_fit} object.}
 
-\item{data}{Optional numeric matrix or data frame used to compute the
-embedding. Defaults to the training data stored in \code{x}.}
+\item{data}{Optional numeric matrix, data frame, or distance object used to
+compute the embedding. Defaults to the training data stored in \code{x}.}
+
+\item{embedding}{Embedding method. \code{"auto"} selects PCA for row-by-feature
+data and classical MDS for distance inputs. \code{"pca"} and \code{"mds"} may
+be selected explicitly.}
 
 \item{...}{Unused.}
 }
@@ -18,8 +22,7 @@ embedding. Defaults to the training data stored in \code{x}.}
 A \code{ggplot} object.
 }
 \description{
-Project the consensus cluster assignments onto a two-dimensional PCA
-embedding.
+Project the consensus cluster assignments onto a two-dimensional embedding.
 }
 \examples{
 mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),

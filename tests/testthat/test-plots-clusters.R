@@ -20,6 +20,16 @@ test_that("plot_clusters dispatches for cluster_fit, cluster_explore, and metacl
   expect_equal(p3$labels$title, "Consensus clusters")
 })
 
+test_that("plot_clusters uses MDS labels for distance-based fits", {
+  d <- stats::dist(iris[, 1:4])
+  fit <- cluster(d, method = "hclust", k = 3)
+  p <- plot_clusters(fit)
+
+  expect_s3_class(p, "ggplot")
+  expect_equal(as.character(p$labels$x), "MDS1")
+  expect_equal(as.character(p$labels$y), "MDS2")
+})
+
 test_that("plot_cluster_sizes returns a bar chart ggplot for cluster_fit, cluster_explore, and metacluster_fit", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
   p1 <- plot_cluster_sizes(fit)

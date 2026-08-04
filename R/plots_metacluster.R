@@ -1,11 +1,13 @@
 #' Plot consensus clustering in 2D
 #'
-#' Project the consensus cluster assignments onto a two-dimensional PCA
-#' embedding.
+#' Project the consensus cluster assignments onto a two-dimensional embedding.
 #'
 #' @param x A `metacluster_fit` object.
-#' @param data Optional numeric matrix or data frame used to compute the
-#'   embedding. Defaults to the training data stored in `x`.
+#' @param data Optional numeric matrix, data frame, or distance object used to
+#'   compute the embedding. Defaults to the training data stored in `x`.
+#' @param embedding Embedding method. `"auto"` selects PCA for row-by-feature
+#'   data and classical MDS for distance inputs. `"pca"` and `"mds"` may be
+#'   selected explicitly.
 #' @param ... Unused.
 #'
 #' @return A `ggplot` object.
@@ -18,16 +20,21 @@
 #' mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),
 #'                     k = 2:3, seed = 1)
 #' plot_consensus(mfit)
-plot_consensus <- function(x, data = NULL, ...) {
+plot_consensus <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
   UseMethod("plot_consensus")
 }
 
 #' @export
-plot_consensus.metacluster_fit <- function(x, data = NULL, ...) {
-  exp <- explore(x, data = data)
+plot_consensus.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+  embedding <- match.arg(embedding)
+  exp <- explore(x, data = data, embedding = embedding)
+  labels <- exp$embedding_labels
+  if (is.null(labels)) {
+    labels <- list(x = "PC1", y = "PC2")
+  }
   ggplot2::ggplot(exp$plot_data, ggplot2::aes(x = .data[["x"]], y = .data[["y"]], color = .data[["cluster"]])) +
     ggplot2::geom_point(size = 2) +
-    ggplot2::labs(title = "Consensus clusters", x = "PC1", y = "PC2", color = "Cluster") +
+    ggplot2::labs(title = "Consensus clusters", x = labels$x, y = labels$y, color = "Cluster") +
     ggplot2::theme_minimal()
 }
 
