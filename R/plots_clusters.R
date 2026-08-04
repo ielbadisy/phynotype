@@ -1,12 +1,15 @@
 #' Plot clustered observations in 2D
 #'
-#' Project observations onto their first two principal components and color
-#' them by cluster assignment. For `metacluster_fit` objects, delegates to
+#' Project observations onto a two-dimensional embedding and color them by
+#' cluster assignment. For `metacluster_fit` objects, delegates to
 #' [plot_consensus()].
 #'
 #' @param x A `cluster_fit`, `metacluster_fit`, or `cluster_explore` object.
-#' @param data Optional numeric matrix or data frame used to compute the PCA
-#'   embedding. Defaults to the training data stored in `x`.
+#' @param data Optional numeric matrix, data frame, or distance object used to
+#'   compute the embedding. Defaults to the training data stored in `x`.
+#' @param embedding Embedding method. `"auto"` selects PCA for row-by-feature
+#'   data and classical MDS for distance inputs. `"pca"` and `"mds"` may be
+#'   selected explicitly.
 #' @param ... Unused.
 #'
 #' @return A `ggplot` object.
@@ -19,26 +22,32 @@
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 #' plot_clusters(fit)
-plot_clusters <- function(x, data = NULL, ...) {
+plot_clusters <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
   UseMethod("plot_clusters")
 }
 
 #' @export
-plot_clusters.cluster_fit <- function(x, data = NULL, ...) {
-  exp <- explore(x, data = data)
+plot_clusters.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+  embedding <- match.arg(embedding)
+  exp <- explore(x, data = data, embedding = embedding)
   plot_clusters(exp)
 }
 
 #' @export
-plot_clusters.metacluster_fit <- function(x, data = NULL, ...) {
-  plot_consensus(x, data = data, ...)
+plot_clusters.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mds"), ...) {
+  embedding <- match.arg(embedding)
+  plot_consensus(x, data = data, embedding = embedding, ...)
 }
 
 #' @export
 plot_clusters.cluster_explore <- function(x, ...) {
+  labels <- x$embedding_labels
+  if (is.null(labels)) {
+    labels <- list(x = "PC1", y = "PC2")
+  }
   ggplot2::ggplot(x$plot_data, ggplot2::aes(x = .data[["x"]], y = .data[["y"]], color = .data[["cluster"]])) +
     ggplot2::geom_point(size = 2) +
-    ggplot2::labs(title = "Cluster embedding", x = "PC1", y = "PC2", color = "Cluster") +
+    ggplot2::labs(title = "Cluster embedding", x = labels$x, y = labels$y, color = "Cluster") +
     ggplot2::theme_minimal()
 }
 
@@ -110,6 +119,9 @@ plot_feature_profiles <- function(x, features = NULL, ...) {
 
 #' @export
 plot_feature_profiles.cluster_explore <- function(x, features = NULL, ...) {
+  if (is.null(x$feature_summary)) {
+    stop("Feature profiles are unavailable for this explore object.", call. = FALSE)
+  }
   dat <- x$feature_summary
   if (!is.null(features)) {
     dat <- dat[dat$feature %in% features, , drop = FALSE]

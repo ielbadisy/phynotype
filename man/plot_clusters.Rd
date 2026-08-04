@@ -4,13 +4,17 @@
 \alias{plot_clusters}
 \title{Plot clustered observations in 2D}
 \usage{
-plot_clusters(x, data = NULL, ...)
+plot_clusters(x, data = NULL, embedding = c("auto", "pca", "mds"), ...)
 }
 \arguments{
 \item{x}{A \code{cluster_fit}, \code{metacluster_fit}, or \code{cluster_explore} object.}
 
-\item{data}{Optional numeric matrix or data frame used to compute the PCA
-embedding. Defaults to the training data stored in \code{x}.}
+\item{data}{Optional numeric matrix, data frame, or distance object used to
+compute the embedding. Defaults to the training data stored in \code{x}.}
+
+\item{embedding}{Embedding method. \code{"auto"} selects PCA for row-by-feature
+data and classical MDS for distance inputs. \code{"pca"} and \code{"mds"} may
+be selected explicitly.}
 
 \item{...}{Unused.}
 }
@@ -18,8 +22,8 @@ embedding. Defaults to the training data stored in \code{x}.}
 A \code{ggplot} object.
 }
 \description{
-Project observations onto their first two principal components and color
-them by cluster assignment. For \code{metacluster_fit} objects, delegates to
+Project observations onto a two-dimensional embedding and color them by
+cluster assignment. For \code{metacluster_fit} objects, delegates to
 \code{\link[=plot_consensus]{plot_consensus()}}.
 }
 \examples{
