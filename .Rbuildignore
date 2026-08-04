@@ -6,6 +6,8 @@
 ^README\.html$
 ^README\.Rmd$
 ^README_files$
+^README_files/
+^README_files/.*$
 ^report-demo\.html$
 ^report-demo\.Rmd$
 ^phynotype_.*\.tar\.gz$
