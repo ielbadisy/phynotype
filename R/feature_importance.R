@@ -192,5 +192,5 @@ plot.feature_importance <- function(x, ...) {
     ggplot2::geom_col(fill = "#2C7FB8") +
     ggplot2::coord_flip() +
     ggplot2::labs(title = "Permutation feature importance", x = NULL, y = "Importance") +
-    ggplot2::theme_minimal()
+    theme_phynotype()
 }

@@ -213,16 +213,6 @@ plot.ceteris_paribus <- function(x, ...) {
       x = NULL,
       y = "prediction"
     ) +
-    ggplot2::theme_minimal(base_size = 10) +
-    ggplot2::theme(
-      plot.title = ggplot2::element_text(color = purple, size = 14, face = "plain"),
-      plot.subtitle = ggplot2::element_text(color = purple, size = 9),
-      axis.title.y = ggplot2::element_text(color = purple),
-      axis.text = ggplot2::element_text(color = purple),
-      strip.text = ggplot2::element_text(color = purple, face = "plain"),
-      panel.grid.minor = ggplot2::element_blank(),
-      panel.grid.major.x = ggplot2::element_line(color = "#E7E7E7", linewidth = 0.3),
-      panel.grid.major.y = ggplot2::element_line(color = "#E7E7E7", linewidth = 0.3),
-      legend.position = "none"
-    )
+    theme_phynotype() +
+    ggplot2::theme(legend.position = "none")
 }

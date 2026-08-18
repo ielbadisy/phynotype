@@ -240,5 +240,5 @@ plot.lime_explanation <- function(x, ...) {
     ggplot2::coord_flip() +
     ggplot2::facet_wrap(stats::as.formula("~ observation"), scales = "free_y") +
     ggplot2::labs(title = "LIME local explanations", x = NULL, y = "Local surrogate coefficient", fill = "Direction") +
-    ggplot2::theme_minimal()
+    theme_phynotype()
 }

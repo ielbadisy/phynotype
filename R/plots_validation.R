@@ -46,7 +46,7 @@ plot_silhouette.cluster_fit <- function(x, ...) {
   ) +
     ggplot2::geom_segment(linewidth = 0.7) +
     ggplot2::labs(title = "Silhouette widths", x = "Observation", y = "Silhouette width", color = "Cluster") +
-    ggplot2::theme_minimal()
+    theme_phynotype()
 }
 
 #' @export
