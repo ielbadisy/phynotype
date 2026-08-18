@@ -105,19 +105,47 @@ metacluster <- function(x,
     stop("`metacluster()` requires a numeric matrix or data frame.", call. = FALSE)
   }
 
+  ## When `x` is mixed-type, native mixed methods (kproto/kmm) can use it
+  ## as-is, but numeric-only methods (kmeans/pam/dbscan/gmm) and
+  ## distance-based methods (hclust/agnes) each need their own encoded
+  ## representation. Without this, combining e.g. c("kproto", "kmeans") on
+  ## mixed data errored because raw `x` was passed unchanged to every
+  ## candidate regardless of what that method actually accepts.
+  is_mixed <- is.data.frame(data) && !all(vapply(data, is.numeric, logical(1)))
+  numeric_x <- NULL
+  dist_x <- NULL
+  candidate_input <- function(method) {
+    if (!is_mixed || method %in% c("kproto", "kmm")) {
+      return(x)
+    }
+    if (method %in% c("hclust", "agnes")) {
+      if (is.null(dist_x)) {
+        dist_x <<- mixed_distance(data)
+      }
+      return(dist_x)
+    }
+    if (is.null(numeric_x)) {
+      numeric_x <<- prepare_mixed_data(data, center = center, scale = scale)
+    }
+    numeric_x
+  }
+
   candidates <- list()
   candidate_labels <- list()
   candidate_rows <- list()
   idx <- 1L
   for (method in methods) {
+    method_x <- candidate_input(method)
+    method_scale <- if (is_mixed && !method %in% c("kproto", "kmm")) FALSE else scale
+    method_center <- if (is_mixed && !method %in% c("kproto", "kmm")) FALSE else center
     for (k_i in k_values) {
       fit_seed <- if (is.null(seed)) NULL else as.integer(seed) + idx - 1L
       fit <- cluster(
-        x,
+        method_x,
         method = method,
         k = k_i,
-        scale = scale,
-        center = center,
+        scale = method_scale,
+        center = method_center,
         seed = fit_seed,
         ...
       )
@@ -152,7 +180,7 @@ metacluster <- function(x,
     final_k = selected$final_k,
     selection_summary = selected$score_table,
     stability_summary = compute_metacluster_stability(candidate_labels),
-    data_info = candidates[[1]]$data_info,
+    data_info = prepared$data_info,
     extras = list(consensus = consensus)
   )
 }

@@ -14,6 +14,28 @@ test_that("metacluster returns a consensus fit with symmetric coassociation", {
   expect_true(mfit$final_k %in% 2:3)
 })
 
+test_that("metacluster mixes native mixed-data and numeric-only methods on mixed data", {
+  skip_if_not_installed("clustMixType")
+  sim <- phynotype:::synthetic_clusters(n_per_cluster = 20, seed = 1)
+  mixed <- data.frame(sim$x, group = factor(sample(c("a", "b"), nrow(sim$x), replace = TRUE)))
+
+  mfit <- metacluster(
+    mixed,
+    methods = c("kproto", "kmeans", "hclust", "kmm"),
+    k = 2,
+    seed = 1,
+    nstart = 2
+  )
+
+  expect_s3_class(mfit, "metacluster_fit")
+  expect_equal(length(clusters(mfit)), nrow(mixed))
+  expect_true(is.data.frame(mfit$data_info$original_data))
+
+  val <- validate(mfit)
+  expect_s3_class(val, "cluster_validation")
+  expect_true(all(is.finite(val$metrics_table$value)))
+})
+
 test_that("validate works on a direct k grid", {
   val <- validate(iris[, 1:4], method = "kmeans", k = 2:4, seed = 1)
   expect_s3_class(val, "cluster_validation")

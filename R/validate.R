@@ -195,12 +195,19 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
 #' @export
 validate.metacluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 10) {
   data <- x$data_info$original_data
+  if (inherits(data, "dist")) {
+    stop("Validation for distance-only inputs is not yet implemented.", call. = FALSE)
+  }
+  metric_data <- data
+  if (is.data.frame(data) && any(!vapply(data, is.numeric, logical(1)))) {
+    metric_data <- prepare_mixed_data(data, center = FALSE, scale = FALSE)
+  }
   metrics_table <- data.frame(
     metric = c("silhouette", "calinski_harabasz", "davies_bouldin"),
     value = c(
-      if (requireNamespace("cluster", quietly = TRUE)) compute_silhouette_metric(data, x$final_clusters) else NA_real_,
-      compute_calinski_harabasz(data, x$final_clusters),
-      compute_davies_bouldin(data, x$final_clusters)
+      if (requireNamespace("cluster", quietly = TRUE)) compute_silhouette_metric(metric_data, x$final_clusters) else NA_real_,
+      compute_calinski_harabasz(metric_data, x$final_clusters),
+      compute_davies_bouldin(metric_data, x$final_clusters)
     ),
     scale = metric_metadata(c("silhouette", "calinski_harabasz", "davies_bouldin"))$scale,
     direction = metric_metadata(c("silhouette", "calinski_harabasz", "davies_bouldin"))$direction,
@@ -231,7 +238,7 @@ validate.metacluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boo
   }
   new_cluster_validation(
     metrics_table = metrics_table,
-    per_cluster_table = compute_per_cluster_silhouette(data, x$final_clusters),
+    per_cluster_table = compute_per_cluster_silhouette(metric_data, x$final_clusters),
     settings = list(method = "metacluster", n_boot = n_boot),
     object_type = class(x)[1],
     extras = list(selection_summary = x$selection_summary)
