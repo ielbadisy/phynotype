@@ -2,14 +2,13 @@
 % Please edit documentation in R/plots_clusters.R
 \name{plot_biplot}
 \alias{plot_biplot}
-\title{Plot a cluster biplot with variable loadings}
+\title{Plot a cluster biplot}
 \usage{
 plot_biplot(
   x,
   data = NULL,
-  embedding = c("auto", "pca", "famd", "mca"),
+  embedding = c("auto", "pca", "mca"),
   top_n = NULL,
-  scale = NULL,
   ...
 )
 }
@@ -19,34 +18,33 @@ plot_biplot(
 \item{data}{Optional numeric matrix, data frame, or distance object used to
 compute the embedding. Defaults to the training data stored in \code{x}.}
 
-\item{embedding}{Embedding method. \code{"auto"} selects PCA for numeric data,
-FAMD for mixed numeric/categorical data, and MCA for categorical data.
-\code{"pca"}, \code{"famd"}, and \code{"mca"} may be selected explicitly.}
+\item{embedding}{Embedding method. \code{"auto"} selects PCA for numeric data
+and MCA for categorical data. \code{"pca"} and \code{"mca"} may be selected
+explicitly.}
 
-\item{top_n}{Optional integer; if supplied, only the \code{top_n} variables
-(or categories) with the largest loading magnitude are drawn.}
+\item{top_n}{Optional integer; if supplied, only the \code{top_n} variables (or
+categories) contributing the most to the plotted axes are drawn (passed
+to \code{factoextra} as \code{select.var = list(contrib = top_n)}).}
 
-\item{scale}{Numeric scaling factor applied to the loading arrows so they
-are visible alongside the observation cloud. Defaults to a magnitude
-that spans about 80\% of the observation cloud's radius.}
-
-\item{...}{Unused.}
+\item{...}{Additional arguments passed to \code{factoextra::fviz_pca_biplot()}
+or \code{factoextra::fviz_mca_biplot()}.}
 }
 \value{
 A \code{ggplot} object.
 }
 \description{
-Project observations onto a two-dimensional PCA, FAMD, or MCA embedding,
-color them by cluster assignment, and overlay arrows showing how each
-original variable (or, for MCA, each category) relates to the embedding
-axes. Not available for the \code{"mds"} embedding, which has no variable
-space to project.
+A thin wrapper around \code{factoextra}'s \code{fviz_pca_biplot()} and
+\code{fviz_mca_biplot()}, coloring individuals by cluster assignment
+(\code{habillage}). Only the \code{"pca"} and \code{"mca"} embeddings are supported,
+matching the biplot functions \code{factoextra} itself provides; there is no
+\code{fviz_famd_biplot()} equivalent, and MDS has no variable space to project.
 }
 \examples{
-fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-plot_biplot(fit)
+if (requireNamespace("factoextra", quietly = TRUE)) {
+  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+  plot_biplot(fit)
+}
 }
 \seealso{
-\code{\link[=plot_clusters]{plot_clusters()}}, \code{\link[=explore]{explore()}} for the underlying embedding and
-loadings.
+\code{\link[=plot_clusters]{plot_clusters()}}, \code{\link[=explore]{explore()}} for the underlying embedding.
 }

@@ -19,7 +19,7 @@ Imports:
     clustMixType,
     dbscan,
     functionals,
-    ggplot2 (>= 3.4.0),
+    ggplot2,
     mclust,
     parallel,
     rlang,
@@ -27,6 +27,7 @@ Imports:
     utils
 Suggests:
     FactoMineR,
+    factoextra,
     testthat (>= 3.0.0),
     knitr,
     rmarkdown
