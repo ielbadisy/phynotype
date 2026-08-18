@@ -470,6 +470,23 @@ if (requireNamespace("FactoMineR", quietly = TRUE)) {
 plot_clusters(fit_hc)
 ```
 
+**Biplots** (`"pca"`, `"famd"`, and `"mca"` embeddings only): overlay
+arrows showing how each original variable (or, for MCA, each category)
+relates to the embedding axes, on top of the observation scatter.
+
+```{r}
+plot_biplot(fit_km)
+```
+
+**Cluster network**: summarize a solution as one node per cluster,
+positioned at its centroid and sized by cluster size, connected by edges
+whose thickness reflects how close each pair of centroids is. Useful for
+spotting well-separated groups versus clusters that sit close together.
+
+```{r}
+plot_cluster_network(fit_km)
+```
+
 ---
 
 # Prediction

@@ -113,6 +113,14 @@ plot_feature_profiles(explore(fit))
 plot_cluster_sizes(fit)
 ```
 
+```{r plot-biplot}
+plot_biplot(fit)
+```
+
+```{r plot-cluster-network}
+plot_cluster_network(fit)
+```
+
 ## Prediction
 
 ```{r prediction}
