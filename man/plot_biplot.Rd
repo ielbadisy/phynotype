@@ -8,6 +8,7 @@ plot_biplot(
   x,
   data = NULL,
   embedding = c("auto", "pca", "mca"),
+  variant = c("cluster", "cos2", "label"),
   top_n = NULL,
   ...
 )
@@ -22,27 +23,44 @@ compute the embedding. Defaults to the training data stored in \code{x}.}
 and MCA for categorical data. \code{"pca"} and \code{"mca"} may be selected
 explicitly.}
 
+\item{variant}{Display variant: \code{"cluster"}, \code{"cos2"}, or \code{"label"}. See
+Details.}
+
 \item{top_n}{Optional integer; if supplied, only the \code{top_n} variables (or
 categories) contributing the most to the plotted axes are drawn (passed
 to \code{factoextra} as \code{select.var = list(contrib = top_n)}).}
 
 \item{...}{Additional arguments passed to \code{factoextra::fviz_pca_biplot()}
-or \code{factoextra::fviz_mca_biplot()}.}
+or \code{factoextra::fviz_mca_biplot()}, overriding the variant's defaults.}
 }
 \value{
 A \code{ggplot} object.
 }
 \description{
 A thin wrapper around \code{factoextra}'s \code{fviz_pca_biplot()} and
-\code{fviz_mca_biplot()}, coloring individuals by cluster assignment
-(\code{habillage}). Only the \code{"pca"} and \code{"mca"} embeddings are supported,
-matching the biplot functions \code{factoextra} itself provides; there is no
-\code{fviz_famd_biplot()} equivalent, and MDS has no variable space to project.
+\code{fviz_mca_biplot()}. Only the \code{"pca"} and \code{"mca"} embeddings are
+supported, matching the biplot functions \code{factoextra} itself provides;
+there is no \code{fviz_famd_biplot()} equivalent, and MDS has no variable
+space to project.
+}
+\details{
+Three display variants, all following \code{factoextra}'s own documented
+examples (\code{?factoextra::fviz_pca}):
+\describe{
+\item{\code{"cluster"}}{Individuals colored and shaped by cluster assignment
+(\code{habillage}). The default.}
+\item{\code{"cos2"}}{Individuals colored by their quality of representation
+(\code{col.ind = "cos2"}) on a white-blue-orange gradient.}
+\item{\code{"label"}}{Individuals shown as text labels (observation names or
+row numbers) instead of points (\code{geom.ind = "text"}).}
+}
 }
 \examples{
 if (requireNamespace("factoextra", quietly = TRUE)) {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
   plot_biplot(fit)
+  plot_biplot(fit, variant = "cos2")
+  plot_biplot(fit, variant = "label")
 }
 }
 \seealso{

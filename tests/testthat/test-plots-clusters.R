@@ -107,6 +107,33 @@ test_that("plot_biplot errors for embeddings with no factoextra biplot equivalen
   expect_error(plot_biplot(exp), "not supported")
 })
 
+test_that("plot_biplot variant = 'cos2' colors individuals by quality of representation", {
+  skip_if_not_installed("factoextra")
+  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+  p <- suppressWarnings(plot_biplot(fit, variant = "cos2"))
+
+  expect_s3_class(p, "ggplot")
+  point_layer <- Filter(function(l) inherits(l$geom, "GeomPoint"), p$layers)[[1]]
+  expect_true("cos2" %in% names(point_layer$data) || "colour" %in% names(point_layer$mapping))
+})
+
+test_that("plot_biplot variant = 'label' shows individuals as text instead of points", {
+  skip_if_not_installed("factoextra")
+  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+  p <- suppressWarnings(plot_biplot(fit, variant = "label"))
+
+  expect_s3_class(p, "ggplot")
+  expect_false(any(vapply(p$layers, function(l) inherits(l$geom, "GeomPoint"), logical(1))))
+})
+
+test_that("plot_biplot passthrough args override the variant's defaults", {
+  skip_if_not_installed("factoextra")
+  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+  p <- suppressWarnings(plot_biplot(fit, variant = "cluster", addEllipses = TRUE))
+
+  expect_s3_class(p, "ggplot")
+})
+
 test_that("plot_cluster_sizes returns a bar chart ggplot for cluster_fit, cluster_explore, and metacluster_fit", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
   p1 <- plot_cluster_sizes(fit)

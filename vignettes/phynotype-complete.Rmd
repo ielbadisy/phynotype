@@ -472,13 +472,19 @@ plot_clusters(fit_hc)
 
 **Biplots** (`"pca"` and `"mca"` embeddings only, requires the `factoextra`
 package): `plot_biplot()` is a thin wrapper around `factoextra`'s
-`fviz_pca_biplot()`/`fviz_mca_biplot()`, coloring individuals by cluster
-assignment. There is no FAMD or MDS equivalent, matching what `factoextra`
-itself provides.
+`fviz_pca_biplot()`/`fviz_mca_biplot()`. There is no FAMD or MDS equivalent,
+matching what `factoextra` itself provides. Three `variant`s, all following
+`factoextra`'s own documented examples:
+
+- `"cluster"` (default): individuals colored and shaped by cluster.
+- `"cos2"`: individuals colored by quality of representation.
+- `"label"`: individuals shown as text labels instead of points.
 
 ```{r}
 if (requireNamespace("factoextra", quietly = TRUE)) {
   plot_biplot(fit_km)
+  plot_biplot(fit_km, variant = "cos2")
+  plot_biplot(fit_km, variant = "label")
 }
 ```
 
