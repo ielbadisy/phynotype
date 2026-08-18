@@ -1,7 +1,7 @@
 test_that("compute_pca_embedding returns a two-component data frame with cluster factor", {
   data <- as.matrix(iris[, 1:4])
   clusters <- kmeans(scale(data), centers = 3)$cluster
-  embedding <- phynotype:::compute_pca_embedding(data, clusters)
+  embedding <- phynotype:::compute_pca_embedding(data, clusters)$coords
 
   expect_s3_class(embedding, "data.frame")
   expect_equal(nrow(embedding), nrow(data))
@@ -15,11 +15,21 @@ test_that("compute_pca_embedding returns a two-component data frame with cluster
 test_that("compute_pca_embedding matches prcomp on the first two components", {
   data <- as.matrix(iris[, 1:4])
   clusters <- rep(1:2, length.out = nrow(data))
-  embedding <- phynotype:::compute_pca_embedding(data, clusters)
+  embedding <- phynotype:::compute_pca_embedding(data, clusters)$coords
 
   pc <- stats::prcomp(data, center = TRUE, scale. = TRUE)
   expect_equal(embedding$x, unname(pc$x[, 1]))
   expect_equal(embedding$y, unname(pc$x[, 2]))
+})
+
+test_that("compute_pca_embedding also returns variable loadings", {
+  data <- as.matrix(iris[, 1:4])
+  clusters <- rep(1:2, length.out = nrow(data))
+  embedding <- phynotype:::compute_pca_embedding(data, clusters)
+
+  expect_named(embedding$loadings, c("variable", "x", "y"))
+  expect_equal(nrow(embedding$loadings), ncol(data))
+  expect_equal(embedding$loadings$variable, colnames(data))
 })
 
 test_that("compute_embedding resolves mixed data to FAMD", {

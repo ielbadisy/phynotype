@@ -19,7 +19,7 @@ Imports:
     clustMixType,
     dbscan,
     functionals,
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     mclust,
     parallel,
     rlang,

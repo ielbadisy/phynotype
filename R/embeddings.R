@@ -105,10 +105,20 @@ compute_pca_embedding <- function(data, clusters) {
   }
   pc <- stats::prcomp(x, center = TRUE, scale. = TRUE)
   coords <- pad_embedding_coords(pc$x)
-  data.frame(
-    x = coords[, 1],
-    y = coords[, 2],
-    cluster = factor(clusters)
+  rotation <- pad_embedding_coords(pc$rotation)
+  sdev <- if (length(pc$sdev) >= 2L) pc$sdev[1:2] else c(pc$sdev[1], 0)
+  list(
+    coords = data.frame(
+      x = coords[, 1],
+      y = coords[, 2],
+      cluster = factor(clusters)
+    ),
+    loadings = data.frame(
+      variable = rownames(pc$rotation),
+      x = rotation[, 1] * sdev[1],
+      y = rotation[, 2] * sdev[2],
+      stringsAsFactors = FALSE
+    )
   )
 }
 
@@ -122,10 +132,19 @@ compute_famd_embedding <- function(data, clusters) {
   }
   famd <- FactoMineR::FAMD(input$data, graph = FALSE)
   coords <- pad_embedding_coords(famd$ind$coord)
-  data.frame(
-    x = coords[, 1],
-    y = coords[, 2],
-    cluster = factor(clusters)
+  var_coords <- pad_embedding_coords(famd$var$coord)
+  list(
+    coords = data.frame(
+      x = coords[, 1],
+      y = coords[, 2],
+      cluster = factor(clusters)
+    ),
+    loadings = data.frame(
+      variable = rownames(famd$var$coord),
+      x = var_coords[, 1],
+      y = var_coords[, 2],
+      stringsAsFactors = FALSE
+    )
   )
 }
 
@@ -139,10 +158,19 @@ compute_mca_embedding <- function(data, clusters) {
   }
   mca <- FactoMineR::MCA(input$data, graph = FALSE)
   coords <- pad_embedding_coords(mca$ind$coord)
-  data.frame(
-    x = coords[, 1],
-    y = coords[, 2],
-    cluster = factor(clusters)
+  var_coords <- pad_embedding_coords(mca$var$coord)
+  list(
+    coords = data.frame(
+      x = coords[, 1],
+      y = coords[, 2],
+      cluster = factor(clusters)
+    ),
+    loadings = data.frame(
+      variable = rownames(mca$var$coord),
+      x = var_coords[, 1],
+      y = var_coords[, 2],
+      stringsAsFactors = FALSE
+    )
   )
 }
 
@@ -164,10 +192,13 @@ compute_mds_embedding <- function(data, clusters) {
   } else {
     pad_embedding_coords(stats::cmdscale(d, k = 2, eig = FALSE))
   }
-  data.frame(
-    x = coords[, 1],
-    y = coords[, 2],
-    cluster = factor(clusters)
+  list(
+    coords = data.frame(
+      x = coords[, 1],
+      y = coords[, 2],
+      cluster = factor(clusters)
+    ),
+    loadings = NULL
   )
 }
 
@@ -195,7 +226,8 @@ compute_embedding <- function(data, clusters, method = "auto", data_info = NULL)
   )
 
   list(
-    data = embedding,
+    data = embedding$coords,
+    loadings = embedding$loadings,
     method = resolved,
     labels = embedding_labels(resolved)
   )

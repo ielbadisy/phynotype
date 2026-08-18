@@ -83,7 +83,8 @@ explore.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "fa
     embedding = embedding$data,
     plot_data = embedding$data,
     embedding_method = embedding$method,
-    embedding_labels = embedding$labels
+    embedding_labels = embedding$labels,
+    embedding_loadings = embedding$loadings
   )
 }
 
@@ -118,6 +119,7 @@ explore.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca",
     embedding = embedding$data,
     plot_data = embedding$data,
     embedding_method = embedding$method,
-    embedding_labels = embedding$labels
+    embedding_labels = embedding$labels,
+    embedding_loadings = embedding$loadings
   )
 }
