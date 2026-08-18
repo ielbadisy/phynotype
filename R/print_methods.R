@@ -71,7 +71,11 @@ print.cluster_validation <- function(x, ...) {
   cat("  Metrics: ", nrow(x$metrics_table), "\n", sep = "")
   tab <- x$metrics_table
   cols <- intersect(c("metric", "value", "scale", "direction", "k"), names(tab))
-  print(tab[, cols, drop = FALSE], row.names = FALSE)
+  tab <- tab[, cols, drop = FALSE]
+  if ("value" %in% names(tab)) {
+    tab$value <- signif(tab$value, 4)
+  }
+  print(tab, row.names = FALSE)
   invisible(x)
 }
 
