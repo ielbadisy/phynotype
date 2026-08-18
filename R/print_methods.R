@@ -71,7 +71,16 @@ print.cluster_validation <- function(x, ...) {
   cat("  Metrics: ", nrow(x$metrics_table), "\n", sep = "")
   tab <- x$metrics_table
   cols <- intersect(c("metric", "value", "scale", "direction", "k"), names(tab))
-  print(tab[, cols, drop = FALSE], row.names = FALSE)
+  tab <- tab[, cols, drop = FALSE]
+  if ("value" %in% names(tab)) {
+    ## format(), and the default data.frame print, right-pad every value in a
+    ## numeric column to the widest number of decimals in that column (e.g.
+    ## 561.6 next to 78.8514 prints as "561.6000") which reads as far more
+    ## than 4 significant digits even though the values are already rounded.
+    ## formatC(..., format = "fg") keeps only the significant digits.
+    tab$value <- trimws(formatC(tab$value, digits = 4, format = "fg"))
+  }
+  print(tab, row.names = FALSE)
   invisible(x)
 }
 

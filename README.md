@@ -52,9 +52,9 @@ head(clusters(fit))
 #> [1] 3 3 3 3 3 3
 centers(fit)
 #>   Sepal.Length Sepal.Width Petal.Length Petal.Width
-#> 1   0.05827957 -0.30894624    0.6355484   0.2345376
-#> 2   1.00666667  0.01635088    1.9841053   0.8717193
-#> 3  -0.83733333  0.37066667   -2.2960000  -0.9533333
+#> 1      0.05828    -0.30890       0.6355      0.2345
+#> 2      1.00700     0.01635       1.9840      0.8717
+#> 3     -0.83730     0.37070      -2.2960     -0.9533
 ```
 
 ## Meta-clustering
@@ -95,13 +95,13 @@ head(mfit$candidate_table)
 #> 6         6    pam 3          3
 mfit$selection_summary
 #>   k silhouette
-#> 1 2  0.6566933
-#> 2 3  0.7658527
-#> 3 4  0.8603009
-#> 4 5  0.9076378
+#> 1 2     0.6567
+#> 2 3     0.7659
+#> 3 4     0.8603
+#> 4 5     0.9076
 mfit$stability_summary
 #>                         metric mean_agreement min_agreement max_agreement
-#> 1 pairwise_partition_agreement      0.8186128     0.6760889             1
+#> 1 pairwise_partition_agreement         0.8186        0.6761             1
 round(mfit$coassoc_matrix[1:6, 1:6], 2)
 #>      [,1] [,2] [,3] [,4] [,5] [,6]
 #> [1,] 1.00 1.00 1.00 1.00 1.00 0.92
@@ -119,51 +119,51 @@ validate(fit)
 #> <cluster_validation>
 #>   Object type: cluster_fit
 #>   Metrics: 5
-#>             metric    value               scale        direction
-#>         silhouette   0.5528             -1 to 1 higher is better
-#>  calinski_harabasz 561.6000 positive, unbounded higher is better
-#>     davies_bouldin   0.6620 positive, unbounded  lower is better
-#>       total_within  78.8500 positive, unbounded  lower is better
-#>      bootstrap_ari   0.9710                <NA>             <NA>
+#>             metric  value               scale        direction
+#>         silhouette 0.5528             -1 to 1 higher is better
+#>  calinski_harabasz  561.6 positive, unbounded higher is better
+#>     davies_bouldin  0.662 positive, unbounded  lower is better
+#>       total_within  78.85 positive, unbounded  lower is better
+#>      bootstrap_ari  0.971                <NA>             <NA>
 validate(mfit)
 #> <cluster_validation>
 #>   Object type: metacluster_fit
 #>   Metrics: 4
-#>                        metric    value               scale        direction
-#>                    silhouette   0.4926             -1 to 1 higher is better
-#>             calinski_harabasz 494.1000 positive, unbounded higher is better
-#>                davies_bouldin   0.8168 positive, unbounded  lower is better
-#>  pairwise_partition_agreement   0.8186                <NA>             <NA>
+#>                        metric  value               scale        direction
+#>                    silhouette 0.4926             -1 to 1 higher is better
+#>             calinski_harabasz  494.1 positive, unbounded higher is better
+#>                davies_bouldin 0.8168 positive, unbounded  lower is better
+#>  pairwise_partition_agreement 0.8186                <NA>             <NA>
 validate(iris[, 1:4], method = "kmeans", k = 2:6, seed = 1)
 #> <cluster_validation>
 #>   Object type: validation_grid
 #>   Metrics: 25
-#>             metric    value               scale        direction k
-#>         silhouette   0.6810             -1 to 1 higher is better 2
-#>  calinski_harabasz 513.9000 positive, unbounded higher is better 2
-#>     davies_bouldin   0.4043 positive, unbounded  lower is better 2
-#>       total_within 152.3000 positive, unbounded  lower is better 2
-#>      bootstrap_ari   0.9973                <NA>             <NA> 2
-#>         silhouette   0.5528             -1 to 1 higher is better 3
-#>  calinski_harabasz 561.6000 positive, unbounded higher is better 3
-#>     davies_bouldin   0.6620 positive, unbounded  lower is better 3
-#>       total_within  78.8500 positive, unbounded  lower is better 3
-#>      bootstrap_ari   0.9710                <NA>             <NA> 3
-#>         silhouette   0.4981             -1 to 1 higher is better 4
-#>  calinski_harabasz 530.8000 positive, unbounded higher is better 4
-#>     davies_bouldin   0.7803 positive, unbounded  lower is better 4
-#>       total_within  57.2300 positive, unbounded  lower is better 4
-#>      bootstrap_ari   0.9052                <NA>             <NA> 4
-#>         silhouette   0.4912             -1 to 1 higher is better 5
-#>  calinski_harabasz 495.4000 positive, unbounded higher is better 5
-#>     davies_bouldin   0.8160 positive, unbounded  lower is better 5
-#>       total_within  46.4600 positive, unbounded  lower is better 5
-#>      bootstrap_ari   0.9219                <NA>             <NA> 5
-#>         silhouette   0.3648             -1 to 1 higher is better 6
-#>  calinski_harabasz 473.9000 positive, unbounded higher is better 6
-#>     davies_bouldin   0.9142 positive, unbounded  lower is better 6
-#>       total_within  39.0400 positive, unbounded  lower is better 6
-#>      bootstrap_ari   0.8684                <NA>             <NA> 6
+#>             metric  value               scale        direction k
+#>         silhouette  0.681             -1 to 1 higher is better 2
+#>  calinski_harabasz  513.9 positive, unbounded higher is better 2
+#>     davies_bouldin 0.4043 positive, unbounded  lower is better 2
+#>       total_within  152.3 positive, unbounded  lower is better 2
+#>      bootstrap_ari 0.9973                <NA>             <NA> 2
+#>         silhouette 0.5528             -1 to 1 higher is better 3
+#>  calinski_harabasz  561.6 positive, unbounded higher is better 3
+#>     davies_bouldin  0.662 positive, unbounded  lower is better 3
+#>       total_within  78.85 positive, unbounded  lower is better 3
+#>      bootstrap_ari  0.971                <NA>             <NA> 3
+#>         silhouette 0.4981             -1 to 1 higher is better 4
+#>  calinski_harabasz  530.8 positive, unbounded higher is better 4
+#>     davies_bouldin 0.7803 positive, unbounded  lower is better 4
+#>       total_within  57.23 positive, unbounded  lower is better 4
+#>      bootstrap_ari 0.9052                <NA>             <NA> 4
+#>         silhouette 0.4912             -1 to 1 higher is better 5
+#>  calinski_harabasz  495.4 positive, unbounded higher is better 5
+#>     davies_bouldin  0.816 positive, unbounded  lower is better 5
+#>       total_within  46.46 positive, unbounded  lower is better 5
+#>      bootstrap_ari 0.9219                <NA>             <NA> 5
+#>         silhouette 0.3648             -1 to 1 higher is better 6
+#>  calinski_harabasz  473.9 positive, unbounded higher is better 6
+#>     davies_bouldin 0.9142 positive, unbounded  lower is better 6
+#>       total_within  39.04 positive, unbounded  lower is better 6
+#>      bootstrap_ari 0.8684                <NA>             <NA> 6
 ```
 
 ## Exploration
@@ -174,13 +174,13 @@ exp
 #> <cluster_explore>
 #>   Rows in feature summary: 12
 head(exp$feature_summary)
-#>   cluster      feature     mean        sd median min max
-#> 1       1 Sepal.Length 5.901613 0.4664101    5.9 4.9 7.0
-#> 2       1  Sepal.Width 2.748387 0.2962841    2.8 2.0 3.4
-#> 3       1 Petal.Length 4.393548 0.5088950    4.5 3.0 5.1
-#> 4       1  Petal.Width 1.433871 0.2974997    1.4 1.0 2.4
-#> 5       2 Sepal.Length 6.850000 0.4941550    6.7 6.1 7.9
-#> 6       2  Sepal.Width 3.073684 0.2900924    3.0 2.5 3.8
+#>   cluster      feature  mean     sd median min max
+#> 1       1 Sepal.Length 5.902 0.4664    5.9 4.9 7.0
+#> 2       1  Sepal.Width 2.748 0.2963    2.8 2.0 3.4
+#> 3       1 Petal.Length 4.394 0.5089    4.5 3.0 5.1
+#> 4       1  Petal.Width 1.434 0.2975    1.4 1.0 2.4
+#> 5       2 Sepal.Length 6.850 0.4942    6.7 6.1 7.9
+#> 6       2  Sepal.Width 3.074 0.2901    3.0 2.5 3.8
 ```
 
 ## Plotting
@@ -272,11 +272,11 @@ imp
 #>   Features: 4
 #>   Repeats: 3
 imp$summary
-#>        feature importance   std_error n_repeats
-#> 1 Petal.Length 0.53333333 0.007698004         3
-#> 2 Sepal.Length 0.08222222 0.005879447         3
-#> 3  Petal.Width 0.04666667 0.013877773         3
-#> 4  Sepal.Width 0.01111111 0.005879447         3
+#>        feature importance std_error n_repeats
+#> 1 Petal.Length    0.53330  0.007698         3
+#> 2 Sepal.Length    0.08222  0.005879         3
+#> 3  Petal.Width    0.04667  0.013880         3
+#> 4  Sepal.Width    0.01111  0.005879         3
 ```
 
 ``` r
@@ -302,20 +302,20 @@ cp
 #>   Target: score
 #>   Profiles: 24
 head(cp$profiles)
-#>   observation      feature feature_value target cluster     value
-#> 1           1 Petal.Length      1.000000  score       3 0.6159904
-#> 2           1 Petal.Length      1.500000  score       3 0.5688455
-#> 3           1 Petal.Length      3.900000  score       3 0.3362419
-#> 4           1 Petal.Length      4.653333  score       3 0.2714101
-#> 5           1 Petal.Length      5.360000  score       3 0.2177254
-#> 6           1 Petal.Length      6.900000  score       3 0.1273152
-#>   observed_value baseline_value baseline_cluster
-#> 1            1.4      0.5160253                3
-#> 2            1.4      0.5160253                3
-#> 3            1.4      0.5160253                3
-#> 4            1.4      0.5160253                3
-#> 5            1.4      0.5160253                3
-#> 6            1.4      0.5160253                3
+#>   observation      feature feature_value target cluster  value observed_value
+#> 1           1 Petal.Length         1.000  score       3 0.6160            1.4
+#> 2           1 Petal.Length         1.500  score       3 0.5688            1.4
+#> 3           1 Petal.Length         3.900  score       3 0.3362            1.4
+#> 4           1 Petal.Length         4.653  score       3 0.2714            1.4
+#> 5           1 Petal.Length         5.360  score       3 0.2177            1.4
+#> 6           1 Petal.Length         6.900  score       3 0.1273            1.4
+#>   baseline_value baseline_cluster
+#> 1          0.516                3
+#> 2          0.516                3
+#> 3          0.516                3
+#> 4          0.516                3
+#> 5          0.516                3
+#> 6          0.516                3
 ```
 
 ``` r
@@ -342,20 +342,20 @@ lx
 #>   Observations: 2
 #>   Effects: 6
 lx$explanations
-#>   observation cluster  target      feature    estimate absolute_effect
-#> 1           1       3 cluster Petal.Length -0.19822343      0.19822343
-#> 2           1       3 cluster  Petal.Width -0.09873821      0.09873821
-#> 3           1       3 cluster Sepal.Length -0.01557945      0.01557945
-#> 4           2       3 cluster Petal.Length -0.19694373      0.19694373
-#> 5           2       3 cluster Sepal.Length -0.10438655      0.10438655
-#> 6           2       3 cluster  Petal.Width -0.06264646      0.06264646
-#>   direction rank
-#> 1  negative    1
-#> 2  negative    2
-#> 3  negative    3
-#> 4  negative    1
-#> 5  negative    2
-#> 6  negative    3
+#>   observation cluster  target      feature estimate absolute_effect direction
+#> 1           1       3 cluster Petal.Length -0.19820         0.19820  negative
+#> 2           1       3 cluster  Petal.Width -0.09874         0.09874  negative
+#> 3           1       3 cluster Sepal.Length -0.01558         0.01558  negative
+#> 4           2       3 cluster Petal.Length -0.19690         0.19690  negative
+#> 5           2       3 cluster Sepal.Length -0.10440         0.10440  negative
+#> 6           2       3 cluster  Petal.Width -0.06265         0.06265  negative
+#>   rank
+#> 1    1
+#> 2    2
+#> 3    3
+#> 4    1
+#> 5    2
+#> 6    3
 ```
 
 ``` r
