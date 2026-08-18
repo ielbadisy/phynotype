@@ -119,51 +119,51 @@ validate(fit)
 #> <cluster_validation>
 #>   Object type: cluster_fit
 #>   Metrics: 5
-#>             metric       value               scale        direction
-#>         silhouette   0.5528190             -1 to 1 higher is better
-#>  calinski_harabasz 561.6277566 positive, unbounded higher is better
-#>     davies_bouldin   0.6619715 positive, unbounded  lower is better
-#>       total_within  78.8514414 positive, unbounded  lower is better
-#>      bootstrap_ari   0.9710021                <NA>             <NA>
+#>             metric    value               scale        direction
+#>         silhouette   0.5528             -1 to 1 higher is better
+#>  calinski_harabasz 561.6000 positive, unbounded higher is better
+#>     davies_bouldin   0.6620 positive, unbounded  lower is better
+#>       total_within  78.8500 positive, unbounded  lower is better
+#>      bootstrap_ari   0.9710                <NA>             <NA>
 validate(mfit)
 #> <cluster_validation>
 #>   Object type: metacluster_fit
 #>   Metrics: 4
-#>                        metric       value               scale        direction
-#>                    silhouette   0.4925619             -1 to 1 higher is better
-#>             calinski_harabasz 494.0510734 positive, unbounded higher is better
-#>                davies_bouldin   0.8168048 positive, unbounded  lower is better
-#>  pairwise_partition_agreement   0.8186128                <NA>             <NA>
+#>                        metric    value               scale        direction
+#>                    silhouette   0.4926             -1 to 1 higher is better
+#>             calinski_harabasz 494.1000 positive, unbounded higher is better
+#>                davies_bouldin   0.8168 positive, unbounded  lower is better
+#>  pairwise_partition_agreement   0.8186                <NA>             <NA>
 validate(iris[, 1:4], method = "kmeans", k = 2:6, seed = 1)
 #> <cluster_validation>
 #>   Object type: validation_grid
 #>   Metrics: 25
-#>             metric       value               scale        direction k
-#>         silhouette   0.6810462             -1 to 1 higher is better 2
-#>  calinski_harabasz 513.9245460 positive, unbounded higher is better 2
-#>     davies_bouldin   0.4042928 positive, unbounded  lower is better 2
-#>       total_within 152.3479518 positive, unbounded  lower is better 2
-#>      bootstrap_ari   0.9973179                <NA>             <NA> 2
-#>         silhouette   0.5528190             -1 to 1 higher is better 3
-#>  calinski_harabasz 561.6277566 positive, unbounded higher is better 3
-#>     davies_bouldin   0.6619715 positive, unbounded  lower is better 3
-#>       total_within  78.8514414 positive, unbounded  lower is better 3
-#>      bootstrap_ari   0.9710021                <NA>             <NA> 3
-#>         silhouette   0.4980505             -1 to 1 higher is better 4
-#>  calinski_harabasz 530.7658082 positive, unbounded higher is better 4
-#>     davies_bouldin   0.7803070 positive, unbounded  lower is better 4
-#>       total_within  57.2284732 positive, unbounded  lower is better 4
-#>      bootstrap_ari   0.9052257                <NA>             <NA> 4
-#>         silhouette   0.4912400             -1 to 1 higher is better 5
-#>  calinski_harabasz 495.3699060 positive, unbounded higher is better 5
-#>     davies_bouldin   0.8159888 positive, unbounded  lower is better 5
-#>       total_within  46.4611727 positive, unbounded  lower is better 5
-#>      bootstrap_ari   0.9218582                <NA>             <NA> 5
-#>         silhouette   0.3648340             -1 to 1 higher is better 6
-#>  calinski_harabasz 473.8506068 positive, unbounded higher is better 6
-#>     davies_bouldin   0.9141580 positive, unbounded  lower is better 6
-#>       total_within  39.0399872 positive, unbounded  lower is better 6
-#>      bootstrap_ari   0.8684184                <NA>             <NA> 6
+#>             metric    value               scale        direction k
+#>         silhouette   0.6810             -1 to 1 higher is better 2
+#>  calinski_harabasz 513.9000 positive, unbounded higher is better 2
+#>     davies_bouldin   0.4043 positive, unbounded  lower is better 2
+#>       total_within 152.3000 positive, unbounded  lower is better 2
+#>      bootstrap_ari   0.9973                <NA>             <NA> 2
+#>         silhouette   0.5528             -1 to 1 higher is better 3
+#>  calinski_harabasz 561.6000 positive, unbounded higher is better 3
+#>     davies_bouldin   0.6620 positive, unbounded  lower is better 3
+#>       total_within  78.8500 positive, unbounded  lower is better 3
+#>      bootstrap_ari   0.9710                <NA>             <NA> 3
+#>         silhouette   0.4981             -1 to 1 higher is better 4
+#>  calinski_harabasz 530.8000 positive, unbounded higher is better 4
+#>     davies_bouldin   0.7803 positive, unbounded  lower is better 4
+#>       total_within  57.2300 positive, unbounded  lower is better 4
+#>      bootstrap_ari   0.9052                <NA>             <NA> 4
+#>         silhouette   0.4912             -1 to 1 higher is better 5
+#>  calinski_harabasz 495.4000 positive, unbounded higher is better 5
+#>     davies_bouldin   0.8160 positive, unbounded  lower is better 5
+#>       total_within  46.4600 positive, unbounded  lower is better 5
+#>      bootstrap_ari   0.9219                <NA>             <NA> 5
+#>         silhouette   0.3648             -1 to 1 higher is better 6
+#>  calinski_harabasz 473.9000 positive, unbounded higher is better 6
+#>     davies_bouldin   0.9142 positive, unbounded  lower is better 6
+#>       total_within  39.0400 positive, unbounded  lower is better 6
+#>      bootstrap_ari   0.8684                <NA>             <NA> 6
 ```
 
 ## Exploration
@@ -223,15 +223,16 @@ plot_cluster_sizes(fit)
 
 ``` r
 plot_biplot(fit)
+#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+#> ℹ Please use `linewidth` instead.
+#> ℹ The deprecated feature was likely used in the ggpubr package.
+#>   Please report the issue at <https://github.com/kassambara/ggpubr/issues>.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 ```
 
 ![](README_files/figure-gfm/plot-biplot-1.png)<!-- -->
-
-``` r
-plot_cluster_network(fit)
-```
-
-![](README_files/figure-gfm/plot-cluster-network-1.png)<!-- -->
 
 ## Prediction
 

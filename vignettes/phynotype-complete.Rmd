@@ -470,21 +470,16 @@ if (requireNamespace("FactoMineR", quietly = TRUE)) {
 plot_clusters(fit_hc)
 ```
 
-**Biplots** (`"pca"`, `"famd"`, and `"mca"` embeddings only): overlay
-arrows showing how each original variable (or, for MCA, each category)
-relates to the embedding axes, on top of the observation scatter.
+**Biplots** (`"pca"` and `"mca"` embeddings only, requires the `factoextra`
+package): `plot_biplot()` is a thin wrapper around `factoextra`'s
+`fviz_pca_biplot()`/`fviz_mca_biplot()`, coloring individuals by cluster
+assignment. There is no FAMD or MDS equivalent, matching what `factoextra`
+itself provides.
 
 ```{r}
-plot_biplot(fit_km)
-```
-
-**Cluster network**: summarize a solution as one node per cluster,
-positioned at its centroid and sized by cluster size, connected by edges
-whose thickness reflects how close each pair of centroids is. Useful for
-spotting well-separated groups versus clusters that sit close together.
-
-```{r}
-plot_cluster_network(fit_km)
+if (requireNamespace("factoextra", quietly = TRUE)) {
+  plot_biplot(fit_km)
+}
 ```
 
 ---

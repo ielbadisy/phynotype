@@ -117,10 +117,6 @@ plot_cluster_sizes(fit)
 plot_biplot(fit)
 ```
 
-```{r plot-cluster-network}
-plot_cluster_network(fit)
-```
-
 ## Prediction
 
 ```{r prediction}
