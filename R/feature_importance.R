@@ -172,8 +172,8 @@ feature_importance <- function(object,
   rownames(results) <- NULL
   summary <- summarize_importance_results(results)
   new_feature_importance(
-    results = results,
-    summary = summary,
+    results = round_results(results),
+    summary = round_results(summary),
     settings = list(
       metric = metric,
       n_repeats = n_repeats,

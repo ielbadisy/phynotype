@@ -26,7 +26,7 @@ test_that("validate.cluster_fit appends ari and nmi rows when truth is supplied"
 
   expect_true(all(c("ari", "nmi") %in% val$metrics_table$metric))
   ari_row <- val$metrics_table[val$metrics_table$metric == "ari", ]
-  expect_equal(ari_row$value, adjusted_rand_index(iris$Species, clusters(fit)))
+  expect_equal(ari_row$value, signif(adjusted_rand_index(iris$Species, clusters(fit)), 4))
 })
 
 test_that("validate.cluster_fit filters the metrics table when metrics is supplied", {

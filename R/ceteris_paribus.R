@@ -139,7 +139,7 @@ ceteris_paribus <- function(object,
   )
   rownames(profiles) <- NULL
   new_ceteris_paribus(
-    profiles = profiles,
+    profiles = round_results(profiles),
     settings = list(
       target = target,
       cluster = cluster,

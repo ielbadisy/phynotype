@@ -184,8 +184,8 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
     metrics_table$direction[is.na(metrics_table$direction)] <- extra_meta$direction
   }
   new_cluster_validation(
-    metrics_table = metrics_table,
-    per_cluster_table = compute_per_cluster_silhouette(metric_data, x$clusters),
+    metrics_table = round_results(metrics_table),
+    per_cluster_table = round_results(compute_per_cluster_silhouette(metric_data, x$clusters)),
     settings = list(method = x$method, n_boot = n_boot),
     object_type = class(x)[1],
     extras = list(stability = stability)
@@ -237,11 +237,11 @@ validate.metacluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boo
     metrics_table$direction[is.na(metrics_table$direction)] <- extra_meta$direction
   }
   new_cluster_validation(
-    metrics_table = metrics_table,
-    per_cluster_table = compute_per_cluster_silhouette(metric_data, x$final_clusters),
+    metrics_table = round_results(metrics_table),
+    per_cluster_table = round_results(compute_per_cluster_silhouette(metric_data, x$final_clusters)),
     settings = list(method = "metacluster", n_boot = n_boot),
     object_type = class(x)[1],
-    extras = list(selection_summary = x$selection_summary)
+    extras = list(selection_summary = round_results(x$selection_summary))
   )
 }
 

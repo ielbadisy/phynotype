@@ -208,8 +208,8 @@ lime_explain <- function(object,
   rownames(neighborhoods) <- NULL
 
   new_lime_explanation(
-    explanations = explanations,
-    neighborhoods = neighborhoods,
+    explanations = round_results(explanations),
+    neighborhoods = round_results(neighborhoods),
     settings = list(
       n_features = n_features,
       n_permutations = n_permutations,

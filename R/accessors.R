@@ -89,7 +89,7 @@ centers <- function(x, ...) {
 
 #' @export
 centers.cluster_fit <- function(x, ...) {
-  x$centers
+  round_results(x$centers)
 }
 
 #' @export
@@ -123,7 +123,7 @@ prototypes <- function(x, ...) {
 
 #' @export
 prototypes.cluster_fit <- function(x, ...) {
-  x$prototypes
+  round_results(x$prototypes)
 }
 
 #' @export

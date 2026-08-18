@@ -4,7 +4,7 @@
 - Added `theme_phynotype()`, a single ggplot2 theme now used consistently across every plot function in the package (previously some used `theme_minimal()`, one used `theme_bw()`, and `plot(ceteris_paribus)` had its own ad hoc purple-tinted theme).
 - Fixed `metacluster()` so it can combine native mixed-data methods (`kproto`, `kmm`) with numeric-only (`kmeans`, `pam`, `dbscan`, `gmm`) or distance-based (`hclust`, `agnes`) methods on the same mixed-type dataset, by preparing per-method input instead of passing raw mixed data to every candidate.
 - Fixed `validate.metacluster_fit()` to encode mixed-type data before computing silhouette/Calinski-Harabasz/Davies-Bouldin, matching `validate.cluster_fit()`.
-- `print.cluster_validation()` now rounds the `value` column to 4 significant digits.
+- All numeric package results now round to 4 significant digits by default: `validate()`'s metrics/per-cluster tables, `explore()`'s feature summary/separation/prototype tables, `centers()`/`prototypes()`, `feature_importance()`, `ceteris_paribus()`, `lime_explain()`, and `metacluster()`'s selection/stability summaries.
 - First CRAN submission.
 
 # phynotype 0.0.9

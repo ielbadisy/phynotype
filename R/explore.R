@@ -77,9 +77,9 @@ explore.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "fa
   prototype_table <- if (!is.null(x$prototypes)) as.data.frame(x$prototypes) else if (!is.null(x$centers)) as.data.frame(x$centers) else NULL
   new_cluster_explore(
     size_table = size_table,
-    feature_summary = feature_summary,
-    separation_table = separation_table,
-    prototype_table = prototype_table,
+    feature_summary = round_results(feature_summary),
+    separation_table = round_results(separation_table),
+    prototype_table = round_results(prototype_table),
     embedding = embedding$data,
     plot_data = embedding$data,
     embedding_method = embedding$method,
@@ -113,8 +113,8 @@ explore.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca",
   embedding <- compute_embedding(data, x$final_clusters, method = embedding, data_info = x$data_info)
   new_cluster_explore(
     size_table = size_table,
-    feature_summary = feature_summary,
-    separation_table = separation_table,
+    feature_summary = round_results(feature_summary),
+    separation_table = round_results(separation_table),
     prototype_table = NULL,
     embedding = embedding$data,
     plot_data = embedding$data,

@@ -178,8 +178,8 @@ metacluster <- function(x,
     consensus_fit = consensus_fit,
     final_clusters = final_clusters,
     final_k = selected$final_k,
-    selection_summary = selected$score_table,
-    stability_summary = compute_metacluster_stability(candidate_labels),
+    selection_summary = round_results(selected$score_table),
+    stability_summary = round_results(compute_metacluster_stability(candidate_labels)),
     data_info = prepared$data_info,
     extras = list(consensus = consensus)
   )

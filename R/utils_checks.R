@@ -1,3 +1,20 @@
+## All package results (validate(), explore(), feature_importance(),
+## ceteris_paribus(), lime_explain(), metacluster() selection/stability
+## summaries, and the centers()/prototypes() accessors) are rounded to 4
+## significant digits by default so printed and directly-accessed numeric
+## output is consistent across the package.
+round_results <- function(x, digits = 4) {
+  if (is.numeric(x)) {
+    return(signif(x, digits))
+  }
+  if (is.data.frame(x)) {
+    numeric_cols <- vapply(x, is.numeric, logical(1))
+    x[numeric_cols] <- lapply(x[numeric_cols], signif, digits = digits)
+    return(x)
+  }
+  x
+}
+
 normalize_method_name <- function(method) {
   if (!is.character(method) || length(method) != 1L || is.na(method)) {
     stop("`method` must be a single non-missing string.", call. = FALSE)

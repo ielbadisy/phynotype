@@ -45,6 +45,6 @@ test_that("validate() with truth surfaces both ari and nmi consistent with the d
   ari_row <- val$metrics_table[val$metrics_table$metric == "ari", ]
   nmi_row <- val$metrics_table[val$metrics_table$metric == "nmi", ]
 
-  expect_equal(ari_row$value, adjusted_rand_index(iris$Species, clusters(fit)))
-  expect_equal(nmi_row$value, phynotype:::normalized_mutual_information(iris$Species, clusters(fit)))
+  expect_equal(ari_row$value, signif(adjusted_rand_index(iris$Species, clusters(fit)), 4))
+  expect_equal(nmi_row$value, signif(phynotype:::normalized_mutual_information(iris$Species, clusters(fit)), 4))
 })
