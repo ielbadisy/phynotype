@@ -1,6 +1,6 @@
 Package: phynotype
 Title: Clustering and Consensus Meta-Clustering
-Version: 0.6.0
+Version: 0.6.2
 Authors@R: person("Imad", "EL BADISY", email = "elbadisyimad@gmail.com", role = c("aut", "cre"))
 Author: Imad EL BADISY [aut, cre]
 Maintainer: Imad EL BADISY <elbadisyimad@gmail.com>
@@ -20,6 +20,7 @@ Imports:
     dbscan,
     functionals,
     ggplot2,
+    ggrepel,
     mclust,
     parallel,
     rlang,
@@ -27,7 +28,6 @@ Imports:
     utils
 Suggests:
     FactoMineR,
-    factoextra,
     testthat (>= 3.0.0),
     knitr,
     rmarkdown

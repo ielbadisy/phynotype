@@ -18,9 +18,13 @@ function (\code{plot_clusters()}, \code{plot_cluster_sizes()},
 \code{plot_feature_profiles()}, \code{plot_consensus()}, \code{plot_coassoc()},
 \code{plot_biplot()}, \code{plot()} methods for \code{feature_importance},
 \code{ceteris_paribus}, and \code{lime_explanation} objects, and \code{plot_validation()}).
-A thin wrapper around \code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}}.
+Built on \code{ggplot2::theme_classic()} with an Okabe-Ito colorblind-safe
+palette, matching the style used by the \code{funcml} package's \code{theme_funcml()}.
 }
 \examples{
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 plot_clusters(fit) + theme_phynotype()
+}
+\seealso{
+\code{\link[=scale_color_phynotype]{scale_color_phynotype()}}, \code{\link[=scale_fill_phynotype]{scale_fill_phynotype()}}
 }

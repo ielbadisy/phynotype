@@ -4,7 +4,12 @@
 \alias{plot_consensus}
 \title{Plot consensus clustering in 2D}
 \usage{
-plot_consensus(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...)
+plot_consensus(
+  x,
+  data = NULL,
+  embedding = c("auto", "pca", "famd", "mca", "mds"),
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{metacluster_fit} object.}
@@ -12,10 +17,10 @@ plot_consensus(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"
 \item{data}{Optional numeric matrix, data frame, or distance object used to
 compute the embedding. Defaults to the training data stored in \code{x}.}
 
-\item{embedding}{Embedding method. \code{"auto"} chooses PCA for numeric data,
+\item{embedding}{Embedding method. \code{"auto"} selects PCA for numeric data,
 FAMD for mixed numeric/categorical data, MCA for categorical data, and
-classical MDS for distance objects. \code{"pca"}, \code{"famd"},
-\code{"mca"}, and \code{"mds"} may be selected explicitly.}
+classical MDS for distance inputs. \code{"pca"}, \code{"famd"}, \code{"mca"}, and
+\code{"mds"} may be selected explicitly.}
 
 \item{...}{Unused.}
 }

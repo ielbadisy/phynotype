@@ -36,6 +36,7 @@ plot_consensus.metacluster_fit <- function(x, data = NULL, embedding = c("auto",
   ggplot2::ggplot(exp$plot_data, ggplot2::aes(x = .data[["x"]], y = .data[["y"]], color = .data[["cluster"]])) +
     ggplot2::geom_point(size = 2) +
     ggplot2::labs(title = "Consensus clusters", x = labels$x, y = labels$y, color = "Cluster") +
+    scale_color_phynotype() +
     theme_phynotype()
 }
 
@@ -70,5 +71,6 @@ plot_coassoc.metacluster_fit <- function(x, ...) {
   ggplot2::ggplot(df, ggplot2::aes(x = .data[["row"]], y = .data[["col"]], fill = .data[["value"]])) +
     ggplot2::geom_tile() +
     ggplot2::labs(title = "Co-association matrix", x = NULL, y = NULL, fill = "Agreement") +
+    ggplot2::scale_fill_viridis_c(direction = -1) +
     theme_phynotype()
 }

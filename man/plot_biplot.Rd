@@ -27,41 +27,46 @@ explicitly.}
 Details.}
 
 \item{top_n}{Optional integer; if supplied, only the \code{top_n} variables (or
-categories) contributing the most to the plotted axes are drawn (passed
-to \code{factoextra} as \code{select.var = list(contrib = top_n)}).}
+categories) contributing the most to the plotted axes are drawn.}
 
-\item{...}{Additional arguments passed to \code{factoextra::fviz_pca_biplot()}
-or \code{factoextra::fviz_mca_biplot()}, overriding the variant's defaults.}
+\item{...}{Reserved for future extensions.}
 }
 \value{
 A \code{ggplot} object.
 }
 \description{
-A thin wrapper around \code{factoextra}'s \code{fviz_pca_biplot()} and
-\code{fviz_mca_biplot()}. Only the \code{"pca"} and \code{"mca"} embeddings are
-supported, matching the biplot functions \code{factoextra} itself provides;
-there is no \code{fviz_famd_biplot()} equivalent, and MDS has no variable
-space to project.
+A self-contained reimplementation of \code{factoextra}'s \code{fviz_pca_biplot()}
+and \code{fviz_mca_biplot()} geometry (individual points/arrows, variable
+arrows or category points, axis percentage labels, dashed origin lines),
+producing the same plots without depending on \code{factoextra}. Only the
+\code{"pca"} and \code{"mca"} embeddings are supported, matching the biplot
+functions \code{factoextra} itself provides; there is no FAMD biplot
+equivalent, and MDS has no variable space to project.
 }
 \details{
-Three display variants, all following \code{factoextra}'s own documented
-examples (\code{?factoextra::fviz_pca}):
+Three display variants, matching \code{factoextra}'s own documented examples
+(\code{?factoextra::fviz_pca}):
 \describe{
-\item{\code{"cluster"}}{Individuals colored and shaped by cluster assignment
-(\code{habillage}). The default.}
+\item{\code{"cluster"}}{Individuals colored and shaped by cluster assignment.
+The default.}
 \item{\code{"cos2"}}{Individuals colored by their quality of representation
-(\code{col.ind = "cos2"}) on a white-blue-orange gradient.}
+(\code{cos2}) on a white-blue-orange gradient.}
 \item{\code{"label"}}{Individuals shown as text labels (observation names or
-row numbers) instead of points (\code{geom.ind = "text"}).}
+row numbers) instead of points.}
 }
+
+For a \code{"pca"} embedding, variables are drawn as arrows from the origin,
+scaled so their spread matches that of the individuals (\code{factoextra}'s own
+scaling rule (\code{ratio * 0.7}), where \code{ratio} is the ratio of the individuals' to
+variables' coordinate ranges). For a \code{"mca"} embedding, variable
+categories are drawn as unscaled points (matching
+\code{factoextra::fviz_mca_biplot()}'s default \code{arrows = c(FALSE, FALSE)}).
 }
 \examples{
-if (requireNamespace("factoextra", quietly = TRUE)) {
-  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  plot_biplot(fit)
-  plot_biplot(fit, variant = "cos2")
-  plot_biplot(fit, variant = "label")
-}
+fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+plot_biplot(fit)
+plot_biplot(fit, variant = "cos2")
+plot_biplot(fit, variant = "label")
 }
 \seealso{
 \code{\link[=plot_clusters]{plot_clusters()}}, \code{\link[=explore]{explore()}} for the underlying embedding.

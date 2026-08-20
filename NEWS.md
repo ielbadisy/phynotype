@@ -1,3 +1,36 @@
+# phynotype 0.6.2
+
+- `plot_biplot()` no longer depends on `factoextra`. It's now a
+  self-contained reimplementation of `fviz_pca_biplot()`/`fviz_mca_biplot()`'s
+  geometry (individual points/arrows, variable arrows or category points,
+  axis percentage labels, dashed origin lines, the `r * 0.7` variable-arrow
+  scaling rule, and the exact cos2/contribution formulas `factoextra` uses
+  for `prcomp`/`FactoMineR::MCA` objects), verified to reproduce
+  numerically identical coordinates. `factoextra` dropped from `Suggests`;
+  `ggrepel` added to `Imports` (previously an indirect `factoextra`
+  dependency, now used directly for repelled labels).
+
+# phynotype 0.6.1
+
+- Standardized figure colors package-wide. `theme_phynotype()` now builds on
+  `ggplot2::theme_classic()` with an Okabe-Ito colorblind-safe palette
+  (matching the `funcml` package's `theme_funcml()`), and new
+  `scale_color_phynotype()`/`scale_fill_phynotype()` discrete scales are
+  applied to every plot with a categorical color/fill mapping (cluster
+  embedding, consensus clusters, feature profiles, silhouette widths).
+  Previously these fell back to ggplot2's default hue palette.
+- `plot(ceteris_paribus)` no longer uses its own ad hoc teal/purple colors
+  (visually indistinguishable from the `DALEX`/`ingredients` package's
+  ceteris-paribus plot style, despite no dependency on it) - it now uses the
+  same blue/vermillion accent pair as the rest of the package.
+- `plot_coassoc()`'s co-association heatmap now uses a proper continuous
+  `viridis` gradient instead of ggplot2's default blue gradient.
+- `plot(lime_explanation)`'s positive/negative bars now use a consistent
+  green/vermillion pair instead of ggplot2's default hue palette.
+- The two independently hardcoded feature-importance/cluster-size bar colors
+  are now sourced from the same shared accent constant.
+- README figures re-rendered to reflect the new palette.
+
 # phynotype 0.6.0
 
 - Added `plot_biplot()`, a thin wrapper around `factoextra::fviz_pca_biplot()`/`fviz_mca_biplot()` for `"pca"` and `"mca"` embeddings. No FAMD or MDS equivalent, matching what `factoextra` itself provides. Three `variant`s, all following `factoextra`'s own documented examples: `"cluster"` (default, colored/shaped by cluster assignment), `"cos2"` (colored by quality of representation), and `"label"` (individuals shown as text instead of points).

@@ -154,8 +154,8 @@ ceteris_paribus <- function(object,
 
 #' @export
 plot.ceteris_paribus <- function(x, ...) {
-  teal <- "#44B8C1"
-  purple <- "#3A22B8"
+  profile_color <- .phynotype_palette$accent
+  baseline_color <- .phynotype_palette$accent_alt
   profile_data <- x$profiles
   numeric_x <- suppressWarnings(!anyNA(as.numeric(profile_data$feature_value)))
   if (numeric_x) {
@@ -169,16 +169,16 @@ plot.ceteris_paribus <- function(x, ...) {
     baseline_data$observed_value <- as.numeric(baseline_data$observed_value)
   }
   line_layer <- if (identical(x$settings$target, "cluster")) {
-    ggplot2::geom_step(color = teal, linewidth = 0.8, alpha = 0.95)
+    ggplot2::geom_step(color = profile_color, linewidth = 0.8, alpha = 0.95)
   } else {
-    ggplot2::geom_line(color = teal, linewidth = 0.9, alpha = 0.95)
+    ggplot2::geom_line(color = profile_color, linewidth = 0.9, alpha = 0.95)
   }
   baseline_layers <- if (numeric_x) {
     list(
       ggplot2::geom_vline(
         data = baseline_data,
         ggplot2::aes(xintercept = observed_value),
-        color = purple,
+        color = baseline_color,
         linetype = "dashed",
         linewidth = 0.45,
         alpha = 0.75
@@ -187,8 +187,8 @@ plot.ceteris_paribus <- function(x, ...) {
         data = baseline_data,
         ggplot2::aes(x = observed_value, y = baseline_value),
         inherit.aes = FALSE,
-        color = purple,
-        fill = purple,
+        color = baseline_color,
+        fill = baseline_color,
         size = 2.6
       )
     )

@@ -58,49 +58,49 @@ test_that("plot_clusters uses MCA labels for categorical-only fits", {
   expect_equal(as.character(p$labels$y), "Dim 2")
 })
 
-test_that("plot_biplot delegates to factoextra::fviz_pca_biplot for PCA embeddings", {
-  skip_if_not_installed("factoextra")
+test_that("plot_biplot renders natively for PCA embeddings", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  p <- suppressWarnings(plot_biplot(fit))
+  p <- plot_biplot(fit)
 
   expect_s3_class(p, "ggplot")
   expect_match(as.character(p$labels$x), "^Dim1")
   expect_match(as.character(p$labels$y), "^Dim2")
+  expect_true(any(vapply(p$layers, function(l) inherits(l$geom, "GeomSegment"), logical(1))))
 })
 
-test_that("plot_biplot honors top_n via factoextra's select.var", {
-  skip_if_not_installed("factoextra")
+test_that("plot_biplot honors top_n by keeping only the highest-contributing variables", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  p_top <- suppressWarnings(plot_biplot(fit, top_n = 2))
+  p_top <- plot_biplot(fit, top_n = 2)
 
   expect_s3_class(p_top, "ggplot")
+  arrow_layer <- Filter(function(l) inherits(l$geom, "GeomSegment"), p_top$layers)[[1]]
+  expect_equal(nrow(arrow_layer$data), 2)
 })
 
 test_that("plot_biplot dispatches for cluster_explore and metacluster_fit", {
-  skip_if_not_installed("factoextra")
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
   exp <- explore(fit)
-  p1 <- suppressWarnings(plot_biplot(exp))
+  p1 <- plot_biplot(exp)
   expect_s3_class(p1, "ggplot")
 
   mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "pam"), k = 2:3, seed = 1)
-  p2 <- suppressWarnings(plot_biplot(mfit))
+  p2 <- plot_biplot(mfit)
   expect_s3_class(p2, "ggplot")
 })
 
-test_that("plot_biplot uses factoextra::fviz_mca_biplot for MCA embeddings", {
-  skip_if_not_installed("factoextra")
+test_that("plot_biplot renders natively for MCA embeddings", {
   skip_if_not_installed("FactoMineR")
   cat_df <- data.frame(
     a = factor(c("x", "x", "y", "y")),
     b = factor(c("u", "v", "u", "v"))
   )
   fit <- cluster(cat_df, method = "kmm", k = 2, seed = 1)
-  p <- suppressWarnings(plot_biplot(fit, embedding = "mca"))
+  p <- plot_biplot(fit, embedding = "mca")
   expect_s3_class(p, "ggplot")
+  expect_true(any(vapply(p$layers, function(l) inherits(l$geom, "GeomPoint"), logical(1))))
 })
 
-test_that("plot_biplot errors for embeddings with no factoextra biplot equivalent", {
+test_that("plot_biplot errors for embeddings with no biplot equivalent", {
   d <- stats::dist(iris[, 1:4])
   fit <- cluster(d, method = "hclust", k = 3)
   exp <- explore(fit, embedding = "mds")
@@ -108,30 +108,20 @@ test_that("plot_biplot errors for embeddings with no factoextra biplot equivalen
 })
 
 test_that("plot_biplot variant = 'cos2' colors individuals by quality of representation", {
-  skip_if_not_installed("factoextra")
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  p <- suppressWarnings(plot_biplot(fit, variant = "cos2"))
+  p <- plot_biplot(fit, variant = "cos2")
 
   expect_s3_class(p, "ggplot")
   point_layer <- Filter(function(l) inherits(l$geom, "GeomPoint"), p$layers)[[1]]
-  expect_true("cos2" %in% names(point_layer$data) || "colour" %in% names(point_layer$mapping))
+  expect_true("cos2" %in% names(point_layer$data))
 })
 
 test_that("plot_biplot variant = 'label' shows individuals as text instead of points", {
-  skip_if_not_installed("factoextra")
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  p <- suppressWarnings(plot_biplot(fit, variant = "label"))
+  p <- plot_biplot(fit, variant = "label")
 
   expect_s3_class(p, "ggplot")
   expect_false(any(vapply(p$layers, function(l) inherits(l$geom, "GeomPoint"), logical(1))))
-})
-
-test_that("plot_biplot passthrough args override the variant's defaults", {
-  skip_if_not_installed("factoextra")
-  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  p <- suppressWarnings(plot_biplot(fit, variant = "cluster", addEllipses = TRUE))
-
-  expect_s3_class(p, "ggplot")
 })
 
 test_that("plot_cluster_sizes returns a bar chart ggplot for cluster_fit, cluster_explore, and metacluster_fit", {

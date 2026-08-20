@@ -4,18 +4,23 @@
 \alias{explore}
 \title{Explore clustering structure}
 \usage{
-explore(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...)
+explore(
+  x,
+  data = NULL,
+  embedding = c("auto", "pca", "famd", "mca", "mds"),
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{cluster_fit} or \code{metacluster_fit} object.}
 
-\item{data}{Optional numeric matrix, data frame, or distance object. Defaults
-to the training data stored in \code{x}.}
+\item{data}{Optional numeric matrix, data frame, or distance object.
+Defaults to the training data stored in \code{x}.}
 
 \item{embedding}{Embedding method. \code{"auto"} chooses PCA for numeric data,
 FAMD for mixed numeric/categorical data, MCA for categorical data, and
-classical MDS for distance objects. \code{"pca"}, \code{"famd"},
-\code{"mca"}, and \code{"mds"} may be selected explicitly.}
+classical MDS for distance objects. Explicit values \code{"pca"}, \code{"famd"},
+\code{"mca"}, and \code{"mds"} are also supported.}
 
 \item{...}{Unused.}
 }
@@ -24,9 +29,9 @@ A \code{cluster_explore} object with components:
 \describe{
 \item{\code{size_table}}{Data frame with cluster sizes.}
 \item{\code{feature_summary}}{Data frame with per-cluster descriptive
-statistics for each feature, or \code{NULL} when the input is distance-based.}
+statistics for each feature.}
 \item{\code{separation_table}}{Data frame with per-feature eta-squared
-values, or \code{NULL} when the input is distance-based.}
+values.}
 \item{\code{embedding}}{Data frame with two embedding coordinates and cluster
 labels.}
 }
