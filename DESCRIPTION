@@ -1,9 +1,9 @@
 Package: phynotype
 Title: Clustering and Consensus Meta-Clustering
 Version: 0.6.2
-Authors@R: person("Imad", "EL BADISY", email = "elbadisyimad@gmail.com", role = c("aut", "cre"))
-Author: Imad EL BADISY [aut, cre]
-Maintainer: Imad EL BADISY <elbadisyimad@gmail.com>
+Authors@R: person("Imad", "El Badisy", email = "elbadisyimad@gmail.com", role = c("aut", "cre"))
+Author: Imad El Badisy [aut, cre]
+Maintainer: Imad El Badisy <elbadisyimad@gmail.com>
 Description: Tools for clustering, consensus meta-clustering,
     validation, exploratory interpretation, cluster prediction, and
     plotting. The package provides a clustering workflow with consensus clustering following Strehl and Ghosh (2002)
