@@ -1,0 +1,10 @@
+citHeader("To cite phynotype in publications, use:")
+
+bibentry(
+  bibtype = "Manual",
+  title   = "phynotype: Clustering and Consensus Meta-Clustering",
+  author  = person("Imad", "El Badisy"),
+  year    = "2026",
+  note    = sprintf("R package version %s", meta$Version),
+  url     = "https://CRAN.R-project.org/package=phynotype"
+)

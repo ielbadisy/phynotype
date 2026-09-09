@@ -6,8 +6,13 @@ meta-clustering, validation, exploration, prediction, and plotting.
 
 ## Installation
 
-`phynotype` is not on CRAN yet. Install the development version from
-GitHub:
+Install the released version from CRAN:
+
+``` r
+install.packages("phynotype")
+```
+
+Or install the development version from GitHub:
 
 ``` r
 # install.packages("pak")
@@ -356,3 +361,26 @@ plot(lx)
 ```
 
 ![](README_files/figure-gfm/plot-lime-explain-1.png)<!-- -->
+
+## Citation
+
+To cite `phynotype` in publications, use:
+
+``` r
+citation("phynotype")
+#> To cite phynotype in publications, use:
+#> 
+#>   El Badisy I (2026). _phynotype: Clustering and Consensus
+#>   Meta-Clustering_. R package version 0.6.2,
+#>   <https://CRAN.R-project.org/package=phynotype>.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {phynotype: Clustering and Consensus Meta-Clustering},
+#>     author = {Imad {El Badisy}},
+#>     year = {2026},
+#>     note = {R package version 0.6.2},
+#>     url = {https://CRAN.R-project.org/package=phynotype},
+#>   }
+```
