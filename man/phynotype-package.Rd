@@ -19,9 +19,8 @@ using \code{\link[=validate]{validate()}}.
 two-dimensional embeddings with \code{\link[=explore]{explore()}}.
 \item \strong{Predict}: assign new observations to learned clusters with
 \code{\link[=predict.cluster_fit]{predict.cluster_fit()}}.
-\item \strong{Interpret}: explain the clustering rule with
-\code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}}, and
-\code{\link[=ceteris_paribus]{ceteris_paribus()}}.
+\item \strong{Interpret}: explain the clustering rule with \code{\link[=interpret]{interpret()}}
+(permutation importance, LIME, or ceteris paribus profiles).
 }
 
 All steps operate through S3 generic functions and return structured objects
@@ -85,10 +84,9 @@ properties. \emph{Biometrics}, \strong{27}(4), 857–874.
 }
 \seealso{
 \code{\link[=cluster]{cluster()}}, \code{\link[=metacluster]{metacluster()}}, \code{\link[=validate]{validate()}}, \code{\link[=explore]{explore()}},
-\code{\link[=predict.cluster_fit]{predict.cluster_fit()}}, \code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}},
-\code{\link[=ceteris_paribus]{ceteris_paribus()}}
+\code{\link[=predict.cluster_fit]{predict.cluster_fit()}}, \code{\link[=interpret]{interpret()}}
 }
 \author{
-\strong{Maintainer}: Imad EL BADISY \email{elbadisyimad@gmail.com}
+\strong{Maintainer}: Imad El Badisy \email{elbadisyimad@gmail.com}
 
 }

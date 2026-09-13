@@ -53,9 +53,8 @@
 #'   value at that step, the predicted target (cluster label or score), the
 #'   observed feature value, and the baseline prediction.
 #'
-#' @seealso [lime_explain()] for local linear surrogate explanations,
-#'   [feature_importance()] for global permutation importance,
-#'   [predict.cluster_fit()] which is used internally.
+#' @seealso [interpret()], the single entry point that dispatches here via
+#'   `method = "ceteris_paribus"`.
 #'
 #' @references
 #' Biecek, P. and Burzykowski, T. (2021). *Explanatory Model Analysis*.
@@ -68,13 +67,8 @@
 #' variables in black box supervised learning models. *Journal of the Royal
 #' Statistical Society: Series B*, **82**(4), 1059--1086.
 #'
-#' @export
-#'
-#' @examples
-#' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' cp <- ceteris_paribus(fit, iris[1:3, 1:4], features = 1:2, grid_size = 10)
-#' head(cp$profiles)
-ceteris_paribus <- function(object,
+#' @noRd
+.interpret_ceteris_paribus <- function(object,
                             new_data,
                             features = NULL,
                             grid = NULL,

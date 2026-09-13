@@ -70,7 +70,7 @@ test_that("print.cluster_prediction reports method and prediction count", {
 
 test_that("print.feature_importance reports metric, feature count, and repeats", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  imp <- feature_importance(fit, features = 1:2, n_repeats = 2, seed = 10)
+  imp <- interpret(fit, method = "importance", features = 1:2, n_repeats = 2, seed = 10)
 
   out <- capture.output(print(imp))
   expect_true(any(grepl("<feature_importance>", out)))
@@ -79,7 +79,7 @@ test_that("print.feature_importance reports metric, feature count, and repeats",
 
 test_that("print.ceteris_paribus reports target and profile count", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  cp <- ceteris_paribus(fit, iris[1, 1:4, drop = FALSE], features = 1, grid_size = 3)
+  cp <- interpret(fit, method = "ceteris_paribus", new_data = iris[1, 1:4, drop = FALSE], features = 1, grid_size = 3)
 
   out <- capture.output(print(cp))
   expect_true(any(grepl("<ceteris_paribus>", out)))
@@ -88,7 +88,7 @@ test_that("print.ceteris_paribus reports target and profile count", {
 
 test_that("print.lime_explanation reports target, observations, and effect count", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  lx <- lime_explain(fit, iris[1, 1:4, drop = FALSE], n_features = 2, n_permutations = 20, seed = 1)
+  lx <- interpret(fit, method = "lime", new_data = iris[1, 1:4, drop = FALSE], n_features = 2, n_permutations = 20, seed = 1)
 
   out <- capture.output(print(lx))
   expect_true(any(grepl("<lime_explanation>", out)))

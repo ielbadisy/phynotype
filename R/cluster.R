@@ -62,8 +62,7 @@
 #'
 #' @seealso [validate()] to score the fit, [explore()] to summarize cluster
 #'   structure, [predict.cluster_fit()] to assign new observations,
-#'   [metacluster()] for consensus clustering,
-#'   [feature_importance()], [lime_explain()], [ceteris_paribus()] for
+#'   [metacluster()] for consensus clustering, [interpret()] for
 #'   interpretability.
 #'
 #' @references

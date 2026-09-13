@@ -129,7 +129,6 @@ data sets with categorical values. \emph{Data Mining and Knowledge Discovery},
 \seealso{
 \code{\link[=validate]{validate()}} to score the fit, \code{\link[=explore]{explore()}} to summarize cluster
 structure, \code{\link[=predict.cluster_fit]{predict.cluster_fit()}} to assign new observations,
-\code{\link[=metacluster]{metacluster()}} for consensus clustering,
-\code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}}, \code{\link[=ceteris_paribus]{ceteris_paribus()}} for
+\code{\link[=metacluster]{metacluster()}} for consensus clustering, \code{\link[=interpret]{interpret()}} for
 interpretability.
 }

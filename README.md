@@ -263,7 +263,7 @@ Global permutation importance estimates which features the fitted
 clustering rule relies on most.
 
 ``` r
-imp <- feature_importance(fit, n_repeats = 3, seed = 1)
+imp <- interpret(fit, method = "importance", n_repeats = 3, seed = 1)
 imp
 #> <feature_importance>
 #>   Metric: instability
@@ -287,9 +287,10 @@ Ceteris paribus profiles show how local predictions change when one
 feature is varied and the other features are held fixed.
 
 ``` r
-cp <- ceteris_paribus(
+cp <- interpret(
   fit,
-  iris[1:2, 1:4],
+  method = "ceteris_paribus",
+  new_data = iris[1:2, 1:4],
   features = c("Petal.Length", "Petal.Width"),
   grid_size = 6,
   target = "score"
@@ -326,9 +327,10 @@ LIME-style explanations fit local surrogate models around selected
 observations.
 
 ``` r
-lx <- lime_explain(
+lx <- interpret(
   fit,
-  iris[1:2, 1:4],
+  method = "lime",
+  new_data = iris[1:2, 1:4],
   n_features = 3,
   n_permutations = 50,
   seed = 1

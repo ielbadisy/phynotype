@@ -74,9 +74,8 @@
 #'     importance, standard error, and number of repeats.}
 #' }
 #'
-#' @seealso [lime_explain()] for local explanations, [ceteris_paribus()] for
-#'   individual conditional profiles, [predict.cluster_fit()] which is used
-#'   internally.
+#' @seealso [interpret()], the single entry point that dispatches here via
+#'   `method = "importance"`.
 #'
 #' @references
 #' Breiman, L. (2001). Random forests. *Machine Learning*, **45**(1), 5--32.
@@ -87,13 +86,8 @@
 #' of prediction models simultaneously. *Journal of Machine Learning Research*,
 #' **20**(177), 1--81.
 #'
-#' @export
-#'
-#' @examples
-#' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' imp <- feature_importance(fit, n_repeats = 3, seed = 1)
-#' imp$summary
-feature_importance <- function(object,
+#' @noRd
+.interpret_importance <- function(object,
                                data = NULL,
                                features = NULL,
                                metric = c("instability", "silhouette", "total_within"),
