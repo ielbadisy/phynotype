@@ -209,17 +209,17 @@ nclusters.metacluster_fit <- function(x, ...) {
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' methodused(fit)
-methodused <- function(x, ...) {
-  UseMethod("methodused")
+#' method(fit)
+method <- function(x, ...) {
+  UseMethod("method")
 }
 
 #' @export
-methodused.cluster_fit <- function(x, ...) {
+method.cluster_fit <- function(x, ...) {
   x$method
 }
 
 #' @export
-methodused.metacluster_fit <- function(x, ...) {
+method.metacluster_fit <- function(x, ...) {
   x$method
 }

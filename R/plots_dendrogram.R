@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-#' d <- mixed.dist(iris[, 1:4])
+#' d <- prepare(iris[, 1:4], method = "distance")
 #' fit <- cluster(d, method = "hclust", k = 3)
 #' plot_dendrogram(fit)
 #'

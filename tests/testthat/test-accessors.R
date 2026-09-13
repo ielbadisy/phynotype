@@ -7,7 +7,7 @@ test_that("accessors on a kmeans cluster_fit expose clusters, centers, sizes, an
   expect_null(prototypes(fit))
   expect_equal(sum(sizes(fit)), nrow(iris))
   expect_equal(nclusters(fit), 3)
-  expect_equal(methodused(fit), "kmeans")
+  expect_equal(method(fit), "kmeans")
 })
 
 test_that("accessors on a pam cluster_fit expose prototypes but not centers", {
@@ -48,6 +48,6 @@ test_that("accessors on a metacluster_fit dispatch to final_clusters/final_k and
   expect_null(centers(mfit))
   expect_null(prototypes(mfit))
   expect_equal(nclusters(mfit), mfit$final_k)
-  expect_equal(methodused(mfit), "metacluster")
+  expect_equal(method(mfit), "metacluster")
   expect_equal(sum(sizes(mfit)), nrow(iris))
 })

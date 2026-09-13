@@ -44,7 +44,7 @@ The main objects expose a common accessor API, so downstream code does
 not need to inspect object internals.
 
 ``` r
-methodused(fit)
+method(fit)
 #> [1] "kmeans"
 nclusters(fit)
 #> [1] 3

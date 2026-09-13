@@ -43,10 +43,10 @@
 #' Ghosh, 2002).
 #'
 #' @section Mixed-type data:
-#' Use [prepare.mixed()] to encode mixed-type data frames into a numeric
-#' matrix before distance-based methods. Use [mixed.dist()] to build a
-#' Gower distance matrix (Gower, 1971) before hierarchical methods. The
-#' exploratory embedding layer automatically selects PCA for numeric data,
+#' Use [prepare()] to encode mixed-type data frames into a numeric matrix
+#' before distance-based methods, or `prepare(x, method = "distance")` to
+#' build a Gower distance matrix (Gower, 1971) before hierarchical methods.
+#' The exploratory embedding layer automatically selects PCA for numeric data,
 #' FAMD for mixed numeric/categorical data, MCA for categorical data, and
 #' classical MDS for distance objects.
 #'

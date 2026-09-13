@@ -15,38 +15,45 @@ restore_preprocessed_matrix <- function(new_data, data_info) {
   new_data
 }
 
-#' Prepare mixed-type data for numeric clustering methods
+#' Prepare mixed-type data for clustering
 #'
-#' Convert a data frame containing numeric, logical, character, or factor
-#' columns into a numeric design matrix suitable for methods such as
-#' `"kmeans"`, `"pam"`, `"dbscan"`, and `"gmm"`.
+#' Single entry point for turning a mixed numeric/categorical data frame into
+#' either a numeric design matrix (`method = "encode"`) or a Gower dissimilarity
+#' matrix (`method = "distance"`).
 #'
-#' Categorical variables are one-hot encoded (full-rank by default), numeric
-#' variables are optionally centered and scaled, and missingness can be
-#' preserved as an explicit level or trigger an error.
+#' \describe{
+#'   \item{`"encode"`}{(default) One-hot encodes categorical variables
+#'     (full-rank by default), optionally centers/scales numeric variables,
+#'     and returns a numeric design matrix suitable for methods such as
+#'     `"kmeans"`, `"pam"`, `"dbscan"`, and `"gmm"`. Extra arguments: `center`,
+#'     `scale`, `drop_first`, `na_action`.}
+#'   \item{`"distance"`}{Builds a Gower dissimilarity matrix
+#'     (Gower, 1971) via `cluster::daisy()`, the recommended first step
+#'     before hierarchical clustering (`"hclust"` or `"agnes"`) on mixed
+#'     data. Extra arguments: `metric` (default `"gower"`), and `...` passed
+#'     to `cluster::daisy()`.}
+#' }
 #'
-#' This is intentionally a manual first step. Clustering algorithms that use
-#' Euclidean distances or Gaussian models should not silently coerce mixed data.
-#' For hierarchical methods on mixed data, use [mixed.dist()] instead.
+#' Encoding is intentionally a manual first step: clustering algorithms that
+#' use Euclidean distances or Gaussian models should not silently coerce
+#' mixed data.
 #'
-#' @param x Data frame, matrix, or vector-like object coercible to a data frame.
-#' @param center Logical; if `TRUE`, center numeric columns to zero mean after
-#'   encoding.
-#' @param scale Logical; if `TRUE`, scale numeric columns to unit variance after
-#'   encoding.
-#' @param drop_first Logical; if `TRUE`, drop the first dummy column for each
-#'   categorical feature to avoid the dummy-variable trap. The default (`FALSE`)
-#'   keeps the full one-hot representation, which is usually preferable for
-#'   distance-based clustering.
-#' @param na_action Missing-value strategy. `"keep"` (default) adds an explicit
-#'   `"missing"` level for categoricals and median-imputes numeric columns.
-#'   `"fail"` stops with an error on any missing value.
+#' @param x Data frame, matrix, or vector-like object coercible to a data
+#'   frame.
+#' @param method Which preparation to perform: `"encode"` or `"distance"`.
+#'   See Details.
+#' @param ... Arguments passed on to the selected method. See Details.
 #'
-#' @return A numeric matrix with preprocessing metadata stored in the attribute
-#'   `"phynotype_preprocess"`.
+#' @return For `method = "encode"`, a numeric matrix with preprocessing
+#'   metadata stored in the attribute `"phynotype_preprocess"`. For
+#'   `method = "distance"`, a `dist` object.
 #'
-#' @seealso [mixed.dist()] for Gower-distance computation before
-#'   hierarchical clustering.
+#' @seealso [cluster()] for fitting with the resulting matrix or distance
+#'   object.
+#'
+#' @references
+#' Gower, J.C. (1971). A general coefficient of similarity and some of its
+#' properties. *Biometrics*, **27**(4), 857--874.
 #'
 #' @export
 #'
@@ -56,16 +63,28 @@ restore_preprocessed_matrix <- function(new_data, data_info) {
 #'   x1 = c(1.2, 0.5, 3.1),
 #'   x2 = factor(c("A", "B", "A"))
 #' )
-#' mat <- prepare.mixed(df)
+#' mat <- prepare(df)
 #' mat
-prepare.mixed <- function(x,
-                               center = TRUE,
-                               scale = TRUE,
-                               drop_first = FALSE,
-                               na_action = c("keep", "fail")) {
+#'
+#' d <- prepare(iris, method = "distance")
+#' fit <- cluster(d, method = "hclust", k = 3)
+#' fit
+prepare <- function(x, method = c("encode", "distance"), ...) {
+  method <- match.arg(method)
+  switch(method,
+    encode = .prepare_encode(x, ...),
+    distance = .prepare_distance(x, ...)
+  )
+}
+
+.prepare_encode <- function(x,
+                             center = TRUE,
+                             scale = TRUE,
+                             drop_first = FALSE,
+                             na_action = c("keep", "fail")) {
   na_action <- match.arg(na_action)
   if (inherits(x, "dist")) {
-    stop("`prepare.mixed()` expects row-by-feature data, not a distance object.", call. = FALSE)
+    stop("`prepare()` with `method = \"encode\"` expects row-by-feature data, not a distance object.", call. = FALSE)
   }
   x <- as.data.frame(x, stringsAsFactors = FALSE)
   if (nrow(x) < 1L || ncol(x) < 1L) {
@@ -143,49 +162,9 @@ prepare.mixed <- function(x,
   out
 }
 
-#' Compute a mixed-type distance matrix
-#'
-#' Build a Gower dissimilarity matrix for mixed-type data using
-#' `cluster::daisy()`. This is the recommended first step before hierarchical
-#' clustering (`"hclust"` or `"agnes"`) when the input contains categorical
-#' variables.
-#'
-#' For two observations \eqn{x_i} and \eqn{x_j}, the Gower coefficient
-#' (Gower, 1971) is
-#'
-#' \deqn{
-#'   d_G(i, j) = \frac{\sum_{f=1}^{p} w_{ijf}\, \delta_{ijf}\, s_{ijf}}
-#'                    {\sum_{f=1}^{p} w_{ijf}\, \delta_{ijf}},
-#' }
-#'
-#' where \eqn{\delta_{ijf}} indicates whether feature \eqn{f} is comparable
-#' (not missing), \eqn{w_{ijf}} is an optional weight, and \eqn{s_{ijf}} is the
-#' partial similarity: the scaled absolute difference for numeric features and 0
-#' (match) or 1 (mismatch) for categorical features.
-#'
-#' @param x Data frame containing numeric and/or categorical columns.
-#' @param metric Distance metric passed to `cluster::daisy()`. Defaults to
-#'   `"gower"`.
-#' @param ... Additional arguments passed to `cluster::daisy()`.
-#'
-#' @return A `dist` object.
-#'
-#' @seealso [prepare.mixed()] for converting mixed data to a numeric
-#'   matrix, [cluster()] for fitting with the resulting distance object.
-#'
-#' @references
-#' Gower, J.C. (1971). A general coefficient of similarity and some of its
-#' properties. *Biometrics*, **27**(4), 857--874.
-#'
-#' @export
-#'
-#' @examples
-#' d <- mixed.dist(iris)
-#' fit <- cluster(d, method = "hclust", k = 3)
-#' fit
-mixed.dist <- function(x, metric = "gower", ...) {
+.prepare_distance <- function(x, metric = "gower", ...) {
   if (!requireNamespace("cluster", quietly = TRUE)) {
-    stop("Package `cluster` is required for `mixed.dist()`.", call. = FALSE)
+    stop("Package `cluster` is required for `prepare()` with `method = \"distance\"`.", call. = FALSE)
   }
   if (inherits(x, "dist")) {
     return(x)

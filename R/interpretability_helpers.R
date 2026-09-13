@@ -198,12 +198,12 @@ interpretability_numeric_basis <- function(data) {
     if (all(numeric_cols)) {
       return(as.matrix(data))
     }
-    return(prepare.mixed(data, center = TRUE, scale = TRUE))
+    return(.prepare_encode(data, center = TRUE, scale = TRUE))
   }
   if (is.matrix(data) && is.numeric(data)) {
     return(data)
   }
-  prepare.mixed(data, center = TRUE, scale = TRUE)
+  .prepare_encode(data, center = TRUE, scale = TRUE)
 }
 
 summarize_importance_results <- function(results) {

@@ -41,9 +41,9 @@ check_numeric_input <- function(x) {
         "`x` contains non-numeric columns: ", paste(bad, collapse = ", "), ".\n",
         "Use an explicit two-step workflow for mixed data:\n",
         "1. For numeric algorithms (`kmeans`, `pam`, `dbscan`, `gmm`), call ",
-        "`prepare.mixed(x, scale = TRUE)` and pass the returned matrix to `cluster()`.\n",
+        "`prepare(x, scale = TRUE)` and pass the returned matrix to `cluster()`.\n",
         "2. For hierarchical algorithms (`hclust`, `agnes`), call ",
-        "`mixed.dist(x)` and pass the returned distance matrix to `cluster()`.",
+        "`prepare(x, method = \"distance\")` and pass the returned distance matrix to `cluster()`.",
         call. = FALSE
       )
     }
@@ -119,7 +119,7 @@ prepare_cluster_input <- function(x, method, scale, center, k) {
     stop(
       "Distance inputs are only supported by `hclust` and `agnes`.\n",
       "Use row-by-feature numeric data for `kmeans`, `pam`, `dbscan`, and `gmm`; ",
-      "for mixed data first call `prepare.mixed(x, scale = TRUE)`.",
+      "for mixed data first call `prepare(x, scale = TRUE)`.",
       call. = FALSE
     )
   }

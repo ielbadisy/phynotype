@@ -46,7 +46,7 @@ The main objects expose a common accessor API, so downstream code does not need
 to inspect object internals.
 
 ```{r api-accessors}
-methodused(fit)
+method(fit)
 nclusters(fit)
 data.frame(cluster = names(sizes(fit)), size = unname(sizes(fit)))
 head(clusters(fit))
