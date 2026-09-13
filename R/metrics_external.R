@@ -1,6 +1,7 @@
 #' External clustering agreement metrics
 #'
-#' These helpers implement the reference-label metrics used by `validate()`.
+#' These helpers implement the reference-label metrics used by `validate()`
+#' and `evaluate()`.
 #'
 #' @name external-metrics
 #' @keywords internal
@@ -23,11 +24,8 @@ NULL
 #' Hubert, L. and Arabie, P. (1985). Comparing partitions. *Journal of
 #' Classification*, **2**(1), 193–218.
 #'
-#' @examples
-#' adjusted_rand_index(c(1, 1, 2, 2), c(1, 1, 2, 3))
-#'
-#' @export
-adjusted_rand_index <- function(x, y) {
+#' @noRd
+.arand_index <- function(x, y) {
   tab <- table(x, y)
   n <- sum(tab)
   a <- rowSums(tab)

@@ -50,7 +50,7 @@ fit_kmeans
 summary(fit_kmeans)
 clusters(fit_kmeans)[1:10]
 sizes(fit_kmeans)
-method_used(fit_kmeans)
+method(fit_kmeans)
 ```
 
 ## PAM

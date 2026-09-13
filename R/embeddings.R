@@ -101,7 +101,7 @@ compute_pca_embedding <- function(data, clusters) {
   x <- if (input$kind == "numeric") {
     input$data
   } else {
-    prepare_mixed_data(input$data, scale = TRUE)
+    .prepare_encode(input$data, scale = TRUE)
   }
   pc <- stats::prcomp(x, center = TRUE, scale. = TRUE)
   coords <- pad_embedding_coords(pc$x)
@@ -164,7 +164,7 @@ compute_mds_embedding <- function(data, clusters) {
     d <- stats::dist(input$data)
     n_obs <- nrow(input$data)
   } else {
-    encoded <- prepare_mixed_data(input$data, scale = TRUE)
+    encoded <- .prepare_encode(input$data, scale = TRUE)
     d <- stats::dist(encoded)
     n_obs <- nrow(encoded)
   }

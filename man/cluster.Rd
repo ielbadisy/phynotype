@@ -97,7 +97,7 @@ if (requireNamespace("cluster", quietly = TRUE)) {
 }
 
 # Hierarchical clustering from a distance object
-d <- mixed_distance(iris[, 1:4])
+d <- prepare(iris[, 1:4], method = "distance")
 fit_hc <- cluster(d, method = "hclust", k = 3)
 fit_hc
 

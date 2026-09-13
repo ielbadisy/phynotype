@@ -44,9 +44,9 @@ The main objects expose a common accessor API, so downstream code does
 not need to inspect object internals.
 
 ``` r
-method_used(fit)
+method(fit)
 #> [1] "kmeans"
-n_clusters(fit)
+nclusters(fit)
 #> [1] 3
 data.frame(cluster = names(sizes(fit)), size = unname(sizes(fit)))
 #>   cluster size

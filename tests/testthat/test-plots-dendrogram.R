@@ -1,5 +1,5 @@
 test_that("plot_dendrogram returns the hclust object invisibly for a hierarchical cluster_fit", {
-  d <- mixed_distance(iris[, 1:4])
+  d <- prepare(iris[, 1:4], method = "distance")
   fit <- cluster(d, method = "hclust", k = 3)
 
   pdf(NULL)

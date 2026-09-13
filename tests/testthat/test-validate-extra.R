@@ -26,7 +26,7 @@ test_that("validate.cluster_fit appends ari and nmi rows when truth is supplied"
 
   expect_true(all(c("ari", "nmi") %in% val$metrics_table$metric))
   ari_row <- val$metrics_table[val$metrics_table$metric == "ari", ]
-  expect_equal(ari_row$value, signif(adjusted_rand_index(iris$Species, clusters(fit)), 4))
+  expect_equal(ari_row$value, signif(evaluate(iris$Species, clusters(fit)), 4))
 })
 
 test_that("validate.cluster_fit filters the metrics table when metrics is supplied", {
@@ -63,7 +63,7 @@ test_that("validate.default errors on non-matrix/data.frame input and builds a g
 })
 
 test_that("validate.cluster_fit errors for distance-only training data", {
-  d <- mixed_distance(iris[, 1:4])
+  d <- prepare(iris[, 1:4], method = "distance")
   fit <- cluster(d, method = "hclust", k = 3)
   expect_error(validate(fit), "not yet implemented")
 })

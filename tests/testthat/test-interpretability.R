@@ -88,7 +88,7 @@ test_that("cores controls functionals-backed parallel dispatch", {
 
 test_that("distance-only hierarchical fits have an explicit interpretability boundary", {
   skip_if_not_installed("cluster")
-  d <- mixed_distance(data.frame(x = c(1, 2, 8, 9), group = factor(c("a", "a", "b", "b"))))
+  d <- prepare(data.frame(x = c(1, 2, 8, 9), group = factor(c("a", "a", "b", "b"))), method = "distance")
   fit <- cluster(d, method = "hclust", k = 2)
   expect_error(
     feature_importance(fit, data = d, n_repeats = 1),

@@ -4,6 +4,7 @@
 \alias{external-metrics}
 \title{External clustering agreement metrics}
 \description{
-These helpers implement the reference-label metrics used by \code{validate()}.
+These helpers implement the reference-label metrics used by \code{validate()}
+and \code{evaluate()}.
 }
 \keyword{internal}

@@ -8,7 +8,7 @@
 #' @return Integer vector of length equal to the number of training
 #'   observations.
 #'
-#' @seealso [sizes()], [n_clusters()], [centers()], [membership()]
+#' @seealso [sizes()], [nclusters()], [centers()], [membership()]
 #'
 #' @export
 #'
@@ -140,7 +140,7 @@ prototypes.metacluster_fit <- function(x, ...) {
 #'
 #' @return Named integer vector, where names are the cluster labels.
 #'
-#' @seealso [clusters()], [n_clusters()]
+#' @seealso [clusters()], [nclusters()]
 #'
 #' @export
 #'
@@ -179,18 +179,18 @@ sizes.metacluster_fit <- function(x, ...) {
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' n_clusters(fit)
-n_clusters <- function(x, ...) {
-  UseMethod("n_clusters")
+#' nclusters(fit)
+nclusters <- function(x, ...) {
+  UseMethod("nclusters")
 }
 
 #' @export
-n_clusters.cluster_fit <- function(x, ...) {
+nclusters.cluster_fit <- function(x, ...) {
   x$n_clusters
 }
 
 #' @export
-n_clusters.metacluster_fit <- function(x, ...) {
+nclusters.metacluster_fit <- function(x, ...) {
   x$final_k
 }
 
@@ -209,17 +209,17 @@ n_clusters.metacluster_fit <- function(x, ...) {
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' method_used(fit)
-method_used <- function(x, ...) {
-  UseMethod("method_used")
+#' method(fit)
+method <- function(x, ...) {
+  UseMethod("method")
 }
 
 #' @export
-method_used.cluster_fit <- function(x, ...) {
+method.cluster_fit <- function(x, ...) {
   x$method
 }
 
 #' @export
-method_used.metacluster_fit <- function(x, ...) {
+method.metacluster_fit <- function(x, ...) {
   x$method
 }

@@ -120,12 +120,12 @@ metacluster <- function(x,
     }
     if (method %in% c("hclust", "agnes")) {
       if (is.null(dist_x)) {
-        dist_x <<- mixed_distance(data)
+        dist_x <<- .prepare_distance(data)
       }
       return(dist_x)
     }
     if (is.null(numeric_x)) {
-      numeric_x <<- prepare_mixed_data(data, center = center, scale = scale)
+      numeric_x <<- .prepare_encode(data, center = center, scale = scale)
     }
     numeric_x
   }
@@ -155,7 +155,7 @@ metacluster <- function(x,
         candidate = idx,
         method = method,
         k = k_i,
-        n_clusters = n_clusters(fit)
+        n_clusters = nclusters(fit)
       )
       idx <- idx + 1L
     }
