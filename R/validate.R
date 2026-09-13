@@ -73,8 +73,9 @@
 #'     `NULL`.}
 #' }
 #'
-#' @seealso [cluster()] to fit a solution, [plot_silhouette()] to visualize
-#'   per-observation silhouette widths, [explore()] for structural summaries.
+#' @seealso [cluster()] to fit a solution, `plot(x, which = "silhouette")`
+#'   (see [plot.cluster_fit()]) to visualize per-observation silhouette
+#'   widths, [explore()] for structural summaries.
 #'
 #' @references
 #' Rousseeuw, P.J. (1987). Silhouettes: A graphical aid to the interpretation

@@ -54,8 +54,8 @@
 #' }
 #'
 #' @seealso [cluster()] for single solutions, [validate()] to score the
-#'   consensus partition, [plot_coassoc()] to visualize the agreement matrix,
-#'   [plot_consensus()] for a 2-D embedding of the final clusters.
+#'   consensus partition, [plot.metacluster_fit()] to visualize the agreement
+#'   matrix or a 2-D embedding of the final clusters.
 #'
 #' @references
 #' Fred, A.L.N. and Jain, A.K. (2002). Data clustering using evidence

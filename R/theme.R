@@ -30,10 +30,9 @@
 #' phynotype ggplot2 theme
 #'
 #' The single ggplot2 theme used consistently across every `phynotype` plot
-#' function (`plot_clusters()`, `plot_cluster_sizes()`,
-#' `plot_feature_profiles()`, `plot_consensus()`, `plot_coassoc()`,
-#' `plot_biplot()`, `plot()` methods for `feature_importance`,
-#' `ceteris_paribus`, and `lime_explanation` objects, and `plot_validation()`).
+#' method (`plot.cluster_fit()`, `plot.metacluster_fit()`,
+#' `plot.cluster_explore()`, and the `plot()` methods for `feature_importance`,
+#' `ceteris_paribus`, and `lime_explanation` objects).
 #' Built on `ggplot2::theme_classic()` with an Okabe-Ito colorblind-safe
 #' palette, matching the style used by the `funcml` package's `theme_funcml()`.
 #'
@@ -46,7 +45,7 @@
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' plot_clusters(fit) + theme_phynotype()
+#' plot(fit) + theme_phynotype()
 theme_phynotype <- function(base_size = 11) {
   ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(
@@ -71,7 +70,7 @@ theme_phynotype <- function(base_size = 11) {
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' plot_clusters(fit) + scale_color_phynotype()
+#' plot(fit) + scale_color_phynotype()
 #'
 #' @name phynotype-scales
 #' @export

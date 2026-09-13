@@ -23,6 +23,6 @@ recycled/interpolated beyond 8 levels) for consistent group colors across
 }
 \examples{
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-plot_clusters(fit) + scale_color_phynotype()
+plot(fit) + scale_color_phynotype()
 
 }

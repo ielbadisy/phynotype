@@ -14,16 +14,15 @@ A ggplot2 theme object.
 }
 \description{
 The single ggplot2 theme used consistently across every \code{phynotype} plot
-function (\code{plot_clusters()}, \code{plot_cluster_sizes()},
-\code{plot_feature_profiles()}, \code{plot_consensus()}, \code{plot_coassoc()},
-\code{plot_biplot()}, \code{plot()} methods for \code{feature_importance},
-\code{ceteris_paribus}, and \code{lime_explanation} objects, and \code{plot_validation()}).
+method (\code{plot.cluster_fit()}, \code{plot.metacluster_fit()},
+\code{plot.cluster_explore()}, and the \code{plot()} methods for \code{feature_importance},
+\code{ceteris_paribus}, and \code{lime_explanation} objects).
 Built on \code{ggplot2::theme_classic()} with an Okabe-Ito colorblind-safe
 palette, matching the style used by the \code{funcml} package's \code{theme_funcml()}.
 }
 \examples{
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-plot_clusters(fit) + theme_phynotype()
+plot(fit) + theme_phynotype()
 }
 \seealso{
 \code{\link[=scale_color_phynotype]{scale_color_phynotype()}}, \code{\link[=scale_fill_phynotype]{scale_fill_phynotype()}}
