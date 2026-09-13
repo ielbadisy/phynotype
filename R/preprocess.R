@@ -27,7 +27,7 @@ restore_preprocessed_matrix <- function(new_data, data_info) {
 #'
 #' This is intentionally a manual first step. Clustering algorithms that use
 #' Euclidean distances or Gaussian models should not silently coerce mixed data.
-#' For hierarchical methods on mixed data, use [mixed_distance()] instead.
+#' For hierarchical methods on mixed data, use [mixed.dist()] instead.
 #'
 #' @param x Data frame, matrix, or vector-like object coercible to a data frame.
 #' @param center Logical; if `TRUE`, center numeric columns to zero mean after
@@ -45,7 +45,7 @@ restore_preprocessed_matrix <- function(new_data, data_info) {
 #' @return A numeric matrix with preprocessing metadata stored in the attribute
 #'   `"phynotype_preprocess"`.
 #'
-#' @seealso [mixed_distance()] for Gower-distance computation before
+#' @seealso [mixed.dist()] for Gower-distance computation before
 #'   hierarchical clustering.
 #'
 #' @export
@@ -56,16 +56,16 @@ restore_preprocessed_matrix <- function(new_data, data_info) {
 #'   x1 = c(1.2, 0.5, 3.1),
 #'   x2 = factor(c("A", "B", "A"))
 #' )
-#' mat <- prepare_mixed_data(df)
+#' mat <- prepare.mixed(df)
 #' mat
-prepare_mixed_data <- function(x,
+prepare.mixed <- function(x,
                                center = TRUE,
                                scale = TRUE,
                                drop_first = FALSE,
                                na_action = c("keep", "fail")) {
   na_action <- match.arg(na_action)
   if (inherits(x, "dist")) {
-    stop("`prepare_mixed_data()` expects row-by-feature data, not a distance object.", call. = FALSE)
+    stop("`prepare.mixed()` expects row-by-feature data, not a distance object.", call. = FALSE)
   }
   x <- as.data.frame(x, stringsAsFactors = FALSE)
   if (nrow(x) < 1L || ncol(x) < 1L) {
@@ -170,7 +170,7 @@ prepare_mixed_data <- function(x,
 #'
 #' @return A `dist` object.
 #'
-#' @seealso [prepare_mixed_data()] for converting mixed data to a numeric
+#' @seealso [prepare.mixed()] for converting mixed data to a numeric
 #'   matrix, [cluster()] for fitting with the resulting distance object.
 #'
 #' @references
@@ -180,12 +180,12 @@ prepare_mixed_data <- function(x,
 #' @export
 #'
 #' @examples
-#' d <- mixed_distance(iris)
+#' d <- mixed.dist(iris)
 #' fit <- cluster(d, method = "hclust", k = 3)
 #' fit
-mixed_distance <- function(x, metric = "gower", ...) {
+mixed.dist <- function(x, metric = "gower", ...) {
   if (!requireNamespace("cluster", quietly = TRUE)) {
-    stop("Package `cluster` is required for `mixed_distance()`.", call. = FALSE)
+    stop("Package `cluster` is required for `mixed.dist()`.", call. = FALSE)
   }
   if (inherits(x, "dist")) {
     return(x)

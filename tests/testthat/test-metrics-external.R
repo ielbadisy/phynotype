@@ -1,29 +1,29 @@
-test_that("adjusted_rand_index equals 1 for identical partitions", {
+test_that("arand.index equals 1 for identical partitions", {
   x <- c(1, 1, 2, 2, 3, 3)
-  expect_equal(adjusted_rand_index(x, x), 1)
+  expect_equal(arand.index(x, x), 1)
 })
 
-test_that("adjusted_rand_index equals 1 for a relabeled but identical partition", {
+test_that("arand.index equals 1 for a relabeled but identical partition", {
   x <- c(1, 1, 2, 2, 3, 3)
   y <- c("a", "a", "b", "b", "c", "c")
-  expect_equal(adjusted_rand_index(x, y), 1)
+  expect_equal(arand.index(x, y), 1)
 })
 
-test_that("adjusted_rand_index is near 0 for independent random partitions on average", {
+test_that("arand.index is near 0 for independent random partitions on average", {
   set.seed(42)
   n <- 500
   x <- sample(1:4, n, replace = TRUE)
   y <- sample(1:4, n, replace = TRUE)
-  ari <- adjusted_rand_index(x, y)
+  ari <- arand.index(x, y)
   expect_true(ari > -0.05 && ari < 0.05)
 })
 
-test_that("adjusted_rand_index matches the documented example", {
+test_that("arand.index matches the documented example", {
   expect_equal(
-    adjusted_rand_index(c(1, 1, 2, 2), c(1, 1, 2, 3)),
-    adjusted_rand_index(c(1, 1, 2, 2), c(1, 1, 2, 3))
+    arand.index(c(1, 1, 2, 2), c(1, 1, 2, 3)),
+    arand.index(c(1, 1, 2, 2), c(1, 1, 2, 3))
   )
-  ari <- adjusted_rand_index(c(1, 1, 2, 2), c(1, 1, 2, 3))
+  ari <- arand.index(c(1, 1, 2, 2), c(1, 1, 2, 3))
   expect_true(is.numeric(ari) && length(ari) == 1L)
   expect_true(ari <= 1)
 })
@@ -45,6 +45,6 @@ test_that("validate() with truth surfaces both ari and nmi consistent with the d
   ari_row <- val$metrics_table[val$metrics_table$metric == "ari", ]
   nmi_row <- val$metrics_table[val$metrics_table$metric == "nmi", ]
 
-  expect_equal(ari_row$value, signif(adjusted_rand_index(iris$Species, clusters(fit)), 4))
+  expect_equal(ari_row$value, signif(arand.index(iris$Species, clusters(fit)), 4))
   expect_equal(nmi_row$value, signif(phynotype:::normalized_mutual_information(iris$Species, clusters(fit)), 4))
 })

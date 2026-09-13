@@ -21,7 +21,7 @@ Draw the dendrogram from a hierarchical \code{cluster_fit} (fitted via
 \code{metacluster_fit}.
 }
 \examples{
-d <- mixed_distance(iris[, 1:4])
+d <- mixed.dist(iris[, 1:4])
 fit <- cluster(d, method = "hclust", k = 3)
 plot_dendrogram(fit)
 

@@ -67,14 +67,14 @@ iris_mixed <- iris          # 4 numeric + 1 factor column
 iris_mixed$Group <- as.character(
   ifelse(iris$Sepal.Length > 5.8, "large", "small")
 )
-Xenc <- prepare_mixed_data(iris_mixed[, c(1:4, 6)], center = TRUE, scale = TRUE)
+Xenc <- prepare.mixed(iris_mixed[, c(1:4, 6)], center = TRUE, scale = TRUE)
 dim(Xenc)
 ```
 
 **Gower distance** (for hierarchical methods):
 
 ```{r}
-d_gower <- mixed_distance(iris_mixed[, c(1:4, 6)])
+d_gower <- mixed.dist(iris_mixed[, c(1:4, 6)])
 class(d_gower)
 ```
 
@@ -142,8 +142,8 @@ closest clusters. The inter-cluster distance depends on the linkage:
 The final partition is obtained by cutting the tree at height $k$.
 
 ```{r}
-# From a distance object (supports mixed data via mixed_distance())
-d <- mixed_distance(X)
+# From a distance object (supports mixed data via mixed.dist())
+d <- mixed.dist(X)
 fit_hc <- cluster(d, method = "hclust", k = 3)
 fit_hc
 plot_dendrogram(fit_hc)
@@ -260,10 +260,10 @@ centers(fit_km)
 sizes(fit_km)
 
 # Number of clusters
-n_clusters(fit_km)
+nclusters(fit_km)
 
 # Method label
-method_used(fit_km)
+methodused(fit_km)
 ```
 
 ---

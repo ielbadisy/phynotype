@@ -24,10 +24,10 @@ NULL
 #' Classification*, **2**(1), 193–218.
 #'
 #' @examples
-#' adjusted_rand_index(c(1, 1, 2, 2), c(1, 1, 2, 3))
+#' arand.index(c(1, 1, 2, 2), c(1, 1, 2, 3))
 #'
 #' @export
-adjusted_rand_index <- function(x, y) {
+arand.index <- function(x, y) {
   tab <- table(x, y)
   n <- sum(tab)
   a <- rowSums(tab)

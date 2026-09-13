@@ -64,7 +64,7 @@ explore.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "fa
     separation_table <- NULL
   } else {
     summary_data <- if (is.data.frame(data) && !all(vapply(data, is.numeric, logical(1)))) {
-      prepare_mixed_data(data, scale = TRUE)
+      prepare.mixed(data, scale = TRUE)
     } else if (is.data.frame(data)) {
       as.matrix(data)
     } else {
@@ -101,7 +101,7 @@ explore.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca",
     separation_table <- NULL
   } else {
     summary_data <- if (is.data.frame(data) && !all(vapply(data, is.numeric, logical(1)))) {
-      prepare_mixed_data(data, scale = TRUE)
+      prepare.mixed(data, scale = TRUE)
     } else if (is.data.frame(data)) {
       as.matrix(data)
     } else {

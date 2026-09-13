@@ -141,7 +141,7 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
   }
   metric_data <- data
   if (is.data.frame(data) && any(!vapply(data, is.numeric, logical(1)))) {
-    metric_data <- prepare_mixed_data(data, center = FALSE, scale = FALSE)
+    metric_data <- prepare.mixed(data, center = FALSE, scale = FALSE)
   }
   metrics_table <- data.frame(
     metric = c("silhouette", "calinski_harabasz", "davies_bouldin", "total_within"),
@@ -159,7 +159,7 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
     metrics_table <- append_metric_row(
       metrics_table,
       "ari",
-      adjusted_rand_index(truth, x$clusters)
+      arand.index(truth, x$clusters)
     )
     metrics_table <- append_metric_row(
       metrics_table,
@@ -200,7 +200,7 @@ validate.metacluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boo
   }
   metric_data <- data
   if (is.data.frame(data) && any(!vapply(data, is.numeric, logical(1)))) {
-    metric_data <- prepare_mixed_data(data, center = FALSE, scale = FALSE)
+    metric_data <- prepare.mixed(data, center = FALSE, scale = FALSE)
   }
   metrics_table <- data.frame(
     metric = c("silhouette", "calinski_harabasz", "davies_bouldin"),
@@ -217,7 +217,7 @@ validate.metacluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boo
     metrics_table <- append_metric_row(
       metrics_table,
       "ari",
-      adjusted_rand_index(truth, x$final_clusters)
+      arand.index(truth, x$final_clusters)
     )
     metrics_table <- append_metric_row(
       metrics_table,

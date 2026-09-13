@@ -59,7 +59,7 @@ bootstrap_cluster_stability <- function(x, method, k, n_boot = 10, seed = NULL, 
       boot_fit <- cluster(x[idx, , drop = FALSE], method = method, k = k, seed = seed, ...)
       mapped <- integer(nrow(x))
       mapped[idx] <- clusters(boot_fit)
-      scores[i] <- adjusted_rand_index(ref_clusters[idx], mapped[idx])
+      scores[i] <- arand.index(ref_clusters[idx], mapped[idx])
     }
     data.frame(metric = "bootstrap_ari", mean = mean(scores), sd = stats::sd(scores))
   })
