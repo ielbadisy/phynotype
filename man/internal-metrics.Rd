@@ -9,6 +9,6 @@ metric_metadata(metric)
 }
 \description{
 These helpers implement the internal validation criteria used by
-\code{validate()} and \code{feature_importance()}.
+\code{validate()} and \code{interpret(method = "importance")}.
 }
 \keyword{internal}

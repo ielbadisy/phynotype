@@ -1,6 +1,6 @@
-## All package results (validate(), explore(), feature_importance(),
-## ceteris_paribus(), lime_explain(), metacluster() selection/stability
-## summaries, and the centers()/prototypes() accessors) are rounded to 4
+## All package results (validate(), explore(), interpret(),
+## metacluster() selection/stability summaries, and the
+## centers()/prototypes() accessors) are rounded to 4
 ## significant digits by default so printed and directly-accessed numeric
 ## output is consistent across the package.
 round_results <- function(x, digits = 4) {

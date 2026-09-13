@@ -22,8 +22,8 @@
 #'   \item{`membership`}{Soft membership matrix (GMM only), or `NULL`.}
 #' }
 #'
-#' @seealso [cluster()] to fit, [feature_importance()], [lime_explain()],
-#'   and [ceteris_paribus()] which all use `predict()` internally.
+#' @seealso [cluster()] to fit, [interpret()] whose methods all use
+#'   `predict()` internally.
 #'
 #' @export
 #'

@@ -50,6 +50,6 @@ new_obs <- data.frame(
 predict(fit, new_obs)$clusters
 }
 \seealso{
-\code{\link[=cluster]{cluster()}} to fit, \code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}},
-and \code{\link[=ceteris_paribus]{ceteris_paribus()}} which all use \code{predict()} internally.
+\code{\link[=cluster]{cluster()}} to fit, \code{\link[=interpret]{interpret()}} whose methods all use
+\code{predict()} internally.
 }

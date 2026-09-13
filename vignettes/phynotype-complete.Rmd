@@ -35,7 +35,7 @@ The full pipeline has six steps, each with a single entry-point function:
 | 3 | `validate()` | Score a solution with internal/external metrics |
 | 4 | `explore()` | Summarize sizes, profiles, and embeddings |
 | 5 | `predict()` | Assign new observations |
-| 6 | `feature_importance()` / `lime_explain()` / `ceteris_paribus()` | Interpret the clustering rule |
+| 6 | `interpret()` | Interpret the clustering rule (importance, LIME, ceteris paribus) |
 
 All steps return structured S3 objects with `print()`, `summary()`, and
 `plot()` methods. This vignette is the canonical reference and walks through
@@ -648,7 +648,7 @@ With `metric = "total_within"`, it is the mean increase in within-cluster
 dispersion, capturing the same idea from a compactness perspective.
 
 ```{r}
-imp <- feature_importance(fit_km, n_repeats = 5, seed = 1)
+imp <- interpret(fit_km, method = "importance", n_repeats = 5, seed = 1)
 imp$summary
 plot(imp)
 ```
@@ -706,8 +706,8 @@ immediate neighborhood of the explained observation and should not be
 extrapolated globally.
 
 ```{r}
-lx <- lime_explain(fit_km, iris[c(1, 51, 101), 1:4],
-                   n_permutations = 100, n_features = 4, seed = 1)
+lx <- interpret(fit_km, method = "lime", new_data = iris[c(1, 51, 101), 1:4],
+                n_permutations = 100, n_features = 4, seed = 1)
 lx$explanations[, c("observation", "feature", "estimate", "direction")]
 plot(lx)
 ```
@@ -746,9 +746,10 @@ borderline cases and for communicating individual-level model behaviour to
 domain experts.
 
 ```{r}
-cp <- ceteris_paribus(
+cp <- interpret(
   fit_km,
-  iris[c(1, 51, 101), 1:4],
+  method = "ceteris_paribus",
+  new_data  = iris[c(1, 51, 101), 1:4],
   features  = c("Petal.Length", "Petal.Width"),
   grid_size = 20
 )
@@ -782,9 +783,9 @@ exp <- explore(fit)
 pred <- predict(fit, iris[1:5, 1:4])
 
 # 5. Interpret
-imp <- feature_importance(fit, n_repeats = 10, seed = 1)
-lx  <- lime_explain(fit, iris[1:3, 1:4], n_permutations = 200, seed = 1)
-cp  <- ceteris_paribus(fit, iris[1:3, 1:4])
+imp <- interpret(fit, method = "importance", n_repeats = 10, seed = 1)
+lx  <- interpret(fit, method = "lime", new_data = iris[1:3, 1:4], n_permutations = 200, seed = 1)
+cp  <- interpret(fit, method = "ceteris_paribus", new_data = iris[1:3, 1:4])
 
 # 6. Consensus (when a single solution is uncertain)
 mfit <- metacluster(iris[, 1:4],

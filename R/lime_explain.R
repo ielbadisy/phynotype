@@ -63,9 +63,8 @@
 #'     observation.}
 #' }
 #'
-#' @seealso [ceteris_paribus()] for individual conditional profiles,
-#'   [feature_importance()] for global importance, [predict.cluster_fit()]
-#'   which is used internally.
+#' @seealso [interpret()], the single entry point that dispatches here via
+#'   `method = "lime"`.
 #'
 #' @references
 #' Ribeiro, M.T., Singh, S. and Guestrin, C. (2016). "Why should I trust you?":
@@ -73,13 +72,8 @@
 #' SIGKDD International Conference on Knowledge Discovery and Data Mining*,
 #' pp. 1135--1144.
 #'
-#' @export
-#'
-#' @examples
-#' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' lx <- lime_explain(fit, iris[1:2, 1:4], n_permutations = 50, seed = 1)
-#' lx$explanations
-lime_explain <- function(object,
+#' @noRd
+.interpret_lime <- function(object,
                          new_data,
                          n_features = 5L,
                          n_permutations = 500L,

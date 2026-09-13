@@ -14,9 +14,8 @@
 #'         two-dimensional embeddings with [explore()].
 #'   \item **Predict**: assign new observations to learned clusters with
 #'         [predict.cluster_fit()].
-#'   \item **Interpret**: explain the clustering rule with
-#'         [feature_importance()], [lime_explain()], and
-#'         [ceteris_paribus()].
+#'   \item **Interpret**: explain the clustering rule with [interpret()]
+#'         (permutation importance, LIME, or ceteris paribus profiles).
 #' }
 #'
 #' All steps operate through S3 generic functions and return structured objects
@@ -73,8 +72,7 @@
 #' properties. *Biometrics*, **27**(4), 857–874.
 #'
 #' @seealso [cluster()], [metacluster()], [validate()], [explore()],
-#'   [predict.cluster_fit()], [feature_importance()], [lime_explain()],
-#'   [ceteris_paribus()]
+#'   [predict.cluster_fit()], [interpret()]
 #'
 #' @docType package
 #' @name phynotype-package
