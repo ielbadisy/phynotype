@@ -22,7 +22,7 @@
 #'     \eqn{\eta^2_j = \mathrm{SS}_{B,j} / \mathrm{SS}_{T,j}}, measuring
 #'     how much between-cluster variance each feature explains.}
 #'   \item{Embedding}{Two-dimensional projection for visualization
-#'     (see [plot_clusters()]).}
+#'     (see [plot.cluster_explore()]).}
 #' }
 #'
 #' @return A `cluster_explore` object with components:
@@ -36,8 +36,8 @@
 #'     labels.}
 #' }
 #'
-#' @seealso [cluster()] to fit, [plot_clusters()] to plot the embedding,
-#'   [plot_feature_profiles()] to plot feature profiles.
+#' @seealso [cluster()] to fit, [plot.cluster_explore()] to plot the
+#'   embedding or feature profiles.
 #'
 #' @export
 #'

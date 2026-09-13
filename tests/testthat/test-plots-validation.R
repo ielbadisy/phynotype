@@ -1,7 +1,7 @@
-test_that("plot_silhouette returns a ggplot with one segment per observation", {
+test_that("plot(which = 'silhouette') returns a ggplot with one segment per observation", {
   skip_if_not_installed("cluster")
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-  p <- plot_silhouette(fit)
+  p <- plot(fit, which = "silhouette")
 
   expect_s3_class(p, "ggplot")
   expect_true(inherits(p$layers[[1]]$geom, "GeomSegment"))
@@ -9,7 +9,7 @@ test_that("plot_silhouette returns a ggplot with one segment per observation", {
   expect_equal(p$labels$title, "Silhouette widths")
 })
 
-test_that("plot.cluster_fit dispatches to plot_clusters", {
+test_that("plot.cluster_fit defaults to which = 'clusters'", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
   p <- plot(fit)
 

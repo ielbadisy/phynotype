@@ -191,43 +191,43 @@ head(exp$feature_summary)
 ## Plotting
 
 ``` r
-plot_clusters(fit)
+plot(fit)
 ```
 
 ![](README_files/figure-gfm/plot-clusters-1.png)<!-- -->
 
 ``` r
-plot_silhouette(fit)
+plot(fit, which = "silhouette")
 ```
 
 ![](README_files/figure-gfm/plot-silhouette-1.png)<!-- -->
 
 ``` r
-plot_consensus(mfit)
+plot(mfit, which = "consensus")
 ```
 
 ![](README_files/figure-gfm/plot-consensus-1.png)<!-- -->
 
 ``` r
-plot_coassoc(mfit)
+plot(mfit, which = "coassoc")
 ```
 
 ![](README_files/figure-gfm/plot-coassoc-1.png)<!-- -->
 
 ``` r
-plot_feature_profiles(explore(fit))
+plot(explore(fit), which = "feature_profiles")
 ```
 
 ![](README_files/figure-gfm/plot-feature-profiles-1.png)<!-- -->
 
 ``` r
-plot_cluster_sizes(fit)
+plot(fit, which = "sizes")
 ```
 
 ![](README_files/figure-gfm/plot-cluster-sizes-1.png)<!-- -->
 
 ``` r
-plot_biplot(fit)
+plot(fit, which = "biplot")
 ```
 
 ![](README_files/figure-gfm/plot-biplot-1.png)<!-- -->

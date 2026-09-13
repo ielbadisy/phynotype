@@ -96,31 +96,31 @@ head(exp$feature_summary)
 ## Plotting
 
 ```{r plot-clusters}
-plot_clusters(fit)
+plot(fit)
 ```
 
 ```{r plot-silhouette}
-plot_silhouette(fit)
+plot(fit, which = "silhouette")
 ```
 
 ```{r plot-consensus}
-plot_consensus(mfit)
+plot(mfit, which = "consensus")
 ```
 
 ```{r plot-coassoc}
-plot_coassoc(mfit)
+plot(mfit, which = "coassoc")
 ```
 
 ```{r plot-feature-profiles}
-plot_feature_profiles(explore(fit))
+plot(explore(fit), which = "feature_profiles")
 ```
 
 ```{r plot-cluster-sizes}
-plot_cluster_sizes(fit)
+plot(fit, which = "sizes")
 ```
 
 ```{r plot-biplot}
-plot_biplot(fit)
+plot(fit, which = "biplot")
 ```
 
 ## Prediction

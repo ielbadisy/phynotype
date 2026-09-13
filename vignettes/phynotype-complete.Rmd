@@ -146,7 +146,7 @@ The final partition is obtained by cutting the tree at height $k$.
 d <- mixed_distance(X)
 fit_hc <- cluster(d, method = "hclust", k = 3)
 fit_hc
-plot_dendrogram(fit_hc)
+plot(fit_hc, which = "dendrogram")
 ```
 
 AGNES (Kaufman and Rousseeuw, 1990) is the `cluster` package's implementation
@@ -398,7 +398,7 @@ or potentially misclassified (width near zero or negative):
 
 ```{r}
 if (requireNamespace("cluster", quietly = TRUE)) {
-  plot_silhouette(fit_km)
+  plot(fit_km, which = "silhouette")
 }
 ```
 
@@ -416,14 +416,14 @@ exp <- explore(fit_km)
 
 ```{r}
 exp$size_table
-plot_cluster_sizes(fit_km)
+plot(fit_km, which = "sizes")
 ```
 
 **Feature profiles** (per-cluster mean, SD, median, min, max):
 
 ```{r}
 head(exp$feature_summary)
-plot_feature_profiles(exp)
+plot(exp, which = "feature_profiles")
 ```
 
 **Feature separation** (eta-squared):
@@ -440,7 +440,7 @@ exp$separation_table
 
 **Automatic embeddings**:
 
-`explore()` and `plot_clusters()` choose an embedding backend based on the
+`explore()` and `plot()` choose an embedding backend based on the
 input type:
 
 - numeric data -> PCA
@@ -449,7 +449,7 @@ input type:
 - distance objects -> classical MDS
 
 ```{r}
-plot_clusters(fit_km)
+plot(fit_km)
 
 if (requireNamespace("FactoMineR", quietly = TRUE)) {
   mixed_embed <- data.frame(
@@ -457,17 +457,17 @@ if (requireNamespace("FactoMineR", quietly = TRUE)) {
     group = factor(c("a", "a", "b", "b", "a", "b"))
   )
   fit_famd <- cluster(mixed_embed, method = "kmm", k = 2, seed = 1)
-  plot_clusters(fit_famd)
+  plot(fit_famd)
 
   cat_embed <- data.frame(
     a = factor(c("x", "x", "y", "y")),
     b = factor(c("u", "v", "u", "v"))
   )
   fit_mca <- cluster(cat_embed, method = "kmm", k = 2, seed = 1)
-  plot_clusters(fit_mca)
+  plot(fit_mca)
 }
 
-plot_clusters(fit_hc)
+plot(fit_hc)
 ```
 
 **Biplots** (`"pca"` and `"mca"` embeddings only). There is no FAMD or MDS
@@ -478,9 +478,9 @@ equivalent. Three `variant`s:
 - `"label"`: individuals shown as text labels instead of points.
 
 ```{r}
-plot_biplot(fit_km)
-plot_biplot(fit_km, variant = "cos2")
-plot_biplot(fit_km, variant = "label")
+plot(fit_km, which = "biplot")
+plot(fit_km, which = "biplot", variant = "cos2")
+plot(fit_km, which = "biplot", variant = "label")
 ```
 
 ---
@@ -573,14 +573,14 @@ mfit$selection_summary
 
 ```{r}
 validate(mfit)$metrics_table
-plot_coassoc(mfit)
-plot_consensus(mfit)
+plot(mfit, which = "coassoc")
+plot(mfit, which = "consensus")
 ```
 
 Consensus dendrogram:
 
 ```{r}
-plot_dendrogram(mfit)
+plot(mfit, which = "dendrogram")
 ```
 
 ---

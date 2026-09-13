@@ -137,6 +137,7 @@ bootstrap method. \emph{Computational Statistics and Data Analysis}, \strong{56}
 468–477.
 }
 \seealso{
-\code{\link[=cluster]{cluster()}} to fit a solution, \code{\link[=plot_silhouette]{plot_silhouette()}} to visualize
-per-observation silhouette widths, \code{\link[=explore]{explore()}} for structural summaries.
+\code{\link[=cluster]{cluster()}} to fit a solution, \code{plot(x, which = "silhouette")}
+(see \code{\link[=plot.cluster_fit]{plot.cluster_fit()}}) to visualize per-observation silhouette
+widths, \code{\link[=explore]{explore()}} for structural summaries.
 }

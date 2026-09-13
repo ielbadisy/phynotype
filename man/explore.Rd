@@ -50,7 +50,7 @@ and max for each feature.}
 \eqn{\eta^2_j = \mathrm{SS}_{B,j} / \mathrm{SS}_{T,j}}, measuring
 how much between-cluster variance each feature explains.}
 \item{Embedding}{Two-dimensional projection for visualization
-(see \code{\link[=plot_clusters]{plot_clusters()}}).}
+(see \code{\link[=plot.cluster_explore]{plot.cluster_explore()}}).}
 }
 }
 \examples{
@@ -61,6 +61,6 @@ head(exp$feature_summary)
 exp$separation_table
 }
 \seealso{
-\code{\link[=cluster]{cluster()}} to fit, \code{\link[=plot_clusters]{plot_clusters()}} to plot the embedding,
-\code{\link[=plot_feature_profiles]{plot_feature_profiles()}} to plot feature profiles.
+\code{\link[=cluster]{cluster()}} to fit, \code{\link[=plot.cluster_explore]{plot.cluster_explore()}} to plot the
+embedding or feature profiles.
 }
