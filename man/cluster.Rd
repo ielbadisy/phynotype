@@ -15,9 +15,10 @@ cluster(
 )
 }
 \arguments{
-\item{x}{Numeric matrix/data frame for numeric methods, a \code{dist} object for
-hierarchical methods, or a mixed-type data frame for \code{"kproto"} and
-other mixed-data methods.}
+\item{x}{Numeric matrix/data frame for numeric methods, a \code{dist} object
+(for example a Gower dissimilarity from \code{\link[=mixeddistance]{mixeddistance()}}) for the
+distance-based methods \code{"hclust"}, \code{"agnes"}, \code{"pam"}, and \code{"dbscan"},
+or a mixed-type data frame for \code{"kproto"} and \code{"kmm"}.}
 
 \item{method}{Clustering method. Supported values are \code{"kmeans"}, \code{"pam"},
 \code{"hclust"}, \code{"agnes"}, \code{"dbscan"}, \code{"gmm"}, \code{"kproto"}, and \code{"kmm"}.}
@@ -63,7 +64,11 @@ Method-specific notes:
 Requires numeric \code{x} and \code{k}.}
 \item{\code{"pam"}}{Partitioning Around Medoids: minimizes
 \eqn{\sum_i \min_g d(x_i, m_g)} over actual observations (Kaufman and
-Rousseeuw, 1990). Requires the \code{cluster} package.}
+Rousseeuw, 1990). Accepts raw numeric data or a precomputed \code{dist}
+object (passed to \code{cluster::pam(diss = TRUE)}), which gives the Gower
+plus PAM workflow for mixed data via \code{\link[=mixeddistance]{mixeddistance()}}. Fits on a
+\code{dist} object have no prototypes and cannot predict new data.
+Requires the \code{cluster} package.}
 \item{\code{"hclust"} / \code{"agnes"}}{Hierarchical agglomerative methods. Accept
 a precomputed \code{dist} object or raw numeric data. Specify \code{linkage} to
 choose the merging criterion (default \code{"complete"} for \code{hclust},
@@ -71,6 +76,7 @@ choose the merging criterion (default \code{"complete"} for \code{hclust},
 \item{\code{"dbscan"}}{Density-Based Spatial Clustering of Applications with
 Noise (Ester et al., 1996). Requires \code{eps} (neighborhood radius) and
 \code{minPts}. Observations in sparse regions are labeled noise (cluster 0).
+Also accepts a precomputed \code{dist} object (no prediction in that case).
 Requires the \code{dbscan} package.}
 \item{\code{"gmm"}}{Gaussian Mixture Model fitted via the EM algorithm (Fraley
 and Raftery, 2002). Returns soft membership probabilities. Requires the
@@ -83,6 +89,17 @@ minimizes a weighted prototype distance combining squared Euclidean and
 Hamming contributions controlled by \code{lambda}.}
 }
 }
+\section{Name clash with the survival package}{
+
+The \pkg{survival} package also exports \code{cluster()} (a formula special
+for robust variances in \code{coxph()}). When both packages are attached, the
+one attached last masks the other. Inside a \code{coxph()} formula the
+\code{cluster()} term is still handled by \pkg{survival} either way, but a
+plain call such as \code{cluster(x, method = "pam", k = 3)} reaches
+\pkg{phynotype} only if it was attached last. In scripts that use both
+packages, call \code{phynotype::cluster()} explicitly.
+}
+
 \examples{
 # Numeric data: k-means
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
@@ -100,6 +117,12 @@ if (requireNamespace("cluster", quietly = TRUE)) {
 d <- mixeddistance(iris[, 1:4])
 fit_hc <- cluster(d, method = "hclust", k = 3)
 fit_hc
+
+# Mixed data: Gower dissimilarity + PAM
+if (requireNamespace("cluster", quietly = TRUE)) {
+  fit_gpam <- cluster(mixeddistance(iris), method = "pam", k = 3)
+  fit_gpam
+}
 
 # Mixed data: k-prototypes
 if (requireNamespace("clustMixType", quietly = TRUE)) {

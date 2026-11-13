@@ -27,8 +27,8 @@ validate_dbscan_params <- function(data, params) {
   if (!requireNamespace("dbscan", quietly = TRUE)) {
     stop("Package `dbscan` is required for method `dbscan`.", call. = FALSE)
   }
-  if (!is.matrix(data)) {
-    stop("`dbscan` requires a numeric matrix or data frame input.", call. = FALSE)
+  if (!inherits(data, "dist") && !is.matrix(data)) {
+    stop("`dbscan` requires a numeric matrix, data frame, or distance input.", call. = FALSE)
   }
   eps <- params$eps
   min_pts <- if (is.null(params$minPts)) params$min_pts else params$minPts
@@ -51,13 +51,19 @@ fit_dbscan <- function(data, params) {
     membership = NULL,
     centers = NULL,
     prototypes = NULL,
-    distance_info = list(metric = "euclidean"),
+    distance_info = list(metric = if (inherits(data, "dist")) "precomputed" else "euclidean"),
     fitted_object = fitted,
     extras = list(noise_label = 0L, core_points = core_ids)
   )
 }
 
 predict_dbscan <- function(object, new_data, ...) {
+  if (inherits(object$data_info$original_data, "dist")) {
+    stop(
+      "Prediction requires a `dbscan` fit trained on row-by-feature data, not only a distance object.",
+      call. = FALSE
+    )
+  }
   new_data <- restore_preprocessed_matrix(new_data, object$data_info)
   training <- restore_preprocessed_matrix(object$data_info$original_data, object$data_info)
   fitted <- object$fitted_object

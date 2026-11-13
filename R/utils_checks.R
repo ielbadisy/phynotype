@@ -42,7 +42,7 @@ check_numeric_input <- function(x) {
         "Use an explicit two-step workflow for mixed data:\n",
         "1. For numeric algorithms (`kmeans`, `pam`, `dbscan`, `gmm`), call ",
         "`preparemixeddata(x, scale = TRUE)` and pass the returned matrix to `cluster()`.\n",
-        "2. For hierarchical algorithms (`hclust`, `agnes`), call ",
+        "2. For distance-based algorithms (`hclust`, `agnes`, `pam`, `dbscan`), call ",
         "`mixeddistance(x)` and pass the returned distance matrix to `cluster()`.",
         call. = FALSE
       )
@@ -115,10 +115,10 @@ check_k_grid <- function(k) {
 
 prepare_cluster_input <- function(x, method, scale, center, k) {
   checked <- if (method %in% c("kproto", "kmm")) check_mixed_input(x) else check_numeric_input(x)
-  if (checked$kind == "dist" && !method %in% c("hclust", "agnes")) {
+  if (checked$kind == "dist" && !method %in% c("hclust", "agnes", "pam", "dbscan")) {
     stop(
-      "Distance inputs are only supported by `hclust` and `agnes`.\n",
-      "Use row-by-feature numeric data for `kmeans`, `pam`, `dbscan`, and `gmm`; ",
+      "Distance inputs are only supported by `hclust`, `agnes`, `pam`, and `dbscan`.\n",
+      "Use row-by-feature numeric data for `kmeans` and `gmm`; ",
       "for mixed data first call `preparemixeddata(x, scale = TRUE)`.",
       call. = FALSE
     )

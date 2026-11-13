@@ -38,6 +38,23 @@ summary(fit)
 #>   Sizes: 1=62, 2=38, 3=50
 ```
 
+Note: the `survival` package also exports `cluster()`. If both packages
+are attached, the one attached last masks the other, so in scripts that
+use both, call `phynotype::cluster()` explicitly.
+
+For mixed data, a Gower dissimilarity can be clustered with PAM
+directly:
+
+``` r
+fit_gpam <- cluster(mixeddistance(iris), method = "pam", k = 3)
+table(clusters(fit_gpam), iris$Species)
+#>    
+#>     setosa versicolor virginica
+#>   1     50          0         0
+#>   2      0         50         0
+#>   3      0          0        50
+```
+
 ## API accessors
 
 The main objects expose a common accessor API, so downstream code does
@@ -371,7 +388,7 @@ citation("phynotype")
 #> To cite phynotype in publications, use:
 #> 
 #>   El Badisy I (2026). _phynotype: Clustering and Consensus
-#>   Meta-Clustering_. R package version 0.6.3,
+#>   Meta-Clustering_. R package version 0.6.4,
 #>   <https://CRAN.R-project.org/package=phynotype>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -380,7 +397,7 @@ citation("phynotype")
 #>     title = {phynotype: Clustering and Consensus Meta-Clustering},
 #>     author = {Imad {El Badisy}},
 #>     year = {2026},
-#>     note = {R package version 0.6.3},
+#>     note = {R package version 0.6.4},
 #>     url = {https://CRAN.R-project.org/package=phynotype},
 #>   }
 ```
