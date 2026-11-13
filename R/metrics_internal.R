@@ -1,7 +1,7 @@
 #' Internal clustering metric metadata and formulas
 #'
 #' These helpers implement the internal validation criteria used by
-#' `validate()` and `feature_importance()`.
+#' `validate()` and `featureimportance()`.
 #'
 #' @name internal-metrics
 #' @keywords internal

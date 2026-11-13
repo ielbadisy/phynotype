@@ -35,7 +35,7 @@ The full pipeline has six steps, each with a single entry-point function:
 | 3 | `validate()` | Score a solution with internal/external metrics |
 | 4 | `explore()` | Summarize sizes, profiles, and embeddings |
 | 5 | `predict()` | Assign new observations |
-| 6 | `feature_importance()` / `lime_explain()` / `ceteris_paribus()` | Interpret the clustering rule |
+| 6 | `featureimportance()` / `limeexplain()` / `ceterisparibus()` | Interpret the clustering rule |
 
 All steps return structured S3 objects with `print()`, `summary()`, and
 `plot()` methods. This vignette is the canonical reference and walks through
@@ -67,14 +67,14 @@ iris_mixed <- iris          # 4 numeric + 1 factor column
 iris_mixed$Group <- as.character(
   ifelse(iris$Sepal.Length > 5.8, "large", "small")
 )
-Xenc <- prepare_mixed_data(iris_mixed[, c(1:4, 6)], center = TRUE, scale = TRUE)
+Xenc <- preparemixeddata(iris_mixed[, c(1:4, 6)], center = TRUE, scale = TRUE)
 dim(Xenc)
 ```
 
 **Gower distance** (for hierarchical methods):
 
 ```{r}
-d_gower <- mixed_distance(iris_mixed[, c(1:4, 6)])
+d_gower <- mixeddistance(iris_mixed[, c(1:4, 6)])
 class(d_gower)
 ```
 
@@ -142,11 +142,11 @@ closest clusters. The inter-cluster distance depends on the linkage:
 The final partition is obtained by cutting the tree at height $k$.
 
 ```{r}
-# From a distance object (supports mixed data via mixed_distance())
-d <- mixed_distance(X)
+# From a distance object (supports mixed data via mixeddistance())
+d <- mixeddistance(X)
 fit_hc <- cluster(d, method = "hclust", k = 3)
 fit_hc
-plot_dendrogram(fit_hc)
+plotdendrogram(fit_hc)
 ```
 
 AGNES (Kaufman and Rousseeuw, 1990) is the `cluster` package's implementation
@@ -260,10 +260,10 @@ centers(fit_km)
 sizes(fit_km)
 
 # Number of clusters
-n_clusters(fit_km)
+nclusters(fit_km)
 
 # Method label
-method_used(fit_km)
+methodused(fit_km)
 ```
 
 ---
@@ -398,7 +398,7 @@ or potentially misclassified (width near zero or negative):
 
 ```{r}
 if (requireNamespace("cluster", quietly = TRUE)) {
-  plot_silhouette(fit_km)
+  plotsilhouette(fit_km)
 }
 ```
 
@@ -416,14 +416,14 @@ exp <- explore(fit_km)
 
 ```{r}
 exp$size_table
-plot_cluster_sizes(fit_km)
+plotclustersizes(fit_km)
 ```
 
 **Feature profiles** (per-cluster mean, SD, median, min, max):
 
 ```{r}
 head(exp$feature_summary)
-plot_feature_profiles(exp)
+plotfeatureprofiles(exp)
 ```
 
 **Feature separation** (eta-squared):
@@ -440,7 +440,7 @@ exp$separation_table
 
 **Automatic embeddings**:
 
-`explore()` and `plot_clusters()` choose an embedding backend based on the
+`explore()` and `plotclusters()` choose an embedding backend based on the
 input type:
 
 - numeric data -> PCA
@@ -449,7 +449,7 @@ input type:
 - distance objects -> classical MDS
 
 ```{r}
-plot_clusters(fit_km)
+plotclusters(fit_km)
 
 if (requireNamespace("FactoMineR", quietly = TRUE)) {
   mixed_embed <- data.frame(
@@ -457,17 +457,17 @@ if (requireNamespace("FactoMineR", quietly = TRUE)) {
     group = factor(c("a", "a", "b", "b", "a", "b"))
   )
   fit_famd <- cluster(mixed_embed, method = "kmm", k = 2, seed = 1)
-  plot_clusters(fit_famd)
+  plotclusters(fit_famd)
 
   cat_embed <- data.frame(
     a = factor(c("x", "x", "y", "y")),
     b = factor(c("u", "v", "u", "v"))
   )
   fit_mca <- cluster(cat_embed, method = "kmm", k = 2, seed = 1)
-  plot_clusters(fit_mca)
+  plotclusters(fit_mca)
 }
 
-plot_clusters(fit_hc)
+plotclusters(fit_hc)
 ```
 
 **Biplots** (`"pca"` and `"mca"` embeddings only). There is no FAMD or MDS
@@ -478,9 +478,9 @@ equivalent. Three `variant`s:
 - `"label"`: individuals shown as text labels instead of points.
 
 ```{r}
-plot_biplot(fit_km)
-plot_biplot(fit_km, variant = "cos2")
-plot_biplot(fit_km, variant = "label")
+plotbiplot(fit_km)
+plotbiplot(fit_km, variant = "cos2")
+plotbiplot(fit_km, variant = "label")
 ```
 
 ---
@@ -573,14 +573,14 @@ mfit$selection_summary
 
 ```{r}
 validate(mfit)$metrics_table
-plot_coassoc(mfit)
-plot_consensus(mfit)
+plotcoassoc(mfit)
+plotconsensus(mfit)
 ```
 
 Consensus dendrogram:
 
 ```{r}
-plot_dendrogram(mfit)
+plotdendrogram(mfit)
 ```
 
 ---
@@ -648,7 +648,7 @@ With `metric = "total_within"`, it is the mean increase in within-cluster
 dispersion, capturing the same idea from a compactness perspective.
 
 ```{r}
-imp <- feature_importance(fit_km, n_repeats = 5, seed = 1)
+imp <- featureimportance(fit_km, n_repeats = 5, seed = 1)
 imp$summary
 plot(imp)
 ```
@@ -706,7 +706,7 @@ immediate neighborhood of the explained observation and should not be
 extrapolated globally.
 
 ```{r}
-lx <- lime_explain(fit_km, iris[c(1, 51, 101), 1:4],
+lx <- limeexplain(fit_km, iris[c(1, 51, 101), 1:4],
                    n_permutations = 100, n_features = 4, seed = 1)
 lx$explanations[, c("observation", "feature", "estimate", "direction")]
 plot(lx)
@@ -746,7 +746,7 @@ borderline cases and for communicating individual-level model behaviour to
 domain experts.
 
 ```{r}
-cp <- ceteris_paribus(
+cp <- ceterisparibus(
   fit_km,
   iris[c(1, 51, 101), 1:4],
   features  = c("Petal.Length", "Petal.Width"),
@@ -782,9 +782,9 @@ exp <- explore(fit)
 pred <- predict(fit, iris[1:5, 1:4])
 
 # 5. Interpret
-imp <- feature_importance(fit, n_repeats = 10, seed = 1)
-lx  <- lime_explain(fit, iris[1:3, 1:4], n_permutations = 200, seed = 1)
-cp  <- ceteris_paribus(fit, iris[1:3, 1:4])
+imp <- featureimportance(fit, n_repeats = 10, seed = 1)
+lx  <- limeexplain(fit, iris[1:3, 1:4], n_permutations = 200, seed = 1)
+cp  <- ceterisparibus(fit, iris[1:3, 1:4])
 
 # 6. Consensus (when a single solution is uncertain)
 mfit <- metacluster(iris[, 1:4],

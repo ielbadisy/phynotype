@@ -46,8 +46,8 @@ The main objects expose a common accessor API, so downstream code does not need
 to inspect object internals.
 
 ```{r api-accessors}
-method_used(fit)
-n_clusters(fit)
+methodused(fit)
+nclusters(fit)
 data.frame(cluster = names(sizes(fit)), size = unname(sizes(fit)))
 head(clusters(fit))
 centers(fit)
@@ -96,31 +96,31 @@ head(exp$feature_summary)
 ## Plotting
 
 ```{r plot-clusters}
-plot_clusters(fit)
+plotclusters(fit)
 ```
 
 ```{r plot-silhouette}
-plot_silhouette(fit)
+plotsilhouette(fit)
 ```
 
 ```{r plot-consensus}
-plot_consensus(mfit)
+plotconsensus(mfit)
 ```
 
 ```{r plot-coassoc}
-plot_coassoc(mfit)
+plotcoassoc(mfit)
 ```
 
 ```{r plot-feature-profiles}
-plot_feature_profiles(explore(fit))
+plotfeatureprofiles(explore(fit))
 ```
 
 ```{r plot-cluster-sizes}
-plot_cluster_sizes(fit)
+plotclustersizes(fit)
 ```
 
 ```{r plot-biplot}
-plot_biplot(fit)
+plotbiplot(fit)
 ```
 
 ## Prediction
@@ -140,7 +140,7 @@ Global permutation importance estimates which features the fitted clustering
 rule relies on most.
 
 ```{r feature-importance}
-imp <- feature_importance(fit, n_repeats = 3, seed = 1)
+imp <- featureimportance(fit, n_repeats = 3, seed = 1)
 imp
 imp$summary
 ```
@@ -153,7 +153,7 @@ Ceteris paribus profiles show how local predictions change when one feature is
 varied and the other features are held fixed.
 
 ```{r ceteris-paribus}
-cp <- ceteris_paribus(
+cp <- ceterisparibus(
   fit,
   iris[1:2, 1:4],
   features = c("Petal.Length", "Petal.Width"),
@@ -173,7 +173,7 @@ LIME-style explanations fit local surrogate models around selected
 observations.
 
 ```{r lime-explain}
-lx <- lime_explain(
+lx <- limeexplain(
   fit,
   iris[1:2, 1:4],
   n_features = 3,

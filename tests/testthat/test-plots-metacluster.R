@@ -5,7 +5,7 @@ test_that("plot_consensus returns a PCA-embedding ggplot for metacluster_fit", {
     k = 2:3,
     seed = 1
   )
-  p <- plot_consensus(mfit)
+  p <- plotconsensus(mfit)
 
   expect_s3_class(p, "ggplot")
   expect_equal(p$labels$title, "Consensus clusters")
@@ -21,7 +21,7 @@ test_that("plot_coassoc returns a tile heatmap ggplot matching the coassociation
     k = 2:3,
     seed = 1
   )
-  p <- plot_coassoc(mfit)
+  p <- plotcoassoc(mfit)
 
   expect_s3_class(p, "ggplot")
   expect_true(inherits(p$layers[[1]]$geom, "GeomTile"))

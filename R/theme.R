@@ -30,9 +30,9 @@
 #' phynotype ggplot2 theme
 #'
 #' The single ggplot2 theme used consistently across every `phynotype` plot
-#' function (`plot_clusters()`, `plot_cluster_sizes()`,
-#' `plot_feature_profiles()`, `plot_consensus()`, `plot_coassoc()`,
-#' `plot_biplot()`, `plot()` methods for `feature_importance`,
+#' function (`plotclusters()`, `plotclustersizes()`,
+#' `plotfeatureprofiles()`, `plotconsensus()`, `plotcoassoc()`,
+#' `plotbiplot()`, `plot()` methods for `feature_importance`,
 #' `ceteris_paribus`, and `lime_explanation` objects, and `plot_validation()`).
 #' Built on `ggplot2::theme_classic()` with an Okabe-Ito colorblind-safe
 #' palette, matching the style used by the `funcml` package's `theme_funcml()`.
@@ -41,13 +41,13 @@
 #'
 #' @return A ggplot2 theme object.
 #'
-#' @seealso [scale_color_phynotype()], [scale_fill_phynotype()]
+#' @seealso [scalecolorphynotype()], [scalefillphynotype()]
 #' @export
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' plot_clusters(fit) + theme_phynotype()
-theme_phynotype <- function(base_size = 11) {
+#' plotclusters(fit) + themephynotype()
+themephynotype <- function(base_size = 11) {
   ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(
       plot.title = ggplot2::element_text(face = "bold"),
@@ -59,7 +59,7 @@ theme_phynotype <- function(base_size = 11) {
     )
 }
 
-#' Discrete color/fill scales matching \code{\link{theme_phynotype}}
+#' Discrete color/fill scales matching \code{\link{themephynotype}}
 #'
 #' Colorblind-friendly discrete color and fill scales (Okabe-Ito palette,
 #' recycled/interpolated beyond 8 levels) for consistent group colors across
@@ -71,17 +71,17 @@ theme_phynotype <- function(base_size = 11) {
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' plot_clusters(fit) + scale_color_phynotype()
+#' plotclusters(fit) + scalecolorphynotype()
 #'
 #' @name phynotype-scales
 #' @export
-scale_color_phynotype <- function(...) {
+scalecolorphynotype <- function(...) {
   ggplot2::discrete_scale("colour", palette = .phynotype_pal, ...)
 }
 
 #' @rdname phynotype-scales
 #' @export
-scale_fill_phynotype <- function(...) {
+scalefillphynotype <- function(...) {
   ggplot2::discrete_scale("fill", palette = .phynotype_pal, ...)
 }
 

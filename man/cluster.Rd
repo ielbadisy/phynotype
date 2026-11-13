@@ -97,7 +97,7 @@ if (requireNamespace("cluster", quietly = TRUE)) {
 }
 
 # Hierarchical clustering from a distance object
-d <- mixed_distance(iris[, 1:4])
+d <- mixeddistance(iris[, 1:4])
 fit_hc <- cluster(d, method = "hclust", k = 3)
 fit_hc
 
@@ -130,6 +130,6 @@ data sets with categorical values. \emph{Data Mining and Knowledge Discovery},
 \code{\link[=validate]{validate()}} to score the fit, \code{\link[=explore]{explore()}} to summarize cluster
 structure, \code{\link[=predict.cluster_fit]{predict.cluster_fit()}} to assign new observations,
 \code{\link[=metacluster]{metacluster()}} for consensus clustering,
-\code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}}, \code{\link[=ceteris_paribus]{ceteris_paribus()}} for
+\code{\link[=featureimportance]{featureimportance()}}, \code{\link[=limeexplain]{limeexplain()}}, \code{\link[=ceterisparibus]{ceterisparibus()}} for
 interpretability.
 }

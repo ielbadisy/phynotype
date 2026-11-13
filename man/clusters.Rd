@@ -23,5 +23,5 @@ fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 clusters(fit)
 }
 \seealso{
-\code{\link[=sizes]{sizes()}}, \code{\link[=n_clusters]{n_clusters()}}, \code{\link[=centers]{centers()}}, \code{\link[=membership]{membership()}}
+\code{\link[=sizes]{sizes()}}, \code{\link[=nclusters]{nclusters()}}, \code{\link[=centers]{centers()}}, \code{\link[=membership]{membership()}}
 }

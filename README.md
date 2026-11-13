@@ -44,9 +44,9 @@ The main objects expose a common accessor API, so downstream code does
 not need to inspect object internals.
 
 ``` r
-method_used(fit)
+methodused(fit)
 #> [1] "kmeans"
-n_clusters(fit)
+nclusters(fit)
 #> [1] 3
 data.frame(cluster = names(sizes(fit)), size = unname(sizes(fit)))
 #>   cluster size
@@ -191,43 +191,43 @@ head(exp$feature_summary)
 ## Plotting
 
 ``` r
-plot_clusters(fit)
+plotclusters(fit)
 ```
 
 ![](README_files/figure-gfm/plot-clusters-1.png)<!-- -->
 
 ``` r
-plot_silhouette(fit)
+plotsilhouette(fit)
 ```
 
 ![](README_files/figure-gfm/plot-silhouette-1.png)<!-- -->
 
 ``` r
-plot_consensus(mfit)
+plotconsensus(mfit)
 ```
 
 ![](README_files/figure-gfm/plot-consensus-1.png)<!-- -->
 
 ``` r
-plot_coassoc(mfit)
+plotcoassoc(mfit)
 ```
 
 ![](README_files/figure-gfm/plot-coassoc-1.png)<!-- -->
 
 ``` r
-plot_feature_profiles(explore(fit))
+plotfeatureprofiles(explore(fit))
 ```
 
 ![](README_files/figure-gfm/plot-feature-profiles-1.png)<!-- -->
 
 ``` r
-plot_cluster_sizes(fit)
+plotclustersizes(fit)
 ```
 
 ![](README_files/figure-gfm/plot-cluster-sizes-1.png)<!-- -->
 
 ``` r
-plot_biplot(fit)
+plotbiplot(fit)
 ```
 
 ![](README_files/figure-gfm/plot-biplot-1.png)<!-- -->
@@ -263,7 +263,7 @@ Global permutation importance estimates which features the fitted
 clustering rule relies on most.
 
 ``` r
-imp <- feature_importance(fit, n_repeats = 3, seed = 1)
+imp <- featureimportance(fit, n_repeats = 3, seed = 1)
 imp
 #> <feature_importance>
 #>   Metric: instability
@@ -287,7 +287,7 @@ Ceteris paribus profiles show how local predictions change when one
 feature is varied and the other features are held fixed.
 
 ``` r
-cp <- ceteris_paribus(
+cp <- ceterisparibus(
   fit,
   iris[1:2, 1:4],
   features = c("Petal.Length", "Petal.Width"),
@@ -326,7 +326,7 @@ LIME-style explanations fit local surrogate models around selected
 observations.
 
 ``` r
-lx <- lime_explain(
+lx <- limeexplain(
   fit,
   iris[1:2, 1:4],
   n_features = 3,
@@ -371,7 +371,7 @@ citation("phynotype")
 #> To cite phynotype in publications, use:
 #> 
 #>   El Badisy I (2026). _phynotype: Clustering and Consensus
-#>   Meta-Clustering_. R package version 0.6.2,
+#>   Meta-Clustering_. R package version 0.6.3,
 #>   <https://CRAN.R-project.org/package=phynotype>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -380,7 +380,7 @@ citation("phynotype")
 #>     title = {phynotype: Clustering and Consensus Meta-Clustering},
 #>     author = {Imad {El Badisy}},
 #>     year = {2026},
-#>     note = {R package version 0.6.2},
+#>     note = {R package version 0.6.3},
 #>     url = {https://CRAN.R-project.org/package=phynotype},
 #>   }
 ```

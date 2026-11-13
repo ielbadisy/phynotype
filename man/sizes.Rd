@@ -22,5 +22,5 @@ fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 sizes(fit)
 }
 \seealso{
-\code{\link[=clusters]{clusters()}}, \code{\link[=n_clusters]{n_clusters()}}
+\code{\link[=clusters]{clusters()}}, \code{\link[=nclusters]{nclusters()}}
 }

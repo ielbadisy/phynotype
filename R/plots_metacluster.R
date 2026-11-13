@@ -13,20 +13,20 @@
 #'
 #' @return A `ggplot` object.
 #'
-#' @seealso [metacluster()], [plot_coassoc()]
+#' @seealso [metacluster()], [plotcoassoc()]
 #'
 #' @export
 #'
 #' @examples
 #' mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),
 #'                     k = 2:3, seed = 1)
-#' plot_consensus(mfit)
-plot_consensus <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
-  UseMethod("plot_consensus")
+#' plotconsensus(mfit)
+plotconsensus <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
+  UseMethod("plotconsensus")
 }
 
 #' @export
-plot_consensus.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
+plotconsensus.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
   embedding <- match.arg(embedding)
   exp <- explore(x, data = data, embedding = embedding)
   labels <- exp$embedding_labels
@@ -36,8 +36,8 @@ plot_consensus.metacluster_fit <- function(x, data = NULL, embedding = c("auto",
   ggplot2::ggplot(exp$plot_data, ggplot2::aes(x = .data[["x"]], y = .data[["y"]], color = .data[["cluster"]])) +
     ggplot2::geom_point(size = 2) +
     ggplot2::labs(title = "Consensus clusters", x = labels$x, y = labels$y, color = "Cluster") +
-    scale_color_phynotype() +
-    theme_phynotype()
+    scalecolorphynotype() +
+    themephynotype()
 }
 
 #' Plot the co-association matrix
@@ -51,20 +51,20 @@ plot_consensus.metacluster_fit <- function(x, data = NULL, embedding = c("auto",
 #'
 #' @return A `ggplot` object.
 #'
-#' @seealso [metacluster()], [plot_consensus()]
+#' @seealso [metacluster()], [plotconsensus()]
 #'
 #' @export
 #'
 #' @examples
 #' mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),
 #'                     k = 2:3, seed = 1)
-#' plot_coassoc(mfit)
-plot_coassoc <- function(x, ...) {
-  UseMethod("plot_coassoc")
+#' plotcoassoc(mfit)
+plotcoassoc <- function(x, ...) {
+  UseMethod("plotcoassoc")
 }
 
 #' @export
-plot_coassoc.metacluster_fit <- function(x, ...) {
+plotcoassoc.metacluster_fit <- function(x, ...) {
   mat <- x$coassoc_matrix
   df <- expand.grid(row = seq_len(nrow(mat)), col = seq_len(ncol(mat)))
   df$value <- as.vector(mat)
@@ -72,5 +72,5 @@ plot_coassoc.metacluster_fit <- function(x, ...) {
     ggplot2::geom_tile() +
     ggplot2::labs(title = "Co-association matrix", x = NULL, y = NULL, fill = "Agreement") +
     ggplot2::scale_fill_viridis_c(direction = -1) +
-    theme_phynotype()
+    themephynotype()
 }

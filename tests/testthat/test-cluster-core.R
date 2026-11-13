@@ -2,7 +2,7 @@ test_that("cluster returns a cluster_fit with kmeans", {
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
   expect_s3_class(fit, "cluster_fit")
   expect_length(clusters(fit), nrow(iris))
-  expect_equal(method_used(fit), "kmeans")
+  expect_equal(methodused(fit), "kmeans")
   expect_equal(dim(centers(fit)), c(3, 4))
 })
 
@@ -42,7 +42,7 @@ test_that("prepare_mixed_data encodes mixed inputs for numeric methods", {
     x = c(1, 2, 3, 4),
     group = factor(c("a", "a", "b", "b"))
   )
-  encoded <- prepare_mixed_data(mixed, scale = TRUE)
+  encoded <- preparemixeddata(mixed, scale = TRUE)
   expect_true(is.matrix(encoded))
   expect_true(is.numeric(encoded))
   expect_true(all(c("x", "group_a", "group_b") %in% colnames(encoded)))
@@ -56,7 +56,7 @@ test_that("mixed_distance enables hierarchical clustering on mixed inputs", {
     x = c(1, 2, 8, 9),
     group = factor(c("a", "a", "b", "b"))
   )
-  d <- mixed_distance(mixed)
+  d <- mixeddistance(mixed)
   expect_s3_class(d, "dist")
   fit_h <- cluster(d, method = "hclust", k = 2)
   expect_s3_class(fit_h, "cluster_fit")

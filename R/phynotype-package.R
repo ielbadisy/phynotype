@@ -15,8 +15,8 @@
 #'   \item **Predict**: assign new observations to learned clusters with
 #'         [predict.cluster_fit()].
 #'   \item **Interpret**: explain the clustering rule with
-#'         [feature_importance()], [lime_explain()], and
-#'         [ceteris_paribus()].
+#'         [featureimportance()], [limeexplain()], and
+#'         [ceterisparibus()].
 #' }
 #'
 #' All steps operate through S3 generic functions and return structured objects
@@ -43,8 +43,8 @@
 #' Ghosh, 2002).
 #'
 #' @section Mixed-type data:
-#' Use [prepare_mixed_data()] to encode mixed-type data frames into a numeric
-#' matrix before distance-based methods. Use [mixed_distance()] to build a
+#' Use [preparemixeddata()] to encode mixed-type data frames into a numeric
+#' matrix before distance-based methods. Use [mixeddistance()] to build a
 #' Gower distance matrix (Gower, 1971) before hierarchical methods. The
 #' exploratory embedding layer automatically selects PCA for numeric data,
 #' FAMD for mixed numeric/categorical data, MCA for categorical data, and
@@ -73,8 +73,8 @@
 #' properties. *Biometrics*, **27**(4), 857–874.
 #'
 #' @seealso [cluster()], [metacluster()], [validate()], [explore()],
-#'   [predict.cluster_fit()], [feature_importance()], [lime_explain()],
-#'   [ceteris_paribus()]
+#'   [predict.cluster_fit()], [featureimportance()], [limeexplain()],
+#'   [ceterisparibus()]
 #'
 #' @docType package
 #' @name phynotype-package

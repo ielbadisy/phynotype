@@ -12,7 +12,7 @@ test_that("cluster(method = 'kmm') fits mixed data and stores combined prototype
   expect_s3_class(fit, "cluster_fit")
   expect_equal(fit$method, "kmm")
   expect_equal(length(clusters(fit)), nrow(mixed))
-  expect_equal(n_clusters(fit), 2)
+  expect_equal(nclusters(fit), 2)
   expect_false(is.null(prototypes(fit)))
   expect_equal(nrow(prototypes(fit)), 2)
   expect_true(all(c("x", "group") %in% colnames(prototypes(fit))))
