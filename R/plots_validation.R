@@ -16,14 +16,14 @@
 #' @examples
 #' if (requireNamespace("cluster", quietly = TRUE)) {
 #'   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#'   plot_silhouette(fit)
+#'   plotsilhouette(fit)
 #' }
-plot_silhouette <- function(x, ...) {
-  UseMethod("plot_silhouette")
+plotsilhouette <- function(x, ...) {
+  UseMethod("plotsilhouette")
 }
 
 #' @export
-plot_silhouette.cluster_fit <- function(x, ...) {
+plotsilhouette.cluster_fit <- function(x, ...) {
   if (!requireNamespace("cluster", quietly = TRUE)) {
     stop("Package `cluster` is required for silhouette plots.", call. = FALSE)
   }
@@ -46,11 +46,11 @@ plot_silhouette.cluster_fit <- function(x, ...) {
   ) +
     ggplot2::geom_segment(linewidth = 0.7) +
     ggplot2::labs(title = "Silhouette widths", x = "Observation", y = "Silhouette width", color = "Cluster") +
-    scale_color_phynotype() +
-    theme_phynotype()
+    scalecolorphynotype() +
+    themephynotype()
 }
 
 #' @export
 plot.cluster_fit <- function(x, ...) {
-  plot_clusters(x, ...)
+  plotclusters(x, ...)
 }

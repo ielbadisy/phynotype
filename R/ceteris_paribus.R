@@ -53,8 +53,8 @@
 #'   value at that step, the predicted target (cluster label or score), the
 #'   observed feature value, and the baseline prediction.
 #'
-#' @seealso [lime_explain()] for local linear surrogate explanations,
-#'   [feature_importance()] for global permutation importance,
+#' @seealso [limeexplain()] for local linear surrogate explanations,
+#'   [featureimportance()] for global permutation importance,
 #'   [predict.cluster_fit()] which is used internally.
 #'
 #' @references
@@ -72,9 +72,9 @@
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' cp <- ceteris_paribus(fit, iris[1:3, 1:4], features = 1:2, grid_size = 10)
+#' cp <- ceterisparibus(fit, iris[1:3, 1:4], features = 1:2, grid_size = 10)
 #' head(cp$profiles)
-ceteris_paribus <- function(object,
+ceterisparibus <- function(object,
                             new_data,
                             features = NULL,
                             grid = NULL,
@@ -213,6 +213,6 @@ plot.ceteris_paribus <- function(x, ...) {
       x = NULL,
       y = "prediction"
     ) +
-    theme_phynotype() +
+    themephynotype() +
     ggplot2::theme(legend.position = "none")
 }

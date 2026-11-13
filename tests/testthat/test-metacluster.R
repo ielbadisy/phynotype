@@ -62,5 +62,5 @@ test_that("dbscan handles noise labels when dbscan is available", {
   sim <- phynotype:::synthetic_clusters(n_per_cluster = 20, seed = 1)
   fit <- cluster(sim$x, method = "dbscan", eps = 0.9, minPts = 5)
   expect_s3_class(fit, "cluster_fit")
-  expect_true(any(clusters(fit) == 0) || n_clusters(fit) >= 1)
+  expect_true(any(clusters(fit) == 0) || nclusters(fit) >= 1)
 })

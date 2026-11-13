@@ -2,13 +2,13 @@
 % Please edit documentation in R/theme.R
 \name{phynotype-scales}
 \alias{phynotype-scales}
-\alias{scale_color_phynotype}
-\alias{scale_fill_phynotype}
-\title{Discrete color/fill scales matching \code{\link{theme_phynotype}}}
+\alias{scalecolorphynotype}
+\alias{scalefillphynotype}
+\title{Discrete color/fill scales matching \code{\link{themephynotype}}}
 \usage{
-scale_color_phynotype(...)
+scalecolorphynotype(...)
 
-scale_fill_phynotype(...)
+scalefillphynotype(...)
 }
 \arguments{
 \item{...}{Additional arguments passed to \code{ggplot2::discrete_scale()}.}
@@ -23,6 +23,6 @@ recycled/interpolated beyond 8 levels) for consistent group colors across
 }
 \examples{
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-plot_clusters(fit) + scale_color_phynotype()
+plotclusters(fit) + scalecolorphynotype()
 
 }

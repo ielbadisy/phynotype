@@ -1,5 +1,5 @@
-## All package results (validate(), explore(), feature_importance(),
-## ceteris_paribus(), lime_explain(), metacluster() selection/stability
+## All package results (validate(), explore(), featureimportance(),
+## ceterisparibus(), limeexplain(), metacluster() selection/stability
 ## summaries, and the centers()/prototypes() accessors) are rounded to 4
 ## significant digits by default so printed and directly-accessed numeric
 ## output is consistent across the package.
@@ -41,9 +41,9 @@ check_numeric_input <- function(x) {
         "`x` contains non-numeric columns: ", paste(bad, collapse = ", "), ".\n",
         "Use an explicit two-step workflow for mixed data:\n",
         "1. For numeric algorithms (`kmeans`, `pam`, `dbscan`, `gmm`), call ",
-        "`prepare_mixed_data(x, scale = TRUE)` and pass the returned matrix to `cluster()`.\n",
+        "`preparemixeddata(x, scale = TRUE)` and pass the returned matrix to `cluster()`.\n",
         "2. For hierarchical algorithms (`hclust`, `agnes`), call ",
-        "`mixed_distance(x)` and pass the returned distance matrix to `cluster()`.",
+        "`mixeddistance(x)` and pass the returned distance matrix to `cluster()`.",
         call. = FALSE
       )
     }
@@ -119,7 +119,7 @@ prepare_cluster_input <- function(x, method, scale, center, k) {
     stop(
       "Distance inputs are only supported by `hclust` and `agnes`.\n",
       "Use row-by-feature numeric data for `kmeans`, `pam`, `dbscan`, and `gmm`; ",
-      "for mixed data first call `prepare_mixed_data(x, scale = TRUE)`.",
+      "for mixed data first call `preparemixeddata(x, scale = TRUE)`.",
       call. = FALSE
     )
   }

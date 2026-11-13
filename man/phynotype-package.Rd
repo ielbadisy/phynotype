@@ -20,8 +20,8 @@ two-dimensional embeddings with \code{\link[=explore]{explore()}}.
 \item \strong{Predict}: assign new observations to learned clusters with
 \code{\link[=predict.cluster_fit]{predict.cluster_fit()}}.
 \item \strong{Interpret}: explain the clustering rule with
-\code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}}, and
-\code{\link[=ceteris_paribus]{ceteris_paribus()}}.
+\code{\link[=featureimportance]{featureimportance()}}, \code{\link[=limeexplain]{limeexplain()}}, and
+\code{\link[=ceterisparibus]{ceterisparibus()}}.
 }
 
 All steps operate through S3 generic functions and return structured objects
@@ -53,8 +53,8 @@ Ghosh, 2002).
 
 \section{Mixed-type data}{
 
-Use \code{\link[=prepare_mixed_data]{prepare_mixed_data()}} to encode mixed-type data frames into a numeric
-matrix before distance-based methods. Use \code{\link[=mixed_distance]{mixed_distance()}} to build a
+Use \code{\link[=preparemixeddata]{preparemixeddata()}} to encode mixed-type data frames into a numeric
+matrix before distance-based methods. Use \code{\link[=mixeddistance]{mixeddistance()}} to build a
 Gower distance matrix (Gower, 1971) before hierarchical methods. The
 exploratory embedding layer automatically selects PCA for numeric data,
 FAMD for mixed numeric/categorical data, MCA for categorical data, and
@@ -85,10 +85,10 @@ properties. \emph{Biometrics}, \strong{27}(4), 857–874.
 }
 \seealso{
 \code{\link[=cluster]{cluster()}}, \code{\link[=metacluster]{metacluster()}}, \code{\link[=validate]{validate()}}, \code{\link[=explore]{explore()}},
-\code{\link[=predict.cluster_fit]{predict.cluster_fit()}}, \code{\link[=feature_importance]{feature_importance()}}, \code{\link[=lime_explain]{lime_explain()}},
-\code{\link[=ceteris_paribus]{ceteris_paribus()}}
+\code{\link[=predict.cluster_fit]{predict.cluster_fit()}}, \code{\link[=featureimportance]{featureimportance()}}, \code{\link[=limeexplain]{limeexplain()}},
+\code{\link[=ceterisparibus]{ceterisparibus()}}
 }
 \author{
-\strong{Maintainer}: Imad EL BADISY \email{elbadisyimad@gmail.com}
+\strong{Maintainer}: Imad El Badisy \email{elbadisyimad@gmail.com}
 
 }

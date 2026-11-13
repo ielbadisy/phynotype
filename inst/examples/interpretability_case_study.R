@@ -28,9 +28,9 @@ validation <- validate(fit, truth = iris$Species, n_boot = 3)
 validation_table <- validation$metrics_table
 cluster_species_table <- as.data.frame.matrix(table(cluster = cluster_labels, species = iris$Species))
 
-importance <- feature_importance(fit, n_repeats = 10, seed = 11)
+importance <- featureimportance(fit, n_repeats = 10, seed = 11)
 
-profiles <- ceteris_paribus(
+profiles <- ceterisparibus(
   fit,
   new_data = representative_data,
   features = c("Petal.Length", "Petal.Width"),
@@ -38,7 +38,7 @@ profiles <- ceteris_paribus(
   target = "score"
 )
 
-lime <- lime_explain(
+lime <- limeexplain(
   fit,
   new_data = representative_data,
   n_features = 3,
@@ -53,13 +53,13 @@ utils::write.csv(
 )
 utils::write.csv(cluster_species_table, file.path(output_dir, "cluster_species_table.csv"))
 utils::write.csv(validation_table, file.path(output_dir, "validation_metrics.csv"), row.names = FALSE)
-utils::write.csv(importance$summary, file.path(output_dir, "feature_importance.csv"), row.names = FALSE)
+utils::write.csv(importance$summary, file.path(output_dir, "featureimportance.csv"), row.names = FALSE)
 utils::write.csv(profiles$profiles, file.path(output_dir, "ceteris_paribus_profiles.csv"), row.names = FALSE)
 utils::write.csv(lime$explanations, file.path(output_dir, "lime_explanations.csv"), row.names = FALSE)
 utils::write.csv(lime$neighborhoods, file.path(output_dir, "lime_neighborhoods.csv"), row.names = FALSE)
 
 ggplot2::ggsave(
-  file.path(output_dir, "feature_importance.png"),
+  file.path(output_dir, "featureimportance.png"),
   plot(importance),
   width = 7,
   height = 4,
@@ -94,11 +94,11 @@ writeLines(
     "- cluster_assignments.csv",
     "- cluster_species_table.csv",
     "- validation_metrics.csv",
-    "- feature_importance.csv",
+    "- featureimportance.csv",
     "- ceteris_paribus_profiles.csv",
     "- lime_explanations.csv",
     "- lime_neighborhoods.csv",
-    "- feature_importance.png",
+    "- featureimportance.png",
     "- ceteris_paribus_profiles.png",
     "- lime_explanations.png"
   ),

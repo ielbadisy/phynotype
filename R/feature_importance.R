@@ -74,7 +74,7 @@
 #'     importance, standard error, and number of repeats.}
 #' }
 #'
-#' @seealso [lime_explain()] for local explanations, [ceteris_paribus()] for
+#' @seealso [limeexplain()] for local explanations, [ceterisparibus()] for
 #'   individual conditional profiles, [predict.cluster_fit()] which is used
 #'   internally.
 #'
@@ -91,9 +91,9 @@
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' imp <- feature_importance(fit, n_repeats = 3, seed = 1)
+#' imp <- featureimportance(fit, n_repeats = 3, seed = 1)
 #' imp$summary
-feature_importance <- function(object,
+featureimportance <- function(object,
                                data = NULL,
                                features = NULL,
                                metric = c("instability", "silhouette", "total_within"),
@@ -192,5 +192,5 @@ plot.feature_importance <- function(x, ...) {
     ggplot2::geom_col(fill = .phynotype_palette$accent) +
     ggplot2::coord_flip() +
     ggplot2::labs(title = "Permutation feature importance", x = NULL, y = "Importance") +
-    theme_phynotype()
+    themephynotype()
 }

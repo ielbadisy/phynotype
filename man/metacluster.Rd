@@ -100,6 +100,6 @@ Research}, \strong{3}, 583–617.
 }
 \seealso{
 \code{\link[=cluster]{cluster()}} for single solutions, \code{\link[=validate]{validate()}} to score the
-consensus partition, \code{\link[=plot_coassoc]{plot_coassoc()}} to visualize the agreement matrix,
-\code{\link[=plot_consensus]{plot_consensus()}} for a 2-D embedding of the final clusters.
+consensus partition, \code{\link[=plotcoassoc]{plotcoassoc()}} to visualize the agreement matrix,
+\code{\link[=plotconsensus]{plotconsensus()}} for a 2-D embedding of the final clusters.
 }

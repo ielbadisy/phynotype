@@ -2,7 +2,7 @@
 #'
 #' Project observations onto a two-dimensional embedding and color them by
 #' cluster assignment. For `metacluster_fit` objects, delegates to
-#' [plot_consensus()].
+#' [plotconsensus()].
 #'
 #' @param x A `cluster_fit`, `metacluster_fit`, or `cluster_explore` object.
 #' @param data Optional numeric matrix, data frame, or distance object used to
@@ -15,33 +15,33 @@
 #'
 #' @return A `ggplot` object.
 #'
-#' @seealso [explore()] for the underlying embedding, [plot_cluster_sizes()],
-#'   [plot_feature_profiles()]
+#' @seealso [explore()] for the underlying embedding, [plotclustersizes()],
+#'   [plotfeatureprofiles()]
 #'
 #' @export
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' plot_clusters(fit)
-plot_clusters <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
-  UseMethod("plot_clusters")
+#' plotclusters(fit)
+plotclusters <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
+  UseMethod("plotclusters")
 }
 
 #' @export
-plot_clusters.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
+plotclusters.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
   embedding <- match.arg(embedding)
   exp <- explore(x, data = data, embedding = embedding)
-  plot_clusters(exp)
+  plotclusters(exp)
 }
 
 #' @export
-plot_clusters.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
+plotclusters.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "famd", "mca", "mds"), ...) {
   embedding <- match.arg(embedding)
-  plot_consensus(x, data = data, embedding = embedding, ...)
+  plotconsensus(x, data = data, embedding = embedding, ...)
 }
 
 #' @export
-plot_clusters.cluster_explore <- function(x, ...) {
+plotclusters.cluster_explore <- function(x, ...) {
   labels <- x$embedding_labels
   if (is.null(labels)) {
     labels <- list(x = "PC1", y = "PC2")
@@ -49,8 +49,8 @@ plot_clusters.cluster_explore <- function(x, ...) {
   ggplot2::ggplot(x$plot_data, ggplot2::aes(x = .data[["x"]], y = .data[["y"]], color = .data[["cluster"]])) +
     ggplot2::geom_point(size = 2) +
     ggplot2::labs(title = "Cluster embedding", x = labels$x, y = labels$y, color = "Cluster") +
-    scale_color_phynotype() +
-    theme_phynotype()
+    scalecolorphynotype() +
+    themephynotype()
 }
 
 #' Plot a cluster biplot
@@ -95,40 +95,40 @@ plot_clusters.cluster_explore <- function(x, ...) {
 #'
 #' @return A `ggplot` object.
 #'
-#' @seealso [plot_clusters()], [explore()] for the underlying embedding.
+#' @seealso [plotclusters()], [explore()] for the underlying embedding.
 #'
 #' @export
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' plot_biplot(fit)
-#' plot_biplot(fit, variant = "cos2")
-#' plot_biplot(fit, variant = "label")
-plot_biplot <- function(x, data = NULL, embedding = c("auto", "pca", "mca"),
+#' plotbiplot(fit)
+#' plotbiplot(fit, variant = "cos2")
+#' plotbiplot(fit, variant = "label")
+plotbiplot <- function(x, data = NULL, embedding = c("auto", "pca", "mca"),
                          variant = c("cluster", "cos2", "label"), top_n = NULL, ...) {
-  UseMethod("plot_biplot")
+  UseMethod("plotbiplot")
 }
 
 #' @export
-plot_biplot.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mca"),
+plotbiplot.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mca"),
                                      variant = c("cluster", "cos2", "label"), top_n = NULL, ...) {
   embedding <- match.arg(embedding)
   variant <- match.arg(variant)
   exp <- explore(x, data = data, embedding = embedding)
-  plot_biplot(exp, variant = variant, top_n = top_n, ...)
+  plotbiplot(exp, variant = variant, top_n = top_n, ...)
 }
 
 #' @export
-plot_biplot.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mca"),
+plotbiplot.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "mca"),
                                          variant = c("cluster", "cos2", "label"), top_n = NULL, ...) {
   embedding <- match.arg(embedding)
   variant <- match.arg(variant)
   exp <- explore(x, data = data, embedding = embedding)
-  plot_biplot(exp, variant = variant, top_n = top_n, ...)
+  plotbiplot(exp, variant = variant, top_n = top_n, ...)
 }
 
 #' @export
-plot_biplot.cluster_explore <- function(x, data = NULL, embedding = c("auto", "pca", "mca"),
+plotbiplot.cluster_explore <- function(x, data = NULL, embedding = c("auto", "pca", "mca"),
                                          variant = c("cluster", "cos2", "label"), top_n = NULL, ...) {
   if (is.null(x$embedding_fit) || !x$embedding_method %in% c("pca", "mca")) {
     stop(
@@ -151,7 +151,7 @@ plot_biplot.cluster_explore <- function(x, data = NULL, embedding = c("auto", "p
         ggplot2::aes(x = .data[["x"]], y = .data[["y"]], color = .data[["cluster"]], shape = .data[["cluster"]]),
         size = 1.5
       ),
-      scale_color_phynotype()
+      scalecolorphynotype()
     ),
     cos2 = ggplot2::geom_point(
       data = ind_df,
@@ -173,7 +173,7 @@ plot_biplot.cluster_explore <- function(x, data = NULL, embedding = c("auto", "p
     ggplot2::geom_hline(yintercept = 0, color = "black", linetype = "dashed") +
     ggplot2::geom_vline(xintercept = 0, color = "black", linetype = "dashed") +
     ggplot2::labs(title = "Cluster biplot", x = biplot_data$xlab, y = biplot_data$ylab) +
-    theme_phynotype()
+    themephynotype()
 }
 
 biplot_variable_layer <- function(var_df, geom, color) {
@@ -207,7 +207,7 @@ biplot_variable_layer <- function(var_df, geom, color) {
 #'
 #' Reimplements the coordinate, scaling, cos2, and contribution formulas
 #' `factoextra::get_pca_var()`/`get_pca_ind()` and `FactoMineR::MCA()`'s own
-#' `$var`/`$ind` elements use, so `plot_biplot()` reproduces the same
+#' `$var`/`$ind` elements use, so `plotbiplot()` reproduces the same
 #' geometry without depending on `factoextra`.
 #'
 #' @noRd
@@ -283,37 +283,37 @@ biplot_layers <- function(fit, method, plot_data, top_n = NULL) {
 #'
 #' @return A `ggplot` object.
 #'
-#' @seealso [sizes()], [plot_clusters()], [plot_feature_profiles()]
+#' @seealso [sizes()], [plotclusters()], [plotfeatureprofiles()]
 #'
 #' @export
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' plot_cluster_sizes(fit)
-plot_cluster_sizes <- function(x, ...) {
-  UseMethod("plot_cluster_sizes")
+#' plotclustersizes(fit)
+plotclustersizes <- function(x, ...) {
+  UseMethod("plotclustersizes")
 }
 
 #' @export
-plot_cluster_sizes.cluster_fit <- function(x, ...) {
+plotclustersizes.cluster_fit <- function(x, ...) {
   exp <- explore(x)
-  plot_cluster_sizes(exp)
+  plotclustersizes(exp)
 }
 
 #' @export
-plot_cluster_sizes.metacluster_fit <- function(x, ...) {
+plotclustersizes.metacluster_fit <- function(x, ...) {
   exp <- explore(x)
-  plot_cluster_sizes(exp)
+  plotclustersizes(exp)
 }
 
 #' @export
-plot_cluster_sizes.cluster_explore <- function(x, ...) {
+plotclustersizes.cluster_explore <- function(x, ...) {
   dat <- x$size_table
   dat$cluster <- factor(dat$cluster)
   ggplot2::ggplot(dat, ggplot2::aes(x = .data[["cluster"]], y = .data[["size"]])) +
     ggplot2::geom_col(fill = .phynotype_palette$accent) +
     ggplot2::labs(title = "Cluster sizes", x = "Cluster", y = "Size") +
-    theme_phynotype()
+    themephynotype()
 }
 
 #' Plot feature profiles by cluster
@@ -327,21 +327,21 @@ plot_cluster_sizes.cluster_explore <- function(x, ...) {
 #'
 #' @return A `ggplot` object.
 #'
-#' @seealso [explore()], [plot_clusters()], [plot_cluster_sizes()]
+#' @seealso [explore()], [plotclusters()], [plotclustersizes()]
 #'
 #' @export
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 #' exp <- explore(fit)
-#' plot_feature_profiles(exp)
-#' plot_feature_profiles(exp, features = c("Sepal.Length", "Petal.Length"))
-plot_feature_profiles <- function(x, features = NULL, ...) {
-  UseMethod("plot_feature_profiles")
+#' plotfeatureprofiles(exp)
+#' plotfeatureprofiles(exp, features = c("Sepal.Length", "Petal.Length"))
+plotfeatureprofiles <- function(x, features = NULL, ...) {
+  UseMethod("plotfeatureprofiles")
 }
 
 #' @export
-plot_feature_profiles.cluster_explore <- function(x, features = NULL, ...) {
+plotfeatureprofiles.cluster_explore <- function(x, features = NULL, ...) {
   if (is.null(x$feature_summary)) {
     stop("Feature profiles are unavailable for this explore object.", call. = FALSE)
   }
@@ -353,6 +353,6 @@ plot_feature_profiles.cluster_explore <- function(x, features = NULL, ...) {
   ggplot2::ggplot(dat, ggplot2::aes(x = .data[["feature"]], y = .data[["mean"]], fill = .data[["cluster"]])) +
     ggplot2::geom_col(position = "dodge") +
     ggplot2::labs(title = "Feature profiles", x = "Feature", y = "Mean", fill = "Cluster") +
-    scale_fill_phynotype() +
-    theme_phynotype()
+    scalefillphynotype() +
+    themephynotype()
 }

@@ -63,8 +63,8 @@
 #'     observation.}
 #' }
 #'
-#' @seealso [ceteris_paribus()] for individual conditional profiles,
-#'   [feature_importance()] for global importance, [predict.cluster_fit()]
+#' @seealso [ceterisparibus()] for individual conditional profiles,
+#'   [featureimportance()] for global importance, [predict.cluster_fit()]
 #'   which is used internally.
 #'
 #' @references
@@ -77,9 +77,9 @@
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
-#' lx <- lime_explain(fit, iris[1:2, 1:4], n_permutations = 50, seed = 1)
+#' lx <- limeexplain(fit, iris[1:2, 1:4], n_permutations = 50, seed = 1)
 #' lx$explanations
-lime_explain <- function(object,
+limeexplain <- function(object,
                          new_data,
                          n_features = 5L,
                          n_permutations = 500L,
@@ -241,5 +241,5 @@ plot.lime_explanation <- function(x, ...) {
     ggplot2::facet_wrap(stats::as.formula("~ observation"), scales = "free_y") +
     ggplot2::labs(title = "LIME local explanations", x = NULL, y = "Local surrogate coefficient", fill = "Direction") +
     .phynotype_direction_scale_fill() +
-    theme_phynotype()
+    themephynotype()
 }

@@ -22,7 +22,7 @@
 #'     \eqn{\eta^2_j = \mathrm{SS}_{B,j} / \mathrm{SS}_{T,j}}, measuring
 #'     how much between-cluster variance each feature explains.}
 #'   \item{Embedding}{Two-dimensional projection for visualization
-#'     (see [plot_clusters()]).}
+#'     (see [plotclusters()]).}
 #' }
 #'
 #' @return A `cluster_explore` object with components:
@@ -36,8 +36,8 @@
 #'     labels.}
 #' }
 #'
-#' @seealso [cluster()] to fit, [plot_clusters()] to plot the embedding,
-#'   [plot_feature_profiles()] to plot feature profiles.
+#' @seealso [cluster()] to fit, [plotclusters()] to plot the embedding,
+#'   [plotfeatureprofiles()] to plot feature profiles.
 #'
 #' @export
 #'
@@ -64,7 +64,7 @@ explore.cluster_fit <- function(x, data = NULL, embedding = c("auto", "pca", "fa
     separation_table <- NULL
   } else {
     summary_data <- if (is.data.frame(data) && !all(vapply(data, is.numeric, logical(1)))) {
-      prepare_mixed_data(data, scale = TRUE)
+      preparemixeddata(data, scale = TRUE)
     } else if (is.data.frame(data)) {
       as.matrix(data)
     } else {
@@ -101,7 +101,7 @@ explore.metacluster_fit <- function(x, data = NULL, embedding = c("auto", "pca",
     separation_table <- NULL
   } else {
     summary_data <- if (is.data.frame(data) && !all(vapply(data, is.numeric, logical(1)))) {
-      prepare_mixed_data(data, scale = TRUE)
+      preparemixeddata(data, scale = TRUE)
     } else if (is.data.frame(data)) {
       as.matrix(data)
     } else {

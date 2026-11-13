@@ -63,7 +63,7 @@
 #' @seealso [validate()] to score the fit, [explore()] to summarize cluster
 #'   structure, [predict.cluster_fit()] to assign new observations,
 #'   [metacluster()] for consensus clustering,
-#'   [feature_importance()], [lime_explain()], [ceteris_paribus()] for
+#'   [featureimportance()], [limeexplain()], [ceterisparibus()] for
 #'   interpretability.
 #'
 #' @references
@@ -101,7 +101,7 @@
 #' }
 #'
 #' # Hierarchical clustering from a distance object
-#' d <- mixed_distance(iris[, 1:4])
+#' d <- mixeddistance(iris[, 1:4])
 #' fit_hc <- cluster(d, method = "hclust", k = 3)
 #' fit_hc
 #'

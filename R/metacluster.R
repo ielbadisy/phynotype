@@ -54,8 +54,8 @@
 #' }
 #'
 #' @seealso [cluster()] for single solutions, [validate()] to score the
-#'   consensus partition, [plot_coassoc()] to visualize the agreement matrix,
-#'   [plot_consensus()] for a 2-D embedding of the final clusters.
+#'   consensus partition, [plotcoassoc()] to visualize the agreement matrix,
+#'   [plotconsensus()] for a 2-D embedding of the final clusters.
 #'
 #' @references
 #' Fred, A.L.N. and Jain, A.K. (2002). Data clustering using evidence
@@ -120,12 +120,12 @@ metacluster <- function(x,
     }
     if (method %in% c("hclust", "agnes")) {
       if (is.null(dist_x)) {
-        dist_x <<- mixed_distance(data)
+        dist_x <<- mixeddistance(data)
       }
       return(dist_x)
     }
     if (is.null(numeric_x)) {
-      numeric_x <<- prepare_mixed_data(data, center = center, scale = scale)
+      numeric_x <<- preparemixeddata(data, center = center, scale = scale)
     }
     numeric_x
   }
@@ -155,7 +155,7 @@ metacluster <- function(x,
         candidate = idx,
         method = method,
         k = k_i,
-        n_clusters = n_clusters(fit)
+        n_clusters = nclusters(fit)
       )
       idx <- idx + 1L
     }
