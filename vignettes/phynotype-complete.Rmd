@@ -41,6 +41,10 @@ All steps return structured S3 objects with `print()`, `summary()`, and
 `plot()` methods. This vignette is the canonical reference and walks through
 the complete workflow using the `iris` data set as a running example.
 
+**Name clash.** The `survival` package also exports `cluster()` (a `coxph()`
+formula special). When both packages are attached, the one attached last
+masks the other. In code that uses both, write `phynotype::cluster()`.
+
 ---
 
 # Data preparation
@@ -71,7 +75,7 @@ Xenc <- preparemixeddata(iris_mixed[, c(1:4, 6)], center = TRUE, scale = TRUE)
 dim(Xenc)
 ```
 
-**Gower distance** (for hierarchical methods):
+**Gower distance** (for `hclust`, `agnes`, `pam`, and `dbscan`):
 
 ```{r}
 d_gower <- mixeddistance(iris_mixed[, c(1:4, 6)])
@@ -124,6 +128,17 @@ robust to outliers.
 if (requireNamespace("cluster", quietly = TRUE)) {
   fit_pam <- cluster(X, method = "pam", k = 3)
   fit_pam
+}
+```
+
+PAM also accepts a precomputed `dist` object, which gives a Gower plus PAM
+workflow for mixed data (the fit stores medoid indices, but cannot predict new
+data because there are no feature-space prototypes):
+
+```{r}
+if (requireNamespace("cluster", quietly = TRUE)) {
+  fit_gpam <- cluster(d_gower, method = "pam", k = 3)
+  table(clusters(fit_gpam), iris_mixed$Species)
 }
 ```
 

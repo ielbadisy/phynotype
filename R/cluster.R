@@ -2,9 +2,10 @@
 #'
 #' Fit a single clustering solution using a supported method.
 #'
-#' @param x Numeric matrix/data frame for numeric methods, a `dist` object for
-#'   hierarchical methods, or a mixed-type data frame for `"kproto"` and
-#'   other mixed-data methods.
+#' @param x Numeric matrix/data frame for numeric methods, a `dist` object
+#'   (for example a Gower dissimilarity from [mixeddistance()]) for the
+#'   distance-based methods `"hclust"`, `"agnes"`, `"pam"`, and `"dbscan"`,
+#'   or a mixed-type data frame for `"kproto"` and `"kmm"`.
 #' @param method Clustering method. Supported values are `"kmeans"`, `"pam"`,
 #'   `"hclust"`, `"agnes"`, `"dbscan"`, `"gmm"`, `"kproto"`, and `"kmm"`.
 #' @param ... Additional method-specific arguments passed to the underlying
@@ -29,7 +30,11 @@
 #'     Requires numeric `x` and `k`.}
 #'   \item{`"pam"`}{Partitioning Around Medoids: minimizes
 #'     \eqn{\sum_i \min_g d(x_i, m_g)} over actual observations (Kaufman and
-#'     Rousseeuw, 1990). Requires the `cluster` package.}
+#'     Rousseeuw, 1990). Accepts raw numeric data or a precomputed `dist`
+#'     object (passed to `cluster::pam(diss = TRUE)`), which gives the Gower
+#'     plus PAM workflow for mixed data via [mixeddistance()]. Fits on a
+#'     `dist` object have no prototypes and cannot predict new data.
+#'     Requires the `cluster` package.}
 #'   \item{`"hclust"` / `"agnes"`}{Hierarchical agglomerative methods. Accept
 #'     a precomputed `dist` object or raw numeric data. Specify `linkage` to
 #'     choose the merging criterion (default `"complete"` for `hclust`,
@@ -37,6 +42,7 @@
 #'   \item{`"dbscan"`}{Density-Based Spatial Clustering of Applications with
 #'     Noise (Ester et al., 1996). Requires `eps` (neighborhood radius) and
 #'     `minPts`. Observations in sparse regions are labeled noise (cluster 0).
+#'     Also accepts a precomputed `dist` object (no prediction in that case).
 #'     Requires the `dbscan` package.}
 #'   \item{`"gmm"`}{Gaussian Mixture Model fitted via the EM algorithm (Fraley
 #'     and Raftery, 2002). Returns soft membership probabilities. Requires the
@@ -48,6 +54,15 @@
 #'     minimizes a weighted prototype distance combining squared Euclidean and
 #'     Hamming contributions controlled by `lambda`.}
 #' }
+#'
+#' @section Name clash with the survival package:
+#' The \pkg{survival} package also exports `cluster()` (a formula special
+#' for robust variances in `coxph()`). When both packages are attached, the
+#' one attached last masks the other. Inside a `coxph()` formula the
+#' `cluster()` term is still handled by \pkg{survival} either way, but a
+#' plain call such as `cluster(x, method = "pam", k = 3)` reaches
+#' \pkg{phynotype} only if it was attached last. In scripts that use both
+#' packages, call `phynotype::cluster()` explicitly.
 #'
 #' @return A `cluster_fit` object with components:
 #' \describe{
@@ -104,6 +119,12 @@
 #' d <- mixeddistance(iris[, 1:4])
 #' fit_hc <- cluster(d, method = "hclust", k = 3)
 #' fit_hc
+#'
+#' # Mixed data: Gower dissimilarity + PAM
+#' if (requireNamespace("cluster", quietly = TRUE)) {
+#'   fit_gpam <- cluster(mixeddistance(iris), method = "pam", k = 3)
+#'   fit_gpam
+#' }
 #'
 #' # Mixed data: k-prototypes
 #' if (requireNamespace("clustMixType", quietly = TRUE)) {

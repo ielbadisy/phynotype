@@ -10,7 +10,10 @@
 #'
 #' where \eqn{d(\cdot,\cdot)} is typically the Euclidean distance. Unlike
 #' k-means, medoids are constrained to lie on observed data points, making PAM
-#' more robust to outliers (Kaufman and Rousseeuw, 1990).
+#' more robust to outliers (Kaufman and Rousseeuw, 1990). A precomputed `dist`
+#' object (for example Gower from [mixeddistance()]) is passed to
+#' `cluster::pam(diss = TRUE)`; such fits store medoid indices but no
+#' prototypes, so they cannot predict new data.
 #'
 #' @references
 #' Kaufman, L. and Rousseeuw, P.J. (1990). *Finding Groups in Data: An
@@ -22,32 +25,48 @@ validate_pam_params <- function(data, params) {
     stop("Package `cluster` is required for method `pam`.", call. = FALSE)
   }
   k <- check_required_k(params$k)
-  if (!is.matrix(data)) {
-    stop("`pam` requires a numeric matrix or data frame input.", call. = FALSE)
+  if (!inherits(data, "dist") && !is.matrix(data)) {
+    stop("`pam` requires a numeric matrix, data frame, or distance input.", call. = FALSE)
   }
-  if (k > nrow(data)) {
+  n <- if (inherits(data, "dist")) attr(data, "Size") else nrow(data)
+  if (k > n) {
     stop("`k` cannot exceed the number of observations.", call. = FALSE)
   }
 }
 
 fit_pam <- function(data, params) {
-  fitted <- cluster::pam(data, k = as.integer(params$k))
+  is_diss <- inherits(data, "dist")
+  fitted <- cluster::pam(data, k = as.integer(params$k), diss = is_diss)
   medoid_ids <- fitted$id.med
-  prototypes <- data[medoid_ids, , drop = FALSE]
-  rownames(prototypes) <- paste0("cluster_", seq_len(nrow(prototypes)))
+  prototypes <- NULL
+  if (!is_diss) {
+    prototypes <- data[medoid_ids, , drop = FALSE]
+    rownames(prototypes) <- paste0("cluster_", seq_len(nrow(prototypes)))
+  }
+  metric <- if (is_diss) {
+    if (is.null(attr(data, "Metric"))) "precomputed" else attr(data, "Metric")
+  } else {
+    "euclidean"
+  }
   list(
     clusters = fitted$clustering,
     n_clusters = length(unique(fitted$clustering)),
     membership = NULL,
     centers = NULL,
     prototypes = prototypes,
-    distance_info = list(metric = "euclidean"),
+    distance_info = list(metric = metric),
     fitted_object = fitted,
     extras = list(medoid_ids = medoid_ids)
   )
 }
 
 predict_pam <- function(object, new_data, ...) {
+  if (is.null(object$prototypes)) {
+    stop(
+      "Prediction requires a `pam` fit trained on row-by-feature data, not only a distance object.",
+      call. = FALSE
+    )
+  }
   new_data <- restore_preprocessed_matrix(new_data, object$data_info)
   medoids <- object$prototypes
   dmat <- vapply(
