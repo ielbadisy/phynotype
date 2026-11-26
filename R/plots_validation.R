@@ -27,7 +27,7 @@ plotsilhouette.cluster_fit <- function(x, ...) {
   if (!requireNamespace("cluster", quietly = TRUE)) {
     stop("Package `cluster` is required for silhouette plots.", call. = FALSE)
   }
-  data <- x$data_info$original_data
+  data <- metric_basis(x$data_info$original_data, x$data_info)
   sil <- cluster::silhouette(as.integer(x$clusters), stats::dist(data))
   sil_df <- data.frame(
     observation = seq_len(nrow(sil)),

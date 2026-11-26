@@ -67,3 +67,14 @@ test_that("validate.cluster_fit errors for distance-only training data", {
   fit <- cluster(d, method = "hclust", k = 3)
   expect_error(validate(fit), "not yet implemented")
 })
+
+test_that("validate() computes metrics on the scaled data when the fit used scale = TRUE", {
+  X <- as.matrix(iris[, 1:4])
+  fit <- cluster(X, method = "kmeans", k = 3, scale = TRUE, seed = 1)
+  val <- validate(fit, n_boot = 2)
+  sil <- val$metrics_table$value[val$metrics_table$metric == "silhouette"]
+  ref <- mean(cluster::silhouette(clusters(fit), dist(scale(X)))[, "sil_width"])
+  expect_equal(sil, signif(ref, 4))
+  ch <- val$metrics_table$value[val$metrics_table$metric == "calinski_harabasz"]
+  expect_equal(ch, signif(phynotype:::compute_calinski_harabasz(scale(X), clusters(fit)), 4))
+})

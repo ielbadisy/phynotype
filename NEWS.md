@@ -1,3 +1,7 @@
+# phynotype 0.6.4.9000
+
+* `validate()` now honours `scale = TRUE`: internal metrics are computed on the scaled data the fit used, and bootstrap refits are scaled the same way (previously both used the raw data). Metric values change for scaled fits. `plotsilhouette()` uses the same basis.
+
 # phynotype 0.6.4
 
 * `cluster()` now accepts a `dist` object for `method = "pam"` (via `cluster::pam(diss = TRUE)`) and `method = "dbscan"`, giving a Gower plus PAM path for mixed data with `mixeddistance()`. Fits on a `dist` object cannot predict new data and say so.
