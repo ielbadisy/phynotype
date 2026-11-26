@@ -16,9 +16,9 @@ A numeric matrix with one row per cluster and one column per
 feature, or \code{NULL}.
 }
 \description{
-Extract the numeric cluster center matrix. Available for k-means and
-hierarchical methods trained on numeric data; returns \code{NULL} for PAM,
-k-prototypes, and GMM (use \code{\link[=prototypes]{prototypes()}} or \code{\link[=membership]{membership()}} instead).
+Extract the numeric cluster center matrix. Available for k-means,
+hierarchical methods trained on numeric data, and GMM (component means);
+returns \code{NULL} for PAM and k-prototypes (use \code{\link[=prototypes]{prototypes()}} instead).
 }
 \examples{
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)

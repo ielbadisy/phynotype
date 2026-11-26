@@ -66,9 +66,9 @@ membership.metacluster_fit <- function(x, ...) {
 
 #' Cluster centers
 #'
-#' Extract the numeric cluster center matrix. Available for k-means and
-#' hierarchical methods trained on numeric data; returns `NULL` for PAM,
-#' k-prototypes, and GMM (use [prototypes()] or [membership()] instead).
+#' Extract the numeric cluster center matrix. Available for k-means,
+#' hierarchical methods trained on numeric data, and GMM (component means);
+#' returns `NULL` for PAM and k-prototypes (use [prototypes()] instead).
 #'
 #' @param x A `cluster_fit` or `metacluster_fit` object.
 #' @param ... Unused.
