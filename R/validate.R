@@ -77,8 +77,8 @@
 #' \describe{
 #'   \item{`metrics_table`}{Data frame with columns `metric`, `value`,
 #'     `scale`, `direction`.}
-#'   \item{`per_cluster_table`}{Per-cluster mean silhouette widths, or
-#'     `NULL`.}
+#'   \item{`per_cluster_table`}{Data frame with columns `cluster`, `size` and
+#'     `mean_silhouette` (mean silhouette width per cluster), or `NULL`.}
 #' }
 #'
 #' @seealso [cluster()] to fit a solution, [plotsilhouette()] to visualize

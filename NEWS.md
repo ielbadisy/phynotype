@@ -8,6 +8,7 @@
 * `"hclust"` and `"agnes"` fits on a `dist` input now record the true metric in `distance_info$metric` (the `"Metric"` attribute of a `daisy`/`mixeddistance()` object, the `"method"` attribute of a `stats::dist()` object, else `"precomputed"`); it was always `"euclidean"`. `"pam"` and `"dbscan"` use the same rule.
 * `prototypes()` no longer returns `NULL` for centroid fits and `metacluster()` fits. For k-means, GMM and hierarchical fits it returns the observed row nearest to each center; for a `metacluster_fit` it returns the consensus medoid of each cluster (smallest mean consensus dissimilarity to the other members). Row indices are in the `"row_ids"` attribute.
 * `validate()` gains an explicit `seed` argument: on raw data every fit in the `k` grid and its bootstrap refits use it, so `validate(X, method, k, seed = 1)` is reproducible. Previously the seed could only be passed through `...`.
+* `validate()`'s `per_cluster_table` now has columns `cluster`, `size` and `mean_silhouette`; the silhouette column was named `x`.
 
 # phynotype 0.6.4
 

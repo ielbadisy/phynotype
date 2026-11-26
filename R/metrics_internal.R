@@ -164,5 +164,6 @@ compute_per_cluster_silhouette <- function(data, clusters) {
     return(NULL)
   }
   sil <- cluster::silhouette(as.integer(clusters), stats::dist(data))
-  stats::aggregate(sil[, "sil_width"], by = list(cluster = sil[, "cluster"]), FUN = mean)
+  w <- sil[, "sil_width"]; cl <- sil[, "cluster"]
+  data.frame(cluster = sort(unique(cl)), size = as.integer(table(cl)), mean_silhouette = as.numeric(tapply(w, cl, mean)))
 }
