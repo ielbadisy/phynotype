@@ -86,3 +86,10 @@ test_that("validate() on raw data takes an explicit seed and is reproducible", {
   expect_identical(v1$metrics_table, v2$metrics_table)
   expect_equal(v1$settings$seed, 7)
 })
+
+test_that("per_cluster_table has meaningful column names", {
+  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+  pct <- validate(fit, n_boot = 2)$per_cluster_table
+  expect_named(pct, c("cluster", "size", "mean_silhouette"))
+  expect_equal(sum(pct$size), 150L)
+})

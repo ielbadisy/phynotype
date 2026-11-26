@@ -46,8 +46,8 @@ A \code{cluster_validation} object with components:
 \describe{
 \item{\code{metrics_table}}{Data frame with columns \code{metric}, \code{value},
 \code{scale}, \code{direction}.}
-\item{\code{per_cluster_table}}{Per-cluster mean silhouette widths, or
-\code{NULL}.}
+\item{\code{per_cluster_table}}{Data frame with columns \code{cluster}, \code{size} and
+\code{mean_silhouette} (mean silhouette width per cluster), or \code{NULL}.}
 }
 }
 \description{
