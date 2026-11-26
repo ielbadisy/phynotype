@@ -11,7 +11,8 @@ validate(
   k = NULL,
   truth = NULL,
   metrics = NULL,
-  n_boot = 10
+  n_boot = 10,
+  seed = NULL
 )
 }
 \arguments{
@@ -34,6 +35,11 @@ return (e.g. \code{c("silhouette", "calinski_harabasz")}).}
 
 \item{n_boot}{Number of bootstrap resamples for bootstrap ARI stability
 (only for \code{"kmeans"}, \code{"pam"}, and \code{"gmm"} fits with a fixed \code{k}).}
+
+\item{seed}{Optional integer seed used when \code{x} is raw data: every fit in
+the \code{k} grid, and its bootstrap refits, use this seed, so the grid is
+reproducible. For a \code{cluster_fit}, \code{NULL} uses the seed stored in the fit
+for the bootstrap refits.}
 }
 \value{
 A \code{cluster_validation} object with components:
@@ -113,7 +119,7 @@ val_ext <- validate(fit, truth = iris$Species)
 val_ext$metrics_table
 
 # Grid search over k values
-grid_val <- validate(iris[, 1:4], method = "kmeans", k = 2:5)
+grid_val <- validate(iris[, 1:4], method = "kmeans", k = 2:5, seed = 1)
 grid_val$metrics_table
 }
 \references{
