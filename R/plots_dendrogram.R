@@ -28,11 +28,12 @@ plotdendrogram <- function(x, ...) {
 
 #' @export
 plotdendrogram.cluster_fit <- function(x, ...) {
-  if (!inherits(x$fitted_object, "hclust")) {
+  hc <- if (inherits(x$fitted_object, "hclust")) x$fitted_object else x$extras$hclust
+  if (!inherits(hc, "hclust")) {
     stop("`plotdendrogram()` is only available for hierarchical fits.", call. = FALSE)
   }
-  graphics::plot(x$fitted_object, main = "Cluster dendrogram", xlab = "", sub = "")
-  invisible(x$fitted_object)
+  graphics::plot(hc, main = "Cluster dendrogram", xlab = "", sub = "")
+  invisible(hc)
 }
 
 #' @export
