@@ -12,7 +12,9 @@ metacluster(
   scale = FALSE,
   center = TRUE,
   seed = NULL,
-  ...
+  ...,
+  select = c("ari", "silhouette"),
+  min_size = NULL
 )
 }
 \arguments{
@@ -35,6 +37,14 @@ Accumulation Clustering) is implemented.}
 deterministic offset seed so results are jointly reproducible.}
 
 \item{...}{Additional arguments passed through to \code{\link[=cluster]{cluster()}}.}
+
+\item{select}{Criterion used to choose the number of consensus clusters:
+\code{"ari"} (default) maximizes the mean adjusted Rand index between the
+consensus cut and the candidate partitions; \code{"silhouette"} maximizes the
+mean silhouette width on \eqn{D = 1 - C} (the previous rule).}
+
+\item{min_size}{Smallest admissible cluster size for the selected cut.
+Default \code{max(2, ceiling(0.01 * n))}.}
 }
 \value{
 A \code{metacluster_fit} object with components:
@@ -46,8 +56,8 @@ A \code{metacluster_fit} object with components:
 solutions.}
 \item{\code{stability_summary}}{Mean, min, and max pairwise partition
 agreement.}
-\item{\code{selection_summary}}{Per-\eqn{k} silhouette scores used for
-selection.}
+\item{\code{selection_summary}}{Per-\eqn{k} table: \code{mean_ari},
+\code{silhouette}, smallest cluster size \code{min_size}, and \code{eligible}.}
 }
 }
 \description{
@@ -67,8 +77,25 @@ For \eqn{B} candidate partitions, the co-association matrix is
 }
 This estimator is related to the Evidence Accumulation Clustering framework
 (Fred and Jain, 2002). The consensus dissimilarity \eqn{D = 1 - C} is then
-hierarchically clustered (average linkage), and the optimal number of
-clusters is chosen by maximizing the mean silhouette width.
+hierarchically clustered (average linkage) and cut at each \eqn{k}.
+}
+
+\subsection{Choice of k}{
+
+The number of consensus clusters is the \eqn{k} whose cut \eqn{\pi_k}
+agrees best with the ensemble, measured by the mean adjusted Rand index
+(a median-partition rule in the spirit of Strehl and Ghosh, 2002):
+\deqn{
+  k^* = \operatorname*{arg\,max}_{k} \frac{1}{B} \sum_{b=1}^{B}
+  \mathrm{ARI}(\pi_k, U^{(b)}).
+}
+The ARI is corrected for chance, so it does not grow with \eqn{k} by
+construction. Cuts with a cluster smaller than \code{min_size} are not eligible
+(all cuts become eligible if none qualifies), and ties go to the smaller
+\eqn{k}. The mean silhouette width on \eqn{D} is not used by default: since
+\eqn{D} is built from the large-\eqn{k} candidates as well, cutting the tree
+at the largest \eqn{k} reproduces their blocks and the silhouette tends to
+pick the upper end of the grid.
 
 Stability of the ensemble is summarized by the mean pairwise partition
 agreement (PPA) across all candidate pairs:
