@@ -42,7 +42,7 @@ fit_agnes <- function(data, params) {
     membership = NULL,
     centers = centers,
     prototypes = NULL,
-    distance_info = list(metric = "euclidean", linkage = method),
+    distance_info = list(metric = dist_metric(data), linkage = method),
     fitted_object = fitted,
     extras = list(cut_k = k, hclust = hc)
   )

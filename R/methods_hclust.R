@@ -52,10 +52,17 @@ fit_hclust <- function(data, params) {
     membership = NULL,
     centers = centers,
     prototypes = NULL,
-    distance_info = list(metric = "euclidean", linkage = linkage),
+    distance_info = list(metric = dist_metric(data), linkage = linkage),
     fitted_object = fitted,
     extras = list(cut_k = k, dist = dist_obj)
   )
+}
+
+# Metric of a dist input: daisy's "Metric", dist()'s "method", else "precomputed".
+dist_metric <- function(data) {
+  if (!inherits(data, "dist")) return("euclidean")
+  m <- c(attr(data, "Metric"), attr(data, "method"))
+  if (length(m)) m[[1]] else "precomputed"
 }
 
 predict_hclust <- function(object, new_data, ...) {
