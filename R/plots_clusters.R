@@ -320,7 +320,8 @@ plotclustersizes.cluster_explore <- function(x, ...) {
 #'
 #' Display per-cluster mean values for each feature as a grouped bar chart.
 #'
-#' @param x A `cluster_explore` object (produced by [explore()]).
+#' @param x A `cluster_explore` object (produced by [explore()]), or a
+#'   `cluster_fit` or `metacluster_fit`, which is passed to [explore()] first.
 #' @param features Optional character vector of feature names to include.
 #'   Defaults to all features.
 #' @param ... Unused.
@@ -333,11 +334,22 @@ plotclustersizes.cluster_explore <- function(x, ...) {
 #'
 #' @examples
 #' fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+#' plotfeatureprofiles(fit)
 #' exp <- explore(fit)
 #' plotfeatureprofiles(exp)
 #' plotfeatureprofiles(exp, features = c("Sepal.Length", "Petal.Length"))
 plotfeatureprofiles <- function(x, features = NULL, ...) {
   UseMethod("plotfeatureprofiles")
+}
+
+#' @export
+plotfeatureprofiles.cluster_fit <- function(x, features = NULL, ...) {
+  plotfeatureprofiles(explore(x), features = features, ...)
+}
+
+#' @export
+plotfeatureprofiles.metacluster_fit <- function(x, features = NULL, ...) {
+  plotfeatureprofiles(explore(x), features = features, ...)
 }
 
 #' @export

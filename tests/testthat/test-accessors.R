@@ -2,7 +2,7 @@ test_that("accessors on a kmeans cluster_fit expose clusters, centers, sizes, an
   fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
 
   expect_equal(clusters(fit), fit$clusters)
-  expect_null(membership(fit))
+  expect_equal(unname(membership(fit)), outer(fit$clusters, 1:3, "==") * 1)
   expect_equal(dim(centers(fit)), c(3, 4))
   expect_equal(dim(prototypes(fit)), c(3, 4))
   expect_equal(sum(sizes(fit)), nrow(iris))
@@ -44,7 +44,7 @@ test_that("accessors on a metacluster_fit dispatch to final_clusters/final_k and
   )
 
   expect_equal(clusters(mfit), mfit$final_clusters)
-  expect_null(membership(mfit))
+  expect_equal(rowSums(membership(mfit)), rep(1, nrow(iris)))
   expect_null(centers(mfit))
   expect_equal(nrow(prototypes(mfit)), mfit$final_k)
   expect_equal(nclusters(mfit), mfit$final_k)
@@ -73,4 +73,13 @@ test_that("prototypes() returns observed rows for kmeans and metacluster fits", 
   mp <- prototypes(mfit)
   expect_equal(nrow(mp), mfit$final_k)
   expect_equal(clusters(mfit)[attr(mp, "row_ids")], sort(unique(clusters(mfit))))
+})
+
+test_that("membership() is a 0/1 matrix for hard methods and keeps dbscan noise", {
+  m <- membership(cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1))
+  expect_equal(dim(m), c(150L, 3L))
+  expect_true(all(m %in% 0:1) && all(rowSums(m) == 1))
+  skip_if_not_installed("dbscan")
+  fd <- cluster(iris[, 1:4], method = "dbscan", eps = 0.4, minPts = 5)
+  expect_equal(colnames(membership(fd)), as.character(sort(unique(clusters(fd)))))
 })
