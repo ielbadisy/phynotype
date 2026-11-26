@@ -32,14 +32,17 @@ compute_metacluster_stability <- function(candidate_labels) {
 #' \eqn{X^{(b)}} with replacement from the original data \eqn{X}, refit the
 #' clustering model on \eqn{X^{(b)}}, and compute the adjusted Rand index
 #' between the reference partition \eqn{\hat{y}} and the bootstrap partition
-#' \eqn{\hat{y}^{(b)}} on the sampled observations:
+#' \eqn{\hat{y}^{(b)}} on the distinct sampled observations (each original row
+#' counted once, since duplicated rows inflate the agreement; Monti et al.,
+#' 2003):
 #'
 #' \deqn{
 #'   \mathrm{BootARI} = \frac{1}{B} \sum_{b=1}^{B}
 #'   \mathrm{ARI}\!\left(\hat{y}_{I^{(b)}},\, \hat{y}^{(b)}\right),
 #' }
 #'
-#' where \eqn{I^{(b)}} are the bootstrap indices. A value near 1 indicates
+#' where \eqn{I^{(b)}} are the distinct bootstrap indices. The standard
+#' deviation over the \eqn{B} resamples is also returned. A value near 1 indicates
 #' that the partition is stable under resampling (Fang and Wang, 2012).
 #'
 #' @references
@@ -57,9 +60,9 @@ bootstrap_cluster_stability <- function(x, method, k, n_boot = 10, seed = NULL, 
     for (i in seq_len(n_boot)) {
       idx <- sample(seq_len(nrow(x)), replace = TRUE)
       boot_fit <- cluster(x[idx, , drop = FALSE], method = method, k = k, seed = seed, ...)
-      mapped <- integer(nrow(x))
-      mapped[idx] <- clusters(boot_fit)
-      scores[i] <- adjustedrandindex(ref_clusters[idx], mapped[idx])
+      # one comparison per distinct original row: duplicated draws would inflate the ARI
+      u <- !duplicated(idx)
+      scores[i] <- adjustedrandindex(ref_clusters[idx[u]], clusters(boot_fit)[u])
     }
     data.frame(metric = "bootstrap_ari", mean = mean(scores), sd = stats::sd(scores))
   })
