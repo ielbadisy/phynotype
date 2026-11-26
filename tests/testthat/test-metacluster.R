@@ -64,3 +64,24 @@ test_that("dbscan handles noise labels when dbscan is available", {
   expect_s3_class(fit, "cluster_fit")
   expect_true(any(clusters(fit) == 0) || nclusters(fit) >= 1)
 })
+
+test_that("metacluster does not pick the upper edge of the k grid on well-separated data", {
+  sim <- phynotype:::synthetic_clusters(
+    n_per_cluster = 40, centers = rbind(c(0, 0), c(4, 0), c(0, 4), c(4, 4)), sd = 0.8, seed = 2
+  )
+  mfit <- metacluster(sim$x, methods = c("kmeans", "pam", "hclust"), k = 2:8, seed = 1)
+  expect_equal(mfit$final_k, 4L)
+  expect_named(mfit$selection_summary, c("k", "mean_ari", "silhouette", "min_size", "eligible"))
+  old <- metacluster(sim$x, methods = c("kmeans", "pam", "hclust"), k = 2:8, seed = 1,
+                     select = "silhouette", min_size = 1)
+  expect_equal(old$final_k, 8L)
+})
+
+test_that("metacluster excludes cuts with clusters smaller than min_size", {
+  mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "pam", "hclust"), k = 2:8, seed = 1)
+  s <- mfit$selection_summary
+  expect_equal(mfit$params$min_size, 2)
+  expect_true(any(!s$eligible))
+  expect_equal(s$eligible, s$min_size >= 2)
+  expect_true(min(table(clusters(mfit))) >= 2)
+})

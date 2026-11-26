@@ -18,6 +18,12 @@
 #' @param center Logical; if `TRUE`, center columns before fitting candidates.
 #' @param seed Optional integer random seed. Each candidate is given a
 #'   deterministic offset seed so results are jointly reproducible.
+#' @param select Criterion used to choose the number of consensus clusters:
+#'   `"ari"` (default) maximizes the mean adjusted Rand index between the
+#'   consensus cut and the candidate partitions; `"silhouette"` maximizes the
+#'   mean silhouette width on \eqn{D = 1 - C} (the previous rule).
+#' @param min_size Smallest admissible cluster size for the selected cut.
+#'   Default `max(2, ceiling(0.01 * n))`.
 #' @param ... Additional arguments passed through to [cluster()].
 #'
 #' @details
@@ -30,8 +36,24 @@
 #' }
 #' This estimator is related to the Evidence Accumulation Clustering framework
 #' (Fred and Jain, 2002). The consensus dissimilarity \eqn{D = 1 - C} is then
-#' hierarchically clustered (average linkage), and the optimal number of
-#' clusters is chosen by maximizing the mean silhouette width.
+#' hierarchically clustered (average linkage) and cut at each \eqn{k}.
+#'
+#' ## Choice of k
+#'
+#' The number of consensus clusters is the \eqn{k} whose cut \eqn{\pi_k}
+#' agrees best with the ensemble, measured by the mean adjusted Rand index
+#' (a median-partition rule in the spirit of Strehl and Ghosh, 2002):
+#' \deqn{
+#'   k^* = \operatorname*{arg\,max}_{k} \frac{1}{B} \sum_{b=1}^{B}
+#'   \mathrm{ARI}(\pi_k, U^{(b)}).
+#' }
+#' The ARI is corrected for chance, so it does not grow with \eqn{k} by
+#' construction. Cuts with a cluster smaller than `min_size` are not eligible
+#' (all cuts become eligible if none qualifies), and ties go to the smaller
+#' \eqn{k}. The mean silhouette width on \eqn{D} is not used by default: since
+#' \eqn{D} is built from the large-\eqn{k} candidates as well, cutting the tree
+#' at the largest \eqn{k} reproduces their blocks and the silhouette tends to
+#' pick the upper end of the grid.
 #'
 #' Stability of the ensemble is summarized by the mean pairwise partition
 #' agreement (PPA) across all candidate pairs:
@@ -49,8 +71,8 @@
 #'     solutions.}
 #'   \item{`stability_summary`}{Mean, min, and max pairwise partition
 #'     agreement.}
-#'   \item{`selection_summary`}{Per-\eqn{k} silhouette scores used for
-#'     selection.}
+#'   \item{`selection_summary`}{Per-\eqn{k} table: `mean_ari`,
+#'     `silhouette`, smallest cluster size `min_size`, and `eligible`.}
 #' }
 #'
 #' @seealso [cluster()] for single solutions, [validate()] to score the
@@ -85,7 +107,10 @@ metacluster <- function(x,
                         scale = FALSE,
                         center = TRUE,
                         seed = NULL,
-                        ...) {
+                        ...,
+                        select = c("ari", "silhouette"),
+                        min_size = NULL) {
+  select <- match.arg(select)
   if (!identical(consensus, "coassoc")) {
     stop("Only `consensus = \"coassoc\"` is currently supported.", call. = FALSE)
   }
@@ -163,13 +188,18 @@ metacluster <- function(x,
 
   coassoc <- compute_coassoc_matrix(candidate_labels)
   consensus_dist <- stats::as.dist(1 - coassoc)
-  selected <- select_consensus_k(consensus_dist, k_values)
+  n <- length(candidate_labels[[1]])
+  if (is.null(min_size)) min_size <- max(2L, ceiling(0.01 * n))
+  selected <- select_consensus_k(consensus_dist, k_values, candidate_labels, select, min_size)
   consensus_fit <- stats::hclust(consensus_dist, method = "average")
   final_clusters <- stats::cutree(consensus_fit, k = selected$final_k)
 
   new_metacluster_fit(
     call = match.call(),
-    params = list(methods = methods, k = k_values, consensus = consensus, scale = scale, center = center, seed = seed),
+    params = list(
+      methods = methods, k = k_values, consensus = consensus, scale = scale, center = center, seed = seed,
+      select = select, min_size = min_size
+    ),
     candidate_fits = candidates,
     candidate_labels = candidate_labels,
     candidate_table = do.call(rbind, candidate_rows),

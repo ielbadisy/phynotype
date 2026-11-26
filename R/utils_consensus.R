@@ -51,31 +51,42 @@ pairwise_partition_agreement <- function(x, y) {
   mean(outer(x, x, FUN = "==") == outer(y, y, FUN = "=="))
 }
 
-#' Select consensus k via mean silhouette
+#' Select the consensus k
 #'
-#' Hierarchically clusters the consensus dissimilarity matrix (average linkage)
-#' and cuts the tree at each candidate \eqn{k}. The optimal \eqn{k} is the
-#' one that maximizes the mean silhouette width:
+#' Cuts the average-linkage tree of the consensus dissimilarity at each
+#' candidate \eqn{k}. With `select = "ari"` the selected \eqn{k} maximizes the
+#' mean adjusted Rand index between the cut \eqn{\pi_k} and the \eqn{B}
+#' candidate partitions (a median-partition criterion, Strehl and Ghosh, 2002):
 #'
 #' \deqn{
 #'   k^* = \operatorname*{arg\,max}_{k \in \mathcal{K}}
-#'   \bar{s}_k(D),
+#'   \frac{1}{B} \sum_{b=1}^{B} \mathrm{ARI}(\pi_k, U^{(b)}),
 #' }
 #'
-#' where \eqn{\bar{s}_k(D)} is the mean silhouette width computed on the
-#' consensus dissimilarity \eqn{D}.
+#' restricted to cuts whose smallest cluster has at least `min_size`
+#' observations (all cuts are eligible if none qualifies). Ties go to the
+#' smaller \eqn{k}. The mean silhouette width on \eqn{D} is always reported;
+#' it is the criterion with `select = "silhouette"`. It tends to grow with
+#' \eqn{k} because \eqn{D} is built from the large-\eqn{k} candidates too.
 #'
 #' @noRd
-select_consensus_k <- function(consensus_dist, k_values) {
-  if (!requireNamespace("cluster", quietly = TRUE)) {
-    return(list(final_k = k_values[[1]], score_table = data.frame(k = k_values, silhouette = NA_real_)))
-  }
+select_consensus_k <- function(consensus_dist, k_values, labels, select = "ari", min_size = 2L) {
   hc <- stats::hclust(consensus_dist, method = "average")
-  scores <- vapply(k_values, function(k) {
-    cls <- stats::cutree(hc, k = k)
-    sil <- cluster::silhouette(cls, consensus_dist)
-    mean(sil[, "sil_width"])
+  cuts <- lapply(k_values, function(k) stats::cutree(hc, k = k))
+  sil <- vapply(cuts, function(cl) {
+    if (length(unique(cl)) < 2L || !requireNamespace("cluster", quietly = TRUE)) return(NA_real_)
+    mean(cluster::silhouette(cl, consensus_dist)[, "sil_width"])
   }, numeric(1))
-  best_idx <- which.max(scores)
-  list(final_k = as.integer(k_values[[best_idx]]), score_table = data.frame(k = k_values, silhouette = scores))
+  ari <- vapply(cuts, function(cl) mean(vapply(labels, adjustedrandindex, numeric(1), cl)), numeric(1))
+  smallest <- vapply(cuts, function(cl) min(tabulate(cl)), integer(1))
+  eligible <- smallest >= min_size
+  if (!any(eligible)) eligible[] <- TRUE
+  score <- if (select == "ari") ari else sil
+  score[!eligible] <- NA
+  best_idx <- which.max(score)
+  if (!length(best_idx)) best_idx <- 1L
+  list(
+    final_k = as.integer(k_values[[best_idx]]),
+    score_table = data.frame(k = k_values, mean_ari = ari, silhouette = sil, min_size = smallest, eligible = eligible)
+  )
 }
