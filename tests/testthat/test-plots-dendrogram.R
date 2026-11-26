@@ -29,3 +29,10 @@ test_that("plot_dendrogram returns the consensus hclust object for metacluster_f
 
   expect_identical(out, mfit$consensus_fit)
 })
+
+test_that("plotdendrogram works on agnes fits", {
+  skip_if_not_installed("cluster")
+  fit <- cluster(iris[, 1:4], method = "agnes", k = 3)
+  pdf(NULL); on.exit(dev.off())
+  expect_s3_class(plotdendrogram(fit), "hclust")
+})
