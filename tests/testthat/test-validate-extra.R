@@ -93,3 +93,19 @@ test_that("per_cluster_table has meaningful column names", {
   expect_named(pct, c("cluster", "size", "mean_silhouette"))
   expect_equal(sum(pct$size), 150L)
 })
+
+test_that("bootstrap ARI uses distinct resampled rows and reports its sd", {
+  X <- as.matrix(iris[, 1:4])
+  val <- validate(cluster(X, method = "kmeans", k = 4, seed = 3), n_boot = 3)
+  expect_true("bootstrap_ari_sd" %in% val$metrics_table$metric)
+  sc <- phynotype:::with_seed(3, {
+    r <- clusters(cluster(X, method = "kmeans", k = 4, seed = 3))
+    vapply(1:3, function(i) {
+      idx <- sample(nrow(X), replace = TRUE); u <- !duplicated(idx)
+      b <- clusters(cluster(X[idx, ], method = "kmeans", k = 4, seed = 3))
+      adjustedrandindex(r[idx[u]], b[u])
+    }, 0)
+  })
+  expect_equal(val$extras$stability$mean, mean(sc))
+  expect_equal(val$extras$stability$sd, sd(sc))
+})

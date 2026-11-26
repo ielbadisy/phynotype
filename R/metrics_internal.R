@@ -7,9 +7,12 @@
 #' @keywords internal
 metric_metadata <- function(metric) {
   metadata <- data.frame(
-    metric = c("silhouette", "bootstrap_ari", "davies_bouldin", "total_within", "calinski_harabasz"),
-    scale = c("-1 to 1", "0 to 1", "positive, unbounded", "positive, unbounded", "positive, unbounded"),
-    direction = c("higher is better", "higher is better", "lower is better", "lower is better", "higher is better"),
+    metric = c("silhouette", "bootstrap_ari", "bootstrap_ari_sd", "davies_bouldin", "total_within", "calinski_harabasz"),
+    scale = c("-1 to 1", "0 to 1", "positive", "positive, unbounded", "positive, unbounded", "positive, unbounded"),
+    direction = c(
+      "higher is better", "higher is better", "lower is better", "lower is better", "lower is better",
+      "higher is better"
+    ),
     stringsAsFactors = FALSE
   )
   out <- metadata[match(metric, metadata$metric), , drop = FALSE]

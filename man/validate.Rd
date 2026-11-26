@@ -88,7 +88,10 @@ where \eqn{s_j} is the mean intra-cluster scatter. Lower values are better.
 }
 
 \strong{Bootstrap ARI} (Fang and Wang, 2012): mean adjusted Rand index between
-the reference partition and partitions fitted on bootstrap resamples.
+the reference partition and partitions fitted on bootstrap resamples,
+computed on the distinct resampled rows (duplicated rows would make the
+agreement optimistic; Monti et al., 2003). Its standard deviation over the
+resamples is reported as \code{bootstrap_ari_sd}.
 }
 
 \subsection{External metrics}{
@@ -144,6 +147,10 @@ Research}, \strong{3}, 583–617.
 Fang, Y. and Wang, J. (2012). Selection of the number of clusters via the
 bootstrap method. \emph{Computational Statistics and Data Analysis}, \strong{56}(3),
 468–477.
+
+Monti, S., Tamayo, P., Mesirov, J. and Golub, T. (2003). Consensus
+clustering: A resampling-based method for class discovery and visualization
+of gene expression microarray data. \emph{Machine Learning}, \strong{52}(1), 91–118.
 }
 \seealso{
 \code{\link[=cluster]{cluster()}} to fit a solution, \code{\link[=plotsilhouette]{plotsilhouette()}} to visualize

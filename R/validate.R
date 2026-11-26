@@ -56,7 +56,10 @@
 #' }
 #'
 #' **Bootstrap ARI** (Fang and Wang, 2012): mean adjusted Rand index between
-#' the reference partition and partitions fitted on bootstrap resamples.
+#' the reference partition and partitions fitted on bootstrap resamples,
+#' computed on the distinct resampled rows (duplicated rows would make the
+#' agreement optimistic; Monti et al., 2003). Its standard deviation over the
+#' resamples is reported as `bootstrap_ari_sd`.
 #'
 #' ## External metrics
 #'
@@ -106,6 +109,10 @@
 #' Fang, Y. and Wang, J. (2012). Selection of the number of clusters via the
 #' bootstrap method. *Computational Statistics and Data Analysis*, **56**(3),
 #' 468–477.
+#'
+#' Monti, S., Tamayo, P., Mesirov, J. and Golub, T. (2003). Consensus
+#' clustering: A resampling-based method for class discovery and visualization
+#' of gene expression microarray data. *Machine Learning*, **52**(1), 91–118.
 #'
 #' @export
 #'
@@ -193,6 +200,7 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
   }
   if (!is.null(stability)) {
     metrics_table <- append_metric_row(metrics_table, "bootstrap_ari", stability$mean)
+    metrics_table <- append_metric_row(metrics_table, "bootstrap_ari_sd", stability$sd)
   }
   if (!is.null(metrics)) {
     metrics_table <- metrics_table[metrics_table$metric %in% metrics, , drop = FALSE]
