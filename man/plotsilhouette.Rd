@@ -15,9 +15,11 @@ plotsilhouette(x, ...)
 A \code{ggplot} object.
 }
 \description{
-Display observation-level silhouette widths colored by cluster. Observations
+Display observation-level silhouette widths colored by cluster, grouped by
+cluster and sorted by decreasing width within each cluster. Observations
 with negative widths lie closer to a neighboring cluster than to their own
-and may be misclassified.
+and may be misclassified. The \code{row} column of the plot data gives the
+original row index.
 }
 \examples{
 if (requireNamespace("cluster", quietly = TRUE)) {

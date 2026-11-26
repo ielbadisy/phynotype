@@ -44,7 +44,9 @@ plotconsensus.metacluster_fit <- function(x, data = NULL, embedding = c("auto", 
 #'
 #' Display the \eqn{n \times n} co-association matrix as a heatmap. High values
 #' (near 1) indicate pairs of observations that were consistently co-clustered
-#' across candidate partitions.
+#' across candidate partitions. Rows and columns are ordered by consensus
+#' cluster (dendrogram order within cluster), so a stable consensus shows as
+#' dark diagonal blocks; white lines mark the cluster boundaries.
 #'
 #' @param x A `metacluster_fit` object.
 #' @param ... Unused.
@@ -65,12 +67,25 @@ plotcoassoc <- function(x, ...) {
 
 #' @export
 plotcoassoc.metacluster_fit <- function(x, ...) {
-  mat <- x$coassoc_matrix
-  df <- expand.grid(row = seq_len(nrow(mat)), col = seq_len(ncol(mat)))
+  cl <- x$final_clusters
+  # group by consensus cluster, dendrogram order within cluster
+  o <- x$consensus_fit$order; o <- o[order(cl[o])]
+  mat <- x$coassoc_matrix[o, o]
+  n <- length(o)
+  df <- expand.grid(row = seq_len(n), col = seq_len(n))
   df$value <- as.vector(mat)
+  cuts <- cumsum(tabulate(cl[o]))
+  cuts <- cuts[-length(cuts)] + 0.5
   ggplot2::ggplot(df, ggplot2::aes(x = .data[["row"]], y = .data[["col"]], fill = .data[["value"]])) +
     ggplot2::geom_tile() +
-    ggplot2::labs(title = "Co-association matrix", x = NULL, y = NULL, fill = "Agreement") +
-    ggplot2::scale_fill_viridis_c(direction = -1) +
+    ggplot2::geom_hline(yintercept = cuts, colour = "white", linewidth = 0.4) +
+    ggplot2::geom_vline(xintercept = cuts, colour = "white", linewidth = 0.4) +
+    ggplot2::labs(
+      title = "Co-association matrix",
+      subtitle = paste("Ordered by consensus cluster (k =", x$final_k, "); lines mark cluster boundaries"),
+      x = "Observation", y = "Observation", fill = "Co-association"
+    ) +
+    ggplot2::scale_fill_viridis_c(direction = -1, limits = c(0, 1)) +
+    ggplot2::coord_fixed() +
     themephynotype()
 }

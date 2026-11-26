@@ -17,7 +17,9 @@ A \code{ggplot} object.
 \description{
 Display the \eqn{n \times n} co-association matrix as a heatmap. High values
 (near 1) indicate pairs of observations that were consistently co-clustered
-across candidate partitions.
+across candidate partitions. Rows and columns are ordered by consensus
+cluster (dendrogram order within cluster), so a stable consensus shows as
+dark diagonal blocks; white lines mark the cluster boundaries.
 }
 \examples{
 mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"),

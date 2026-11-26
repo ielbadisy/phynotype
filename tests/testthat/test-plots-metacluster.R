@@ -28,3 +28,13 @@ test_that("plot_coassoc returns a tile heatmap ggplot matching the coassociation
   expect_equal(nrow(p$data), nrow(iris)^2)
   expect_equal(sort(unique(p$data$value)), sort(unique(as.vector(mfit$coassoc_matrix))))
 })
+
+test_that("plotcoassoc orders by consensus cluster and labels its axes", {
+  mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"), k = 2:3, seed = 1)
+  p <- plotcoassoc(mfit)
+  o <- mfit$consensus_fit$order; o <- o[order(mfit$final_clusters[o])]
+  expect_equal(p$data$value, as.vector(mfit$coassoc_matrix[o, o]))
+  expect_false(is.unsorted(mfit$final_clusters[o]))
+  expect_equal(p$labels$x, "Observation")
+  expect_equal(p$labels$fill, "Co-association")
+})

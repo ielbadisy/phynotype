@@ -11,6 +11,7 @@
 * `validate()`'s `per_cluster_table` now has columns `cluster`, `size` and `mean_silhouette`; the silhouette column was named `x`.
 * `metacluster()` chooses the number of consensus clusters by a new rule: the `k` whose consensus cut has the highest mean adjusted Rand index with the candidate partitions, among cuts whose smallest cluster has at least `min_size` observations (default `max(2, ceiling(0.01 * n))`), ties to the smaller `k`. The previous rule (mean silhouette on `1 - C`) grows with `k` because the consensus is built from the large-`k` candidates too, so it tended to pick the upper end of the grid, sometimes with a one-observation cluster. New arguments `select = c("ari", "silhouette")` and `min_size`; `select = "silhouette"` restores the old criterion (with the size guard). `selection_summary` gains `mean_ari`, `min_size` and `eligible`. The selected `k` and the final clusters can change.
 * `validate()` bootstrap ARI now compares the reference and bootstrap partitions on the distinct resampled rows only; duplicated draws made it optimistic (Monti et al., 2003). Values are lower than before. The standard deviation over resamples is added to the metrics table as `bootstrap_ari_sd`.
+* `plotsilhouette()` now groups observations by cluster and sorts widths decreasingly within each cluster. `plotcoassoc()` orders rows and columns by consensus cluster (dendrogram order within cluster), marks cluster boundaries, and has axis labels, a subtitle and a fixed 0 to 1 colour scale.
 
 # phynotype 0.6.4
 

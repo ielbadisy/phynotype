@@ -16,3 +16,10 @@ test_that("plot.cluster_fit dispatches to plot_clusters", {
   expect_s3_class(p, "ggplot")
   expect_equal(p$labels$title, "Cluster embedding")
 })
+
+test_that("plotsilhouette sorts widths within clusters", {
+  skip_if_not_installed("cluster")
+  d <- plotsilhouette(cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1))$data
+  expect_false(is.unsorted(as.integer(d$cluster)))
+  expect_true(all(tapply(d$width, d$cluster, function(w) !is.unsorted(rev(w)))))
+})
