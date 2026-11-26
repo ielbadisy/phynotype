@@ -52,7 +52,7 @@ fit_dbscan <- function(data, params) {
     membership = NULL,
     centers = NULL,
     prototypes = NULL,
-    distance_info = list(metric = if (inherits(data, "dist")) "precomputed" else "euclidean"),
+    distance_info = list(metric = dist_metric(data)),
     fitted_object = fitted,
     extras = list(noise_label = 0L, core_points = core_ids)
   )

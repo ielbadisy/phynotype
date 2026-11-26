@@ -43,18 +43,13 @@ fit_pam <- function(data, params) {
     prototypes <- data[medoid_ids, , drop = FALSE]
     rownames(prototypes) <- paste0("cluster_", seq_len(nrow(prototypes)))
   }
-  metric <- if (is_diss) {
-    if (is.null(attr(data, "Metric"))) "precomputed" else attr(data, "Metric")
-  } else {
-    "euclidean"
-  }
   list(
     clusters = fitted$clustering,
     n_clusters = length(unique(fitted$clustering)),
     membership = NULL,
     centers = NULL,
     prototypes = prototypes,
-    distance_info = list(metric = metric),
+    distance_info = list(metric = dist_metric(data)),
     fitted_object = fitted,
     extras = list(medoid_ids = medoid_ids)
   )

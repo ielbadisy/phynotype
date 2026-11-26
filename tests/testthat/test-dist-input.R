@@ -32,3 +32,15 @@ test_that("dist input is still rejected for kmeans and gmm", {
   expect_error(cluster(d, method = "kmeans", k = 3), "Distance inputs")
   expect_error(cluster(d, method = "gmm", k = 3), "Distance inputs")
 })
+
+test_that("hclust and agnes record the metric of a dist input", {
+  skip_if_not_installed("cluster")
+  X <- iris[, 1:4]
+  for (m in c("hclust", "agnes")) {
+    expect_equal(cluster(mixeddistance(iris), method = m, k = 3)$distance_info$metric, "mixed")
+    expect_equal(cluster(dist(X, "manhattan"), method = m, k = 3)$distance_info$metric, "manhattan")
+    expect_equal(cluster(X, method = m, k = 3)$distance_info$metric, "euclidean")
+  }
+  d <- dist(X); attr(d, "method") <- NULL
+  expect_equal(cluster(d, method = "hclust", k = 3)$distance_info$metric, "precomputed")
+})
