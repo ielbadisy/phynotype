@@ -16,8 +16,17 @@ A matrix or data frame with one row per cluster, or \code{NULL}.
 }
 \description{
 Extract the cluster prototype table. Prototypes are actual observations
-(PAM medoids) or mixed-type representatives (k-prototypes, KMM); returns
-\code{NULL} for methods that use centroids rather than prototypes.
+(PAM medoids) or mixed-type representatives (k-prototypes, KMM).
+}
+\details{
+For centroid methods (k-means, GMM, and hierarchical fits on row data) the
+prototype of cluster \eqn{j} is the observed row nearest (Euclidean) to its
+center, in the space the fit used (centered/scaled as in \code{\link[=centers]{centers()}}).
+For a \code{metacluster_fit} it is the consensus medoid: the member of cluster
+\eqn{j} with the smallest mean consensus dissimilarity \eqn{1 - C} to the
+other members, returned as a row of the original data. The row indices are
+stored in the \code{"row_ids"} attribute. Fits on a \code{dist} input and DBSCAN
+fits return \code{NULL}.
 }
 \examples{
 if (requireNamespace("cluster", quietly = TRUE)) {

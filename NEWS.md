@@ -6,6 +6,7 @@
 * `centers()` for `"gmm"` fits now returns a K x p matrix (one row per cluster) like k-means; it was p x K.
 * `"dbscan"` fits now fill `extras$core_points` with the indices of core points (at least `minPts` points, itself included, within `eps`); it was always empty.
 * `"hclust"` and `"agnes"` fits on a `dist` input now record the true metric in `distance_info$metric` (the `"Metric"` attribute of a `daisy`/`mixeddistance()` object, the `"method"` attribute of a `stats::dist()` object, else `"precomputed"`); it was always `"euclidean"`. `"pam"` and `"dbscan"` use the same rule.
+* `prototypes()` no longer returns `NULL` for centroid fits and `metacluster()` fits. For k-means, GMM and hierarchical fits it returns the observed row nearest to each center; for a `metacluster_fit` it returns the consensus medoid of each cluster (smallest mean consensus dissimilarity to the other members). Row indices are in the `"row_ids"` attribute.
 
 # phynotype 0.6.4
 
