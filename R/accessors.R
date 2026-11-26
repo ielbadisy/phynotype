@@ -31,15 +31,16 @@ clusters.metacluster_fit <- function(x, ...) {
 
 #' Membership matrix
 #'
-#' Extract the soft membership (posterior probability) matrix. Only methods
-#' that return probabilistic assignments (e.g. GMM) populate this slot; all
-#' other methods return `NULL`.
+#' Extract the membership matrix. Methods with probabilistic assignments
+#' (GMM) return the soft membership (posterior probability) matrix; all other
+#' methods, and `metacluster_fit` objects, return the hard 0/1 indicator
+#' matrix of [clusters()] (for DBSCAN the noise label `0` has its own column).
 #'
 #' @param x A `cluster_fit` or `metacluster_fit` object.
 #' @param ... Unused.
 #'
 #' @return A numeric matrix with one row per observation and one column per
-#'   cluster, or `NULL`.
+#'   cluster, named by cluster label.
 #'
 #' @seealso [clusters()], [centers()], [prototypes()]
 #'
@@ -56,12 +57,17 @@ membership <- function(x, ...) {
 
 #' @export
 membership.cluster_fit <- function(x, ...) {
-  x$membership
+  if (is.null(x$membership)) hard_membership(x$clusters) else x$membership
 }
 
 #' @export
 membership.metacluster_fit <- function(x, ...) {
-  NULL
+  hard_membership(x$final_clusters)
+}
+
+hard_membership <- function(cl) {
+  lev <- sort(unique(cl))
+  `colnames<-`(outer(cl, lev, "==") * 1, lev)
 }
 
 #' Cluster centers

@@ -155,3 +155,12 @@ test_that("plot_feature_profiles filters features and defaults to all features",
   p_subset <- plotfeatureprofiles(exp, features = c("Sepal.Length", "Petal.Length"))
   expect_setequal(unique(p_subset$data$feature), c("Sepal.Length", "Petal.Length"))
 })
+
+test_that("plotfeatureprofiles accepts a cluster_fit and a metacluster_fit", {
+  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+  p <- plotfeatureprofiles(fit)
+  expect_s3_class(p, "ggplot")
+  expect_equal(p$data, plotfeatureprofiles(explore(fit))$data)
+  mfit <- metacluster(iris[, 1:4], methods = c("kmeans", "hclust"), k = 2:3, seed = 1)
+  expect_s3_class(plotfeatureprofiles(mfit), "ggplot")
+})

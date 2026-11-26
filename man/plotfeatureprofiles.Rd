@@ -7,7 +7,8 @@
 plotfeatureprofiles(x, features = NULL, ...)
 }
 \arguments{
-\item{x}{A \code{cluster_explore} object (produced by \code{\link[=explore]{explore()}}).}
+\item{x}{A \code{cluster_explore} object (produced by \code{\link[=explore]{explore()}}), or a
+\code{cluster_fit} or \code{metacluster_fit}, which is passed to \code{\link[=explore]{explore()}} first.}
 
 \item{features}{Optional character vector of feature names to include.
 Defaults to all features.}
@@ -22,6 +23,7 @@ Display per-cluster mean values for each feature as a grouped bar chart.
 }
 \examples{
 fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+plotfeatureprofiles(fit)
 exp <- explore(fit)
 plotfeatureprofiles(exp)
 plotfeatureprofiles(exp, features = c("Sepal.Length", "Petal.Length"))

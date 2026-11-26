@@ -13,12 +13,13 @@ membership(x, ...)
 }
 \value{
 A numeric matrix with one row per observation and one column per
-cluster, or \code{NULL}.
+cluster, named by cluster label.
 }
 \description{
-Extract the soft membership (posterior probability) matrix. Only methods
-that return probabilistic assignments (e.g. GMM) populate this slot; all
-other methods return \code{NULL}.
+Extract the membership matrix. Methods with probabilistic assignments
+(GMM) return the soft membership (posterior probability) matrix; all other
+methods, and \code{metacluster_fit} objects, return the hard 0/1 indicator
+matrix of \code{\link[=clusters]{clusters()}} (for DBSCAN the noise label \code{0} has its own column).
 }
 \examples{
 if (requireNamespace("mclust", quietly = TRUE)) {

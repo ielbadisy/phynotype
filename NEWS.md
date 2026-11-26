@@ -13,6 +13,8 @@
 * `validate()` bootstrap ARI now compares the reference and bootstrap partitions on the distinct resampled rows only; duplicated draws made it optimistic (Monti et al., 2003). Values are lower than before. The standard deviation over resamples is added to the metrics table as `bootstrap_ari_sd`.
 * `plotsilhouette()` now groups observations by cluster and sorts widths decreasingly within each cluster. `plotcoassoc()` orders rows and columns by consensus cluster (dendrogram order within cluster), marks cluster boundaries, and has axis labels, a subtitle and a fixed 0 to 1 colour scale.
 * `ceterisparibus()` gains `grid_type = c("uniform", "quantile")`. The default numeric grid is now equally spaced over the observed range (`"uniform"`), so the tails are profiled as densely as the centre; the previous quantile grid, sparse in the tails, is available as `grid_type = "quantile"`. Default profiles change.
+* `membership()` returns the hard 0/1 indicator matrix for methods without soft assignments (k-means, PAM, hierarchical, DBSCAN, k-prototypes, KMM) and for `metacluster_fit` objects, instead of `NULL`; GMM still returns posterior probabilities.
+* `plotfeatureprofiles()` now accepts a `cluster_fit` or `metacluster_fit` directly (it calls `explore()` first), not only `explore()` output.
 
 # phynotype 0.6.4
 
