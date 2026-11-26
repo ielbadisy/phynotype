@@ -16,6 +16,10 @@
 #'   return (e.g. `c("silhouette", "calinski_harabasz")`).
 #' @param n_boot Number of bootstrap resamples for bootstrap ARI stability
 #'   (only for `"kmeans"`, `"pam"`, and `"gmm"` fits with a fixed `k`).
+#' @param seed Optional integer seed used when `x` is raw data: every fit in
+#'   the `k` grid, and its bootstrap refits, use this seed, so the grid is
+#'   reproducible. For a `cluster_fit`, `NULL` uses the seed stored in the fit
+#'   for the bootstrap refits.
 #'
 #' @details
 #' Internal metrics and bootstrap refits use the data as preprocessed by
@@ -117,7 +121,7 @@
 #' val_ext$metrics_table
 #'
 #' # Grid search over k values
-#' grid_val <- validate(iris[, 1:4], method = "kmeans", k = 2:5)
+#' grid_val <- validate(iris[, 1:4], method = "kmeans", k = 2:5, seed = 1)
 #' grid_val$metrics_table
 validate <- function(x,
                      ...,
@@ -125,7 +129,8 @@ validate <- function(x,
                      k = NULL,
                      truth = NULL,
                      metrics = NULL,
-                     n_boot = 10) {
+                     n_boot = 10,
+                     seed = NULL) {
   UseMethod("validate")
 }
 
@@ -144,7 +149,7 @@ append_metric_row <- function(metrics_table, metric, value, scale = NA_character
 }
 
 #' @export
-validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 10) {
+validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 10, seed = NULL) {
   if (x$method == "pam" && !requireNamespace("cluster", quietly = TRUE)) {
     stop("Package `cluster` is required to compute silhouette for `pam` fits.", call. = FALSE)
   }
@@ -179,7 +184,8 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
   }
   stability <- if (x$method %in% c("kmeans", "pam", "gmm") && !is.null(x$params$k)) {
     bootstrap_cluster_stability(
-      data, method = x$method, k = x$params$k, n_boot = n_boot, seed = x$params$seed,
+      data, method = x$method, k = x$params$k, n_boot = n_boot,
+      seed = if (is.null(seed)) x$params$seed else seed,
       scale = isTRUE(x$params$scale), center = !isFALSE(x$params$center)
     )
   } else {
@@ -262,13 +268,14 @@ validate.default <- function(x,
                              k = NULL,
                              truth = NULL,
                              metrics = NULL,
-                             n_boot = 10) {
+                             n_boot = 10,
+                             seed = NULL) {
   if (!is.matrix(x) && !is.data.frame(x)) {
     stop("Direct validation requires a numeric matrix or data frame.", call. = FALSE)
   }
   k_values <- check_k_grid(k)
   rows <- lapply(k_values, function(k_i) {
-    fit <- cluster(x, method = method, k = k_i, ...)
+    fit <- cluster(x, method = method, k = k_i, seed = seed, ...)
     val <- validate(fit, truth = truth, metrics = metrics, n_boot = n_boot)
     out <- val$metrics_table
     out$k <- k_i
@@ -276,7 +283,7 @@ validate.default <- function(x,
   })
   new_cluster_validation(
     metrics_table = do.call(rbind, rows),
-    settings = list(method = method, grid_k = k_values),
+    settings = list(method = method, grid_k = k_values, seed = seed),
     object_type = "validation_grid"
   )
 }

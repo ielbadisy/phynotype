@@ -78,3 +78,11 @@ test_that("validate() computes metrics on the scaled data when the fit used scal
   ch <- val$metrics_table$value[val$metrics_table$metric == "calinski_harabasz"]
   expect_equal(ch, signif(phynotype:::compute_calinski_harabasz(scale(X), clusters(fit)), 4))
 })
+
+test_that("validate() on raw data takes an explicit seed and is reproducible", {
+  expect_true("seed" %in% names(formals(validate)))
+  v1 <- validate(iris[, 1:4], method = "kmeans", k = 2:3, seed = 7, n_boot = 3)
+  v2 <- validate(iris[, 1:4], method = "kmeans", k = 2:3, seed = 7, n_boot = 3)
+  expect_identical(v1$metrics_table, v2$metrics_table)
+  expect_equal(v1$settings$seed, 7)
+})
