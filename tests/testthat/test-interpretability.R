@@ -136,3 +136,12 @@ test_that("lime_explain returns local surrogate effects", {
   expect_equal(nrow(lx$explanations), 4)
   expect_equal(nrow(lx$neighborhoods), 60)
 })
+
+test_that("soft scores do not depend on the other rows predicted in the same call", {
+  X <- as.matrix(iris[, 1:4])
+  fit <- cluster(X, method = "kmeans", k = 3, seed = 1)
+  one <- phynotype:::predict_interpretability(fit, X[1, , drop = FALSE])$scores
+  many <- phynotype:::predict_interpretability(fit, X[1:150, ])$scores
+  expect_equal(one[1, ], many[1, ])
+  expect_true(is.numeric(fit$extras$score_sigma))
+})

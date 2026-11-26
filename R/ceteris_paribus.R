@@ -18,8 +18,11 @@
 #' predicted cluster label or a cluster-specific score. For methods that return
 #' membership probabilities, the score is the predicted membership. For
 #' distance-based methods, phynotype converts distances into normalized radial
-#' similarity scores so that larger values indicate stronger association with a
-#' cluster prototype.
+#' similarity scores \eqn{\exp\{-d^2 / (2\sigma^2)\}}, normalized over
+#' clusters, so that larger values indicate stronger association with a
+#' cluster prototype. The bandwidth \eqn{\sigma} is the median distance of the
+#' training rows to the cluster centers, fixed at fit time, so a row's score
+#' does not depend on the other rows scored with it.
 #'
 #' These profiles are local diagnostic curves. They should be interpreted as
 #' behavior of the fitted clustering rule under controlled perturbation, not as

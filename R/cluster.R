@@ -153,7 +153,7 @@ cluster <- function(x,
   entry$validate(prepared$data, params)
 
   result <- with_seed(seed, entry$fit(prepared$data, params))
-  new_cluster_fit(
+  fit <- new_cluster_fit(
     method = method,
     call = match.call(),
     params = params,
@@ -167,4 +167,6 @@ cluster <- function(x,
     data_info = prepared$data_info,
     extras = result$extras
   )
+  fit$extras$score_sigma <- fit_score_sigma(fit)
+  fit
 }

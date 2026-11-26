@@ -97,15 +97,28 @@ phynotype_map <- function(.x, .f, parallel = FALSE, cores = NULL, workers = NULL
   lapply(.x, .f, ...)
 }
 
-prediction_score_matrix <- function(prediction) {
+# Radial-kernel bandwidth for distance-based scores: median finite distance.
+median_sigma <- function(distances) {
+  sigma <- stats::median(distances[is.finite(distances)])
+  if (!is.finite(sigma) || sigma <= 0) 1 else sigma
+}
+
+# Bandwidth fixed at fit time from the training rows, so a row's soft score
+# does not depend on which other rows are predicted with it.
+fit_score_sigma <- function(object) {
+  if (identical(object$data_info$input_type, "dist") || object$method %in% c("gmm", "dbscan")) {
+    return(NULL)
+  }
+  d <- stats::predict(object, object$data_info$original_data)$distances
+  if (is.null(d)) NULL else median_sigma(as.matrix(d))
+}
+
+prediction_score_matrix <- function(prediction, sigma = NULL) {
   if (!is.null(prediction$membership)) {
     scores <- as.matrix(prediction$membership)
   } else if (!is.null(prediction$distances)) {
     distances <- as.matrix(prediction$distances)
-    sigma <- stats::median(distances[is.finite(distances)])
-    if (!is.finite(sigma) || sigma <= 0) {
-      sigma <- 1
-    }
+    if (is.null(sigma)) sigma <- median_sigma(distances)
     scores <- exp(-(distances^2) / (2 * sigma^2))
     scores <- scores / pmax(rowSums(scores), .Machine$double.eps)
   } else {
@@ -121,7 +134,9 @@ prediction_score_matrix <- function(prediction) {
 
 predict_interpretability <- function(object, data) {
   pred <- stats::predict(object, data)
-  list(prediction = pred, scores = prediction_score_matrix(pred))
+  sigma <- object$extras$score_sigma
+  if (is.null(sigma) && !is.null(pred$distances)) sigma <- fit_score_sigma(object)
+  list(prediction = pred, scores = prediction_score_matrix(pred, sigma))
 }
 
 cluster_score_column <- function(scores, cluster, fallback = 1L) {
