@@ -51,3 +51,10 @@ test_that("accessors on a metacluster_fit dispatch to final_clusters/final_k and
   expect_equal(methodused(mfit), "metacluster")
   expect_equal(sum(sizes(mfit)), nrow(iris))
 })
+
+test_that("centers() is K x p for gmm fits, like kmeans", {
+  skip_if_not_installed("mclust")
+  fit <- cluster(iris[, 1:4], method = "gmm", k = 3, seed = 1)
+  expect_equal(dim(centers(fit)), c(3L, 4L))
+  expect_equal(colnames(centers(fit)), colnames(iris)[1:4])
+})

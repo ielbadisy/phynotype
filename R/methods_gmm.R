@@ -55,7 +55,8 @@ fit_gmm <- function(data, params) {
     clusters = fitted$classification,
     n_clusters = length(unique(fitted$classification)),
     membership = fitted$z,
-    centers = fitted$parameters$mean,
+    # mclust stores means as p x K; transpose to K x p like kmeans
+    centers = `rownames<-`(t(fitted$parameters$mean), seq_len(ncol(fitted$parameters$mean))),
     prototypes = NULL,
     distance_info = list(metric = "model-based"),
     fitted_object = fitted,

@@ -3,6 +3,7 @@
 * `validate()` now honours `scale = TRUE`: internal metrics are computed on the scaled data the fit used, and bootstrap refits are scaled the same way (previously both used the raw data). Metric values change for scaled fits. `plotsilhouette()` uses the same basis.
 * Soft cluster scores for distance-based methods (used by `ceterisparibus()`, `limeexplain()` and `featureimportance()` with `target = "score"`) now use a bandwidth fixed at fit time (median training distance to the centers, stored in `extras$score_sigma`). Previously the bandwidth was the median distance of the rows in the current call, so a row's score depended on the other rows scored with it. Score values change.
 * `plotdendrogram()` now works on `"agnes"` fits (it uses the `hclust` copy stored in `extras$hclust`).
+* `centers()` for `"gmm"` fits now returns a K x p matrix (one row per cluster) like k-means; it was p x K.
 
 # phynotype 0.6.4
 
