@@ -100,8 +100,16 @@ centers.metacluster_fit <- function(x, ...) {
 #' Cluster prototypes
 #'
 #' Extract the cluster prototype table. Prototypes are actual observations
-#' (PAM medoids) or mixed-type representatives (k-prototypes, KMM); returns
-#' `NULL` for methods that use centroids rather than prototypes.
+#' (PAM medoids) or mixed-type representatives (k-prototypes, KMM).
+#'
+#' For centroid methods (k-means, GMM, and hierarchical fits on row data) the
+#' prototype of cluster \eqn{j} is the observed row nearest (Euclidean) to its
+#' center, in the space the fit used (centered/scaled as in [centers()]).
+#' For a `metacluster_fit` it is the consensus medoid: the member of cluster
+#' \eqn{j} with the smallest mean consensus dissimilarity \eqn{1 - C} to the
+#' other members, returned as a row of the original data. The row indices are
+#' stored in the `"row_ids"` attribute. Fits on a `dist` input and DBSCAN
+#' fits return `NULL`.
 #'
 #' @param x A `cluster_fit` or `metacluster_fit` object.
 #' @param ... Unused.
@@ -123,12 +131,24 @@ prototypes <- function(x, ...) {
 
 #' @export
 prototypes.cluster_fit <- function(x, ...) {
-  round_results(x$prototypes)
+  if (!is.null(x$prototypes) || is.null(x$centers)) return(round_results(x$prototypes))
+  data <- restore_preprocessed_matrix(x$data_info$original_data, x$data_info)
+  ids <- apply(x$centers, 1, function(m) which.min(colSums((t(data) - m)^2)))
+  out <- data[ids, , drop = FALSE]
+  rownames(out) <- paste0("cluster_", seq_along(ids))
+  structure(round_results(out), row_ids = unname(ids))
 }
 
 #' @export
 prototypes.metacluster_fit <- function(x, ...) {
-  NULL
+  d <- as.matrix(x$consensus_dissimilarity); cl <- x$final_clusters; lev <- sort(unique(cl))
+  ids <- vapply(lev, function(g) {
+    i <- which(cl == g)
+    i[which.min(rowMeans(d[i, i, drop = FALSE]))]
+  }, integer(1))
+  out <- x$data_info$original_data[ids, , drop = FALSE]
+  rownames(out) <- paste0("cluster_", lev)
+  structure(round_results(out), row_ids = ids)
 }
 
 #' Cluster sizes
