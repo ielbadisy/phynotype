@@ -49,6 +49,9 @@ Compute internal and external validation metrics for a fitted clustering
 object or over a grid of candidate cluster counts.
 }
 \details{
+Internal metrics and bootstrap refits use the data as preprocessed by
+\code{\link[=cluster]{cluster()}}: when the fit used \code{scale = TRUE}, metrics are computed on the
+scaled matrix and each bootstrap refit is scaled the same way.
 \subsection{Internal metrics}{
 
 \strong{Silhouette width} (Rousseeuw, 1987):

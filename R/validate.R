@@ -18,6 +18,10 @@
 #'   (only for `"kmeans"`, `"pam"`, and `"gmm"` fits with a fixed `k`).
 #'
 #' @details
+#' Internal metrics and bootstrap refits use the data as preprocessed by
+#' [cluster()]: when the fit used `scale = TRUE`, metrics are computed on the
+#' scaled matrix and each bootstrap refit is scaled the same way.
+#'
 #' ## Internal metrics
 #'
 #' **Silhouette width** (Rousseeuw, 1987):
@@ -125,6 +129,15 @@ validate <- function(x,
   UseMethod("validate")
 }
 
+# Data on which the fit was computed: encoded mixed data, or the centered/scaled
+# matrix when cluster() preprocessed it, so metrics match the fitted geometry.
+metric_basis <- function(data, data_info) {
+  if (is.data.frame(data) && any(!vapply(data, is.numeric, logical(1)))) {
+    return(preparemixeddata(data, center = FALSE, scale = FALSE))
+  }
+  if (identical(data_info$input_type, "matrix")) restore_preprocessed_matrix(data, data_info) else data
+}
+
 append_metric_row <- function(metrics_table, metric, value, scale = NA_character_, direction = NA_character_) {
   metrics_table[nrow(metrics_table) + 1L, ] <- list(metric, value, scale, direction)
   metrics_table
@@ -139,10 +152,7 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
   if (inherits(data, "dist")) {
     stop("Validation for distance-only inputs is not yet implemented.", call. = FALSE)
   }
-  metric_data <- data
-  if (is.data.frame(data) && any(!vapply(data, is.numeric, logical(1)))) {
-    metric_data <- preparemixeddata(data, center = FALSE, scale = FALSE)
-  }
+  metric_data <- metric_basis(data, x$data_info)
   metrics_table <- data.frame(
     metric = c("silhouette", "calinski_harabasz", "davies_bouldin", "total_within"),
     value = c(
@@ -168,7 +178,10 @@ validate.cluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boot = 
     )
   }
   stability <- if (x$method %in% c("kmeans", "pam", "gmm") && !is.null(x$params$k)) {
-    bootstrap_cluster_stability(data, method = x$method, k = x$params$k, n_boot = n_boot, seed = x$params$seed)
+    bootstrap_cluster_stability(
+      data, method = x$method, k = x$params$k, n_boot = n_boot, seed = x$params$seed,
+      scale = isTRUE(x$params$scale), center = !isFALSE(x$params$center)
+    )
   } else {
     NULL
   }
@@ -198,10 +211,7 @@ validate.metacluster_fit <- function(x, ..., truth = NULL, metrics = NULL, n_boo
   if (inherits(data, "dist")) {
     stop("Validation for distance-only inputs is not yet implemented.", call. = FALSE)
   }
-  metric_data <- data
-  if (is.data.frame(data) && any(!vapply(data, is.numeric, logical(1)))) {
-    metric_data <- preparemixeddata(data, center = FALSE, scale = FALSE)
-  }
+  metric_data <- metric_basis(data, x$data_info)
   metrics_table <- data.frame(
     metric = c("silhouette", "calinski_harabasz", "davies_bouldin"),
     value = c(
