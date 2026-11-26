@@ -145,3 +145,13 @@ test_that("soft scores do not depend on the other rows predicted in the same cal
   expect_equal(one[1, ], many[1, ])
   expect_true(is.numeric(fit$extras$score_sigma))
 })
+
+test_that("ceterisparibus uses a uniform grid by default and a quantile grid on request", {
+  fit <- cluster(iris[, 1:4], method = "kmeans", k = 3, seed = 1)
+  cp <- ceterisparibus(fit, iris[1, 1:4], features = "Sepal.Length", grid_size = 5)
+  r <- range(iris$Sepal.Length)
+  expect_equal(cp$profiles$feature_value, seq(r[1], r[2], length.out = 5))
+  cq <- ceterisparibus(fit, iris[1, 1:4], features = "Sepal.Length", grid_size = 5, grid_type = "quantile")
+  expect_equal(cq$profiles$feature_value,
+               signif(quantile(iris$Sepal.Length, seq(0, 1, 0.25), names = FALSE, type = 8), 4))
+})

@@ -33,8 +33,8 @@
 #' @param features Optional character vector or numeric column index specifying
 #'   features to profile.
 #' @param grid Optional vector or named list of vectors giving profile values.
-#'   If `NULL`, numeric features use quantile grids and categorical features use
-#'   their observed levels.
+#'   If `NULL`, numeric features use a grid of `grid_size` values built as set
+#'   by `grid_type`, and categorical features use their observed levels.
 #' @param grid_size Number of grid values per feature when `grid = NULL`.
 #' @param target Output target. `"cluster"` records predicted labels;
 #'   `"score"` records a cluster-specific prediction score.
@@ -49,6 +49,11 @@
 #'   Deprecated alias for `cores`.
 #' @param progress Logical; if `TRUE`, request progress reporting from
 #'   `functionals::fmap()`.
+#' @param grid_type How the default numeric grid is built: `"uniform"`
+#'   (default) uses equally spaced values over the observed range, so the tails
+#'   are covered as densely as the centre; `"quantile"` uses equally spaced
+#'   sample quantiles, which follow the data density and are sparse in the
+#'   tails. Features with at most `grid_size` distinct values use those values.
 #' @param ... Reserved for future extensions.
 #'
 #' @return A `ceteris_paribus` object with a tidy `profiles` data frame. Each
@@ -88,9 +93,11 @@ ceterisparibus <- function(object,
                             cores = NULL,
                             workers = NULL,
                             progress = FALSE,
+                            grid_type = c("uniform", "quantile"),
                             ...) {
   check_interpretable_fit(object)
   target <- match.arg(target)
+  grid_type <- match.arg(grid_type)
   if (!is.numeric(grid_size) || length(grid_size) != 1L || grid_size < 2L || is.na(grid_size)) {
     stop("`grid_size` must be an integer greater than or equal to 2.", call. = FALSE)
   }
@@ -107,7 +114,7 @@ ceterisparibus <- function(object,
     task <- task[1, , drop = FALSE]
     obs_id <- task$observation
     feature <- task$feature
-    values <- make_feature_grid(training_data, feature, grid = grid, grid_size = as.integer(grid_size))
+    values <- make_feature_grid(training_data, feature, grid, as.integer(grid_size), grid_type)
     profile_data <- new_data[rep(obs_id, length(values)), , drop = FALSE]
     profile_data[, feature] <- values
     pred <- predict_interpretability(object, profile_data)
@@ -147,6 +154,7 @@ ceterisparibus <- function(object,
       target = target,
       cluster = cluster,
       grid_size = as.integer(grid_size),
+      grid_type = grid_type,
       method = object$method,
       parallel = parallel,
       cores = cores,

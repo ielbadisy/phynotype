@@ -16,6 +16,7 @@ ceterisparibus(
   cores = NULL,
   workers = NULL,
   progress = FALSE,
+  grid_type = c("uniform", "quantile"),
   ...
 )
 }
@@ -28,8 +29,8 @@ ceterisparibus(
 features to profile.}
 
 \item{grid}{Optional vector or named list of vectors giving profile values.
-If \code{NULL}, numeric features use quantile grids and categorical features use
-their observed levels.}
+If \code{NULL}, numeric features use a grid of \code{grid_size} values built as set
+by \code{grid_type}, and categorical features use their observed levels.}
 
 \item{grid_size}{Number of grid values per feature when \code{grid = NULL}.}
 
@@ -51,6 +52,12 @@ Deprecated alias for \code{cores}.}
 
 \item{progress}{Logical; if \code{TRUE}, request progress reporting from
 \code{functionals::fmap()}.}
+
+\item{grid_type}{How the default numeric grid is built: \code{"uniform"}
+(default) uses equally spaced values over the observed range, so the tails
+are covered as densely as the centre; \code{"quantile"} uses equally spaced
+sample quantiles, which follow the data density and are sparse in the
+tails. Features with at most \code{grid_size} distinct values use those values.}
 
 \item{...}{Reserved for future extensions.}
 }

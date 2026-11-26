@@ -154,7 +154,7 @@ cluster_score_column <- function(scores, cluster, fallback = 1L) {
   stop("Cluster `", cluster, "` is not available in the prediction scores.", call. = FALSE)
 }
 
-make_feature_grid <- function(training_data, feature, grid = NULL, grid_size = 25L) {
+make_feature_grid <- function(training_data, feature, grid = NULL, grid_size = 25L, type = "uniform") {
   if (!is.null(grid)) {
     if (is.list(grid)) {
       values <- grid[[feature]]
@@ -181,6 +181,7 @@ make_feature_grid <- function(training_data, feature, grid = NULL, grid_size = 2
     if (length(unique(values)) <= grid_size) {
       return(sort(unique(values)))
     }
+    if (type == "uniform") return(seq(min(values), max(values), length.out = grid_size))
     return(as.numeric(stats::quantile(values, probs = seq(0, 1, length.out = grid_size), names = FALSE, type = 8)))
   }
   values <- as.character(values)
