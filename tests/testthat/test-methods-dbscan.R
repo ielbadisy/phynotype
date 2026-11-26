@@ -63,7 +63,7 @@ test_that("dbscan extras$core_points holds the core points", {
   X <- as.matrix(iris[, 1:4])
   fit <- cluster(X, method = "dbscan", eps = 0.5, minPts = 5, center = FALSE)
   d <- as.matrix(dist(X))
-  expect_equal(fit$extras$core_points, which(rowSums(d <= 0.5) >= 5))
+  expect_equal(fit$extras$core_points, unname(which(rowSums(d <= 0.5) >= 5)))
   expect_true(length(fit$extras$core_points) > 0)
   fit_d <- cluster(dist(X), method = "dbscan", eps = 0.5, minPts = 5)
   expect_equal(fit_d$extras$core_points, fit$extras$core_points)
