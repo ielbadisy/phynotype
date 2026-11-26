@@ -44,7 +44,8 @@ fit_dbscan <- function(data, params) {
   min_pts <- if (is.null(params$minPts)) params$min_pts else params$minPts
   fitted <- dbscan::dbscan(data, eps = params$eps, minPts = as.integer(min_pts))
   cls <- fitted$cluster
-  core_ids <- if (!is.null(fitted$isseed)) which(fitted$isseed) else integer(0)
+  # dbscan() does not return seeds; a core point has >= minPts eps-neighbours, self included
+  core_ids <- which(lengths(dbscan::frNN(data, eps = params$eps)$id) + 1L >= as.integer(min_pts))
   list(
     clusters = cls,
     n_clusters = length(setdiff(unique(cls), 0L)),
